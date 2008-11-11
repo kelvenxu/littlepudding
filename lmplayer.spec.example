@@ -1,0 +1,65 @@
+%define		_topdir		/home/xfxu/rpm
+%define		_tmppath	%{_topdir}/tmp
+%define		_prefix		/usr/local
+%define		_defaultdocdir	%{_prefix}/share/doc
+%define		_mandir		%{_prefix}/man
+%define 	version 	0.5.0
+%define 	release 	1.FC8
+
+%define 	buildroot	%{_tmppath}/%{name}-root
+
+Name:		lmplayer
+Summary:	Music Player
+Version:	%{version}
+Release:	%{release}
+License:	GPL
+Group:		Applications/Multimedia
+Source:		http://nchc.dl.sourceforge.net/sourceforge/linuxmediaplay/lmplayer-0.5.0.tar.bz2
+URL:		http://www.lmplayer.org
+BuildRoot: 	%{buildroot}
+Requires:	gtk2 >= 2.10.0
+Requires:	glib2 >= 2.12.0
+Requires:	libglade2 >= 2.6.0
+Requires:	libsexy
+Requires:	libxml2 >= 2.0.0
+Requires:	libgnomecanvas
+Requires:	gnome-vfs2 >= 2.18.0
+Requires:	gstreamer >= 0.10.0
+Requires:	gstreamer-plugins-base >= 0.10.0
+Requires:	gstreamer-plugins-good >= 0.10.0
+Requires:	gstreamer-plugins-bad >= 0.10.0
+Requires:	gstreamer-plugins-ugly >= 0.10.0
+
+%description
+A powerful music player for Gnome or Kde desktop.
+
+%prep
+%setup -q
+
+%build
+%configure
+make
+
+
+%install
+rm -rf %{buildroot}
+make install DESTDIR=%{buildroot}
+
+%clean
+rm -rf %{buildroot}
+
+%files 
+%defattr(-, root, root)
+%doc AUTHORS COPYING ChangeLog README NEWS
+%{_bindir}/lmplayer
+%{_datadir}/applications/lmplayer.desktop
+%{_datadir}/lmplayer/glade/*
+%{_datadir}/icons/hicolor/16x16/apps/%name.png
+%{_datadir}/icons/hicolor/22x22/apps/%name.png
+%{_datadir}/icons/hicolor/24x24/apps/%name.png
+%{_datadir}/icons/hicolor/32x32/apps/%name.png
+%{_datadir}/icons/hicolor/48x48/apps/%name.png
+
+%changelog
+* Thu Apr 3 2008 kelvenxu <kelvenxu@gmail.com>
+- created new spec file

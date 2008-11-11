@@ -1,0 +1,20 @@
+Source: lmplayer
+Section: multimedia
+Priority: extra
+Maintainer: kelvenxu  <kelvenxu@gmail.com>
+Build-Depends: debhelper (>= 5), autotools-dev
+Standards-Version: 3.7.2
+
+Package: lmplayer
+Architecture: i386
+Depends: libgtk2.0-0 (>= 2.10.0), libglib2.0-0 (>= 2.12.0), libglade2-0 (>= 2.6.0), libxml2 (>= 2.4.0), libxcomposite1 (>= 0.4.0),libgnomecanvas2-0 (>= 2.11.1), libsexy2(>=0.1.8)
+Description: Linux Music Player
+	Linux music player is desktop music player for gnome or kde. It support many audio formats such as mp3, wma, ogg etc. It is  powerful but easy to use.
+	.
+	Author: kelvenxu <kelvenxu@gmail.com>
+	.
+	Homepage: http://www.lmplayer.org/
+	.
+	Blog: http://blog.lmplayer.org/
+	.
+	BBS: http://bbs.lmplayer.org/

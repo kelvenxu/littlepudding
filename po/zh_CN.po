@@ -1,0 +1,1050 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-06-07 10:42+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../data/about.glade.h:1
+msgid "lmplayer是开源的，它遵从GPLv3协议。"
+msgstr ""
+
+#: ../data/about.glade.h:2
+msgid "关于Linux音乐播放器"
+msgstr ""
+
+#: ../data/about.glade.h:3 ../data/about2.glade.h:2
+msgid "关注Linux用户娱乐体验，打造Linux下的娱乐平台！"
+msgstr ""
+
+#: ../data/about.glade.h:4
+msgid "本软件遵从GPLv3协议"
+msgstr ""
+
+#: ../data/about.glade.h:5
+msgid ""
+"欢迎访问项目的主页！\n"
+"欢迎参与本项目！\n"
+"错误报告: kelvenxu@gmail.com"
+msgstr ""
+
+#: ../data/about2.glade.h:1
+msgid "Linux音乐播放器 v0.4"
+msgstr ""
+
+#: ../data/about2.glade.h:3
+msgid ""
+"本软件遵从GPLv3协议。\n"
+"欢迎访问项目主页！\n"
+"欢迎参与本项目！\n"
+"错误报告：kelvenxu@gmail.com"
+msgstr ""
+
+#: ../data/about2.glade.h:7
+msgid "确定"
+msgstr ""
+
+#: ../data/fileopendialog.glade.h:1 ../data/preferencedlg.glade.h:8
+#: ../data/rename.glade.h:2 ../data/preferencedlg2.glade.h:3
+#: ../data/setting_dialog.glade.h:9
+msgid "gtk-cancel"
+msgstr ""
+
+#: ../data/fileopendialog.glade.h:2 ../data/preferencedlg.glade.h:9
+#: ../data/rename.glade.h:5 ../data/preferencedlg2.glade.h:4
+#: ../data/setting_dialog.glade.h:10
+msgid "gtk-ok"
+msgstr ""
+
+#: ../data/fileopendialog.glade.h:3 ../data/lmp2.glade.h:14
+msgid "打开文件"
+msgstr ""
+
+#: ../data/fileopendialog.glade.h:4
+msgid "添加到原有列表中"
+msgstr ""
+
+#. Linux媒体播放器
+#: ../data/lmp.glade.h:2
+msgid "Linux媒体播放器"
+msgstr ""
+
+#: ../data/lmp.glade.h:3
+msgid "_帮助"
+msgstr ""
+
+#: ../data/lmp.glade.h:4
+msgid "_文件"
+msgstr ""
+
+#: ../data/lmp.glade.h:5
+msgid "_编辑"
+msgstr ""
+
+#: ../data/lmp.glade.h:6
+msgid "_视图"
+msgstr ""
+
+#: ../data/lmp.glade.h:7 ../data/lmp2.glade.h:5 ../data/lmp3.glade.h:6
+#: ../data/lmplayer3.glade.h:3 ../data/lmplayer_simple.glade.h:3
+msgid "gtk-about"
+msgstr ""
+
+#: ../data/lmp.glade.h:8 ../data/lmp3.glade.h:7
+msgid "gtk-copy"
+msgstr ""
+
+#: ../data/lmp.glade.h:9 ../data/lmp3.glade.h:8
+msgid "gtk-cut"
+msgstr ""
+
+#: ../data/lmp.glade.h:10 ../data/lmp3.glade.h:9
+msgid "gtk-delete"
+msgstr ""
+
+#: ../data/lmp.glade.h:11
+msgid "gtk-new"
+msgstr ""
+
+#: ../data/lmp.glade.h:12 ../data/lmp3.glade.h:10
+msgid "gtk-open"
+msgstr ""
+
+#: ../data/lmp.glade.h:13 ../data/lmp3.glade.h:11
+msgid "gtk-paste"
+msgstr ""
+
+#: ../data/lmp.glade.h:14 ../data/lmp3.glade.h:12 ../data/lmplayer3.glade.h:4
+#: ../data/lmplayer_simple.glade.h:4
+msgid "gtk-quit"
+msgstr ""
+
+#: ../data/lmp.glade.h:15 ../data/property.glade.h:4
+msgid "gtk-save"
+msgstr ""
+
+#: ../data/lmp.glade.h:16
+msgid "gtk-save-as"
+msgstr ""
+
+#: ../data/lmp.glade.h:17
+msgid "下一首"
+msgstr ""
+
+#: ../data/lmp.glade.h:18 ../data/lmp2.glade.h:10
+msgid "停止"
+msgstr ""
+
+#: ../data/lmp.glade.h:19
+msgid "前一首"
+msgstr ""
+
+#: ../data/lmp.glade.h:20 ../data/openurl.glade.h:2
+msgid "打开"
+msgstr ""
+
+#: ../data/lmp.glade.h:21 ../data/lmp2.glade.h:15
+msgid "播放"
+msgstr ""
+
+#: ../data/lmp.glade.h:22 ../data/lmp2.glade.h:16 ../data/lmp3.glade.h:16
+#: ../data/preferencedlg.glade.h:15
+msgid "播放列表"
+msgstr ""
+
+#: ../data/lmp.glade.h:23
+msgid "显示当前媒体的播放进度"
+msgstr ""
+
+#: ../data/lmp.glade.h:24 ../data/lmp2.glade.h:17
+msgid "暂停"
+msgstr ""
+
+#: ../data/lmp.glade.h:25
+msgid "调节音量"
+msgstr ""
+
+#: ../data/lmp.glade.h:26
+msgid "选择播放模式"
+msgstr ""
+
+#: ../data/lmp.glade.h:27
+msgid "随机选择一首播放"
+msgstr ""
+
+#: ../data/lmp.glade.h:28
+msgid ""
+"默认\n"
+"循环\n"
+"循环一首\n"
+"随机\n"
+msgstr ""
+
+#: ../data/lmp2.glade.h:1
+msgid "   歌  词   "
+msgstr ""
+
+#: ../data/lmp2.glade.h:2 ../data/lmplayer.glade.h:2
+msgid "Linux音乐播放器"
+msgstr ""
+
+#: ../data/lmp2.glade.h:3 ../data/lmp3.glade.h:3 ../data/lmplayer3.glade.h:1
+#: ../data/lmplayer_simple.glade.h:1
+msgid "_File"
+msgstr ""
+
+#: ../data/lmp2.glade.h:4 ../data/lmp3.glade.h:4 ../data/lmplayer3.glade.h:2
+#: ../data/lmplayer_simple.glade.h:2 ../src/tray.c:17
+msgid "_Help"
+msgstr ""
+
+#: ../data/lmp2.glade.h:6
+msgid "label"
+msgstr ""
+
+#: ../data/lmp2.glade.h:7
+msgid "上一曲"
+msgstr ""
+
+#: ../data/lmp2.glade.h:8
+msgid "下一曲"
+msgstr ""
+
+#: ../data/lmp2.glade.h:9 ../data/lmplayer3.glade.h:5
+#: ../data/lmplayer_simple.glade.h:5
+msgid "保存播放列表..."
+msgstr ""
+
+#: ../data/lmp2.glade.h:11 ../data/lmplayer.glade.h:7
+#: ../data/lmplayer3.glade.h:7 ../data/lmplayer_simple.glade.h:6
+msgid "打开..."
+msgstr ""
+
+#: ../data/lmp2.glade.h:12 ../data/lmp3.glade.h:14 ../data/lmplayer.glade.h:8
+#: ../data/lmplayer3.glade.h:8 ../data/lmplayer_simple.glade.h:7
+#: ../data/openurl.glade.h:3
+msgid "打开URL..."
+msgstr ""
+
+#: ../data/lmp2.glade.h:13 ../data/lmp3.glade.h:15 ../data/lmplayer.glade.h:9
+msgid "打开列表..."
+msgstr ""
+
+#: ../data/lmp2.glade.h:18
+msgid "次序"
+msgstr ""
+
+#: ../data/lmp2.glade.h:19 ../data/lmplayer.glade.h:13
+msgid "退出"
+msgstr ""
+
+#: ../data/lmp2.glade.h:20
+msgid "随机播放"
+msgstr ""
+
+#: ../data/lmp2.glade.h:21 ../data/lmp3.glade.h:21
+msgid ""
+"默认\n"
+"循环\n"
+"循环一首\n"
+"随机"
+msgstr ""
+
+#: ../data/lmp3.glade.h:1
+msgid "    歌词    "
+msgstr ""
+
+#: ../data/lmp3.glade.h:2
+msgid "_Edit"
+msgstr ""
+
+#: ../data/lmp3.glade.h:5
+msgid "_View"
+msgstr ""
+
+#: ../data/lmp3.glade.h:13 ../data/lmplayer.glade.h:5
+msgid "保存列表..."
+msgstr ""
+
+#: ../data/lmp3.glade.h:17
+msgid "次序: "
+msgstr ""
+
+#: ../data/lmp3.glade.h:18 ../data/lmplayer.glade.h:11
+#: ../data/lmplayer3.glade.h:11
+msgid "歌词"
+msgstr ""
+
+#: ../data/lmp3.glade.h:19
+msgid "没有歌词可以显示！"
+msgstr ""
+
+#: ../data/lmp3.glade.h:20
+msgid "随机"
+msgstr ""
+
+#: ../data/lmplayer.glade.h:1
+msgid "00:00"
+msgstr ""
+
+#: ../data/lmplayer.glade.h:3
+msgid "http://linuxmediaplay.sourceforge.net/"
+msgstr ""
+
+#: ../data/lmplayer.glade.h:4
+msgid "主菜单"
+msgstr ""
+
+#: ../data/lmplayer.glade.h:6 ../data/lmplayer3.glade.h:6
+msgid "媒体库"
+msgstr ""
+
+#: ../data/lmplayer.glade.h:10 ../data/lmplayer3.glade.h:10
+msgid "文件夹"
+msgstr ""
+
+#: ../data/lmplayer.glade.h:12
+msgid "设置..."
+msgstr ""
+
+#: ../data/lmplayer3.glade.h:9 ../data/lmplayer_simple.glade.h:8
+msgid "打开播放列表..."
+msgstr ""
+
+#: ../data/lmplayer3.glade.h:12 ../data/lmplayer_simple.glade.h:9
+#: ../data/preferencedlg2.glade.h:14
+msgid "设置"
+msgstr ""
+
+#: ../data/lyricselectdlg.glade.h:1
+msgid "下载"
+msgstr ""
+
+#: ../data/lyricselectdlg.glade.h:2 ../data/openurl.glade.h:1
+msgid "取消"
+msgstr ""
+
+#: ../data/lyricselectdlg.glade.h:3
+msgid "请选择合适的歌词："
+msgstr ""
+
+#: ../data/lyricselectdlg.glade.h:4
+msgid "请选择歌词"
+msgstr ""
+
+#: ../data/openurl.glade.h:4
+msgid "输入你想要打开的文件的位置："
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:1
+msgid "             歌词目录"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:2
+msgid "             背景色"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:3
+msgid "         歌词颜色"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:4
+msgid "<b>播放列表颜色设置</b>"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:5
+msgid "<b>歌词颜色设置</b>"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:6
+msgid "<b>添加媒体库目录</b>"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:7 ../data/preferencedlg2.glade.h:2
+#: ../data/setting_dialog.glade.h:8
+msgid "gtk-add"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:10 ../data/preferencedlg2.glade.h:5
+#: ../data/setting_dialog.glade.h:11
+msgid "gtk-refresh"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:11 ../data/preferencedlg2.glade.h:6
+#: ../data/setting_dialog.glade.h:12
+msgid "gtk-remove"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:12
+msgid "媒体库管理"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:13
+msgid "带媒体库管理和搜索的界面"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:14
+msgid "当前歌词颜色"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:16
+msgid "未播放的歌词"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:17
+msgid "歌词显示"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:18
+msgid "歌词背景"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:19
+msgid "正在播放的歌词"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:20
+msgid "状态：没有刷新。"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:21
+msgid "界面"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:22
+msgid "简洁界面"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:23
+msgid "请选择界面：(重启软件后生效)"
+msgstr ""
+
+#: ../data/preferencedlg.glade.h:24
+msgid "选择目录"
+msgstr ""
+
+#: ../data/property.glade.h:1
+msgid "<b>普通:</b>"
+msgstr ""
+
+#: ../data/property.glade.h:2
+msgid "<b>音频:</b>"
+msgstr ""
+
+#: ../data/property.glade.h:3
+msgid "gtk-close"
+msgstr ""
+
+#: ../data/property.glade.h:5
+msgid "唱片:"
+msgstr ""
+
+#: ../data/property.glade.h:6
+msgid "声道:"
+msgstr ""
+
+#: ../data/property.glade.h:7
+msgid "年份:"
+msgstr ""
+
+#: ../data/property.glade.h:8
+msgid "持续时间:"
+msgstr ""
+
+#: ../data/property.glade.h:9
+msgid "文件名: "
+msgstr ""
+
+#: ../data/property.glade.h:10
+msgid "未知"
+msgstr ""
+
+#: ../data/property.glade.h:11
+msgid "标题:"
+msgstr ""
+
+#: ../data/property.glade.h:12
+msgid "比特率:"
+msgstr ""
+
+#: ../data/property.glade.h:13
+msgid "注释:"
+msgstr ""
+
+#: ../data/property.glade.h:14
+msgid "流派:"
+msgstr ""
+
+#: ../data/property.glade.h:15
+msgid "编码器:"
+msgstr ""
+
+#: ../data/property.glade.h:16
+msgid "艺术家:"
+msgstr ""
+
+#: ../data/property.glade.h:17
+msgid "采样率:"
+msgstr ""
+
+#: ../data/rename.glade.h:1
+msgid "<b>选择文件名格式:</b>"
+msgstr ""
+
+#: ../data/rename.glade.h:3
+msgid "gtk-media-next"
+msgstr ""
+
+#: ../data/rename.glade.h:4
+msgid "gtk-media-previous"
+msgstr ""
+
+#: ../data/rename.glade.h:6
+msgid "曲名"
+msgstr ""
+
+#: ../data/rename.glade.h:7
+msgid "曲名-演唱者"
+msgstr ""
+
+#: ../data/rename.glade.h:8
+msgid "演唱者-曲名"
+msgstr ""
+
+#: ../data/rename.glade.h:9
+msgid "自定义"
+msgstr ""
+
+#: ../src/audio-metadata.c:57
+msgid "Location"
+msgstr ""
+
+#: ../src/audio-metadata.c:57
+msgid "Locations"
+msgstr ""
+
+#: ../src/audio-metadata.c:58
+msgid "The location of the track (file, internet stream, etc.)"
+msgstr ""
+
+#: ../src/audio-metadata.c:59
+msgid "(Unknown Location)"
+msgstr ""
+
+#: ../src/audio-metadata.c:60
+msgid "Artist"
+msgstr ""
+
+#: ../src/audio-metadata.c:60
+msgid "Artists"
+msgstr ""
+
+#: ../src/audio-metadata.c:60
+msgid "The artist/peformer of the track"
+msgstr ""
+
+#: ../src/audio-metadata.c:61
+msgid "(Unknown Artist)"
+msgstr ""
+
+#: ../src/audio-metadata.c:62
+msgid "Album"
+msgstr ""
+
+#: ../src/audio-metadata.c:62
+msgid "Albums"
+msgstr ""
+
+#: ../src/audio-metadata.c:62
+msgid "The album of the track"
+msgstr ""
+
+#: ../src/audio-metadata.c:63
+msgid "(Unknown Album)"
+msgstr ""
+
+#: ../src/audio-metadata.c:64
+msgid "Title"
+msgstr ""
+
+#: ../src/audio-metadata.c:64
+msgid "Titles"
+msgstr ""
+
+#: ../src/audio-metadata.c:64
+msgid "The title of the current track"
+msgstr ""
+
+#: ../src/audio-metadata.c:65
+msgid "(Unknown Title)"
+msgstr ""
+
+#: ../src/audio-metadata.c:66
+msgid "Track"
+msgstr ""
+
+#: ../src/audio-metadata.c:66
+msgid "Tracks"
+msgstr ""
+
+#: ../src/audio-metadata.c:66
+msgid "The track number of the track"
+msgstr ""
+
+#: ../src/audio-metadata.c:68
+msgid "Time"
+msgstr ""
+
+#: ../src/audio-metadata.c:68
+msgid "Times"
+msgstr ""
+
+#: ../src/audio-metadata.c:68
+msgid "The length of the track"
+msgstr ""
+
+#: ../src/audio-metadata.c:70
+msgid "Genre"
+msgstr ""
+
+#: ../src/audio-metadata.c:70
+msgid "Genres"
+msgstr ""
+
+#: ../src/audio-metadata.c:70
+msgid "The genre (kind of music) of the track"
+msgstr ""
+
+#: ../src/audio-metadata.c:71
+msgid "(Unknown Genre)"
+msgstr ""
+
+#: ../src/audio-metadata.c:72
+msgid "Comment"
+msgstr ""
+
+#: ../src/audio-metadata.c:72
+msgid "Comments"
+msgstr ""
+
+#: ../src/audio-metadata.c:72
+msgid "Comments added to the track"
+msgstr ""
+
+#: ../src/audio-metadata.c:73
+msgid "(Unknown Comment)"
+msgstr ""
+
+#: ../src/audio-metadata.c:74
+msgid "Rating"
+msgstr ""
+
+#: ../src/audio-metadata.c:74
+msgid "Ratings"
+msgstr ""
+
+#: ../src/audio-metadata.c:74
+msgid "The rating of the track"
+msgstr ""
+
+#: ../src/audio-metadata.c:76
+msgid "Date"
+msgstr ""
+
+#: ../src/audio-metadata.c:76
+msgid "Dates"
+msgstr ""
+
+#: ../src/audio-metadata.c:76
+msgid "The date (year) of the track"
+msgstr ""
+
+#: ../src/audio-metadata.c:78
+msgid "MTIME"
+msgstr ""
+
+#: ../src/audio-metadata.c:78
+msgid "MTIMEs"
+msgstr ""
+
+#: ../src/audio-metadata.c:78
+msgid "The modification time of the track"
+msgstr ""
+
+#: ../src/audio-metadata.c:80
+msgid "Bitrate"
+msgstr ""
+
+#: ../src/audio-metadata.c:80
+msgid "Bitrates"
+msgstr ""
+
+#: ../src/audio-metadata.c:80
+msgid "The bitrate of the track"
+msgstr ""
+
+#: ../src/audio-metadata.c:82
+msgid "Samplerate"
+msgstr ""
+
+#: ../src/audio-metadata.c:82
+msgid "Samplerates"
+msgstr ""
+
+#: ../src/audio-metadata.c:82
+msgid "The samplerate of the track"
+msgstr ""
+
+#: ../src/audio-metadata.c:84
+msgid "Play count"
+msgstr ""
+
+#: ../src/audio-metadata.c:84
+msgid "Play counts"
+msgstr ""
+
+#: ../src/audio-metadata.c:85
+msgid "The number of times this track was played"
+msgstr ""
+
+#: ../src/audio-metadata.c:87
+msgid "Volume UDI"
+msgstr ""
+
+#: ../src/audio-metadata.c:87
+msgid "Volume UDIs"
+msgstr ""
+
+#: ../src/audio-metadata.c:88
+msgid "HAL Volume UDI this track resides on"
+msgstr ""
+
+#: ../src/audio-metadata.c:90
+msgid "Device UDI"
+msgstr ""
+
+#: ../src/audio-metadata.c:90
+msgid "Device UDIs"
+msgstr ""
+
+#: ../src/audio-metadata.c:91
+msgid "HAL Device UDI this track resides on"
+msgstr ""
+
+#: ../src/eggtrayicon.c:128
+msgid "Orientation"
+msgstr ""
+
+#: ../src/eggtrayicon.c:129
+msgid "The orientation of the tray."
+msgstr ""
+
+#: ../src/lmp-fileselect.c:34
+msgid "*.mp3 Mp3 audio files"
+msgstr "*.mp3 Mp3音频文件"
+
+#: ../src/lmp-fileselect.c:40
+msgid "*.wma Wma audio files"
+msgstr "*.wma Wma音频文件"
+
+#: ../src/lmp-fileselect.c:45 ../src/lmp-playlistdlg.c:32
+#: ../src/lmp-playlistdlg.c:101
+msgid "*.* All files"
+msgstr "*.* 全部文件"
+
+#: ../src/lmp-fileselect.c:52
+msgid "Add to current playlist"
+msgstr "打开播放列表"
+
+#: ../src/lmp-fileselect.c:98
+msgid "Open files"
+msgstr "打开文件"
+
+#: ../src/lmp-lyricview.c:246
+msgid "lyirc path given does not exist"
+msgstr "给定的歌词目录不存在"
+
+#: ../src/lmp-lyricview.c:428
+msgid "lyric not found, try to load againg later."
+msgstr "歌词没有找到，稍后再试"
+
+#: ../src/lmp-mainmenu.c:32
+msgid "Open Files"
+msgstr "打开文件"
+
+#: ../src/lmp-playlistview.c:232
+msgid "Remove"
+msgstr "移除"
+
+#: ../src/lmp-playlistview.c:233
+msgid "Remove all"
+msgstr "全部移除"
+
+#. menuitem_rename = gtk_menu_item_new_with_label(_("重命名..."));
+#: ../src/lmp-playlistview.c:235
+msgid "Property..."
+msgstr "信息"
+
+#: ../src/lmp.c:37
+msgid "FILE"
+msgstr "文件"
+
+#: ../src/tlmp-skin-menu.c:59
+msgid "Open playlist"
+msgstr "打开播放列表"
+
+#: ../src/tlmp-skin-menu.c:62
+msgid "Play Control"
+msgstr "播放控制"
+
+#: ../src/tlmp-skin-menu.c:63
+msgid "Skins"
+msgstr "皮肤"
+
+#: ../src/tlmp-skin-menu.c:65
+msgid "Play Mode"
+msgstr "播放模式"
+
+#. gtk_tooltips_set_tip (GTK_TOOLTIPS(tooltips), event_box, _("Click to hide or show the main window"), NULL);
+#: ../src/tray-demo.c:120
+msgid "Click to hide or show the main window"
+msgstr "点击图标打开或隐藏主窗口"
+
+#: ../src/tray.c:13
+msgid "_Preferences"
+msgstr ""
+
+#: ../src/tray.c:14
+msgid "Preferences"
+msgstr ""
+
+#: ../src/tray.c:18
+msgid "Help"
+msgstr ""
+
+#. name, stock id
+#: ../src/tray.c:21
+msgid "_Quit"
+msgstr ""
+
+#. label, accelerator
+#: ../src/tray.c:22
+msgid "Quit"
+msgstr ""
+
+#. name, stock id
+#: ../src/tray.c:25
+msgid "_About"
+msgstr ""
+
+#. label, accelerator
+#: ../src/tray.c:26
+msgid "About"
+msgstr "关于"
+
+#: ../src/tlmp-main.c:214 ../src/tlmp-set-state.c:97
+#: ../src/tlmp-skin-player-window.c:120
+msgid "Linux Music Player"
+msgstr "Linux音乐播放器"
+
+#: ../src/tlmp-main.c:370
+msgid ""
+"You have selected different skin. \n"
+"Lmplayer need restart!"
+msgstr ""
+"你选择了不同结构的皮肤. \n"
+"Linux音乐播放器需要重启!"
+
+#: ../src/tlmp-menu-mode.c:48
+msgid "Mode Setting"
+msgstr "设置播放模式"
+
+#. i_default = gtk_radio_menu_item_new_with_label(group, _("Default"));
+#: ../src/tlmp-menu-mode.c:51
+msgid "Default"
+msgstr "默认"
+
+#. group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(i_default));
+#. i_loop = gtk_radio_menu_item_new_with_label(group, _("Loop"));
+#: ../src/tlmp-menu-mode.c:55
+msgid "Loop"
+msgstr "循环"
+
+#. i_repeat_one = gtk_radio_menu_item_new_with_label(group, _("Repeat One"));
+#: ../src/tlmp-menu-mode.c:57
+msgid "Repeat One"
+msgstr "循环一首"
+
+#. i_random = gtk_radio_menu_item_new_with_label(group, _("Random"));
+#: ../src/tlmp-menu-mode.c:59
+msgid "Random"
+msgstr "随机播放"
+
+#: ../src/tlmp-set-state.c:33
+#, c-format
+msgid "Now playing: %s"
+msgstr "正在播放: %s"
+
+#: ../src/tlmp-set-state.c:36
+msgid "Status: play"
+msgstr "状态: 播放"
+
+#: ../src/tlmp-set-state.c:83
+msgid "Status: pause"
+msgstr "状态: 暂停"
+
+#: ../src/tlmp-set-state.c:84
+#, c-format
+msgid "Paused: %s"
+msgstr "暂停: %s"
+
+#: ../src/tlmp-set-state.c:96
+msgid "Status: stop"
+msgstr "状态: 停止"
+
+#: ../src/tlmp-set-state.c:98
+#, fuzzy
+msgid "Linux Music Player: Stop"
+msgstr "Linux音乐播放器"
+
+#: ../data/preferencedlg2.glade.h:1 ../data/setting_dialog.glade.h:1
+msgid "Choose Lyric Folder"
+msgstr "选择歌词目录"
+
+#: ../data/preferencedlg2.glade.h:7
+msgid "page 3"
+msgstr ""
+
+#: ../data/preferencedlg2.glade.h:8
+msgid "到主页上下载更多的皮肤"
+msgstr ""
+
+#: ../data/preferencedlg2.glade.h:9
+msgid "媒体库目录"
+msgstr ""
+
+#: ../data/preferencedlg2.glade.h:10
+msgid "歌词与对应在音频文件为同一目录"
+msgstr ""
+
+#: ../data/preferencedlg2.glade.h:11
+msgid "歌词存放在单独的目录中"
+msgstr ""
+
+#: ../data/preferencedlg2.glade.h:12
+msgid "歌词目录"
+msgstr ""
+
+#: ../data/preferencedlg2.glade.h:13
+msgid "皮肤"
+msgstr ""
+
+#: ../data/preferencedlg2.glade.h:15
+msgid "设置歌词位置"
+msgstr ""
+
+#: ../data/setting_dialog.glade.h:2
+msgid "Lyric folder"
+msgstr "选择歌词目录"
+
+#: ../data/setting_dialog.glade.h:3
+msgid "Lyrics and audio files in response to the same directory"
+msgstr "歌词和音频文件在同一目录中"
+
+#: ../data/setting_dialog.glade.h:4
+msgid "Lyrics stored in a separate directory"
+msgstr "歌词保存于单独的目录中"
+
+#: ../data/setting_dialog.glade.h:5
+msgid "Media Libaray Path"
+msgstr "媒体库目录"
+
+#: ../data/setting_dialog.glade.h:6
+msgid "Save to or load lyric from:"
+msgstr "歌词目录设置"
+
+#: ../data/setting_dialog.glade.h:7
+msgid "Setting Dialog"
+msgstr "设置"
+
+#: ../src/lmp-playlistdlg.c:27 ../src/lmp-playlistdlg.c:96
+msgid "*.plt Lmplayer playlist file"
+msgstr "*.plt Lmplayer播放列表文件"
+
+#: ../src/tlmp-skin-player-window.c:100
+msgid "Status: Play"
+msgstr "状态: 播放"
+
+#: ../src/tlmp-skin-player-window.c:110
+msgid "Status: Pause"
+msgstr "状态: 暂停"
+
+#: ../src/tlmp-skin-player-window.c:119 ../src/tlmp-skin-player-window.c:213
+msgid "Status: Stop"
+msgstr "状态: 停止"
+
+#: ../src/tlmp-skin-player-window.c:181
+#, c-format
+msgid "Title: %s"
+msgstr "标题: %s"
+
+#: ../src/lmp-lyric-download.c:256
+#, c-format
+msgid "no path or filename given.\n"
+msgstr "没有给出目录或文件名。\n"
+
+#: ../src/lmp-lyric-download.c:262
+#, c-format
+msgid "no artist or title given.\n"
+msgstr "没有给出演唱者或标题。\n"
+
+#: ../src/tlmp-xmlskin.c:137 ../src/tlmp-xmlskin.c:805
+#: ../src/tlmp-xmlskin.c:888 ../src/tlmp-xmlskin.c:946
+#, c-format
+msgid "Unable to parse file: %s\n"
+msgstr "不能解析文件: %s\n"
+
+#: ../src/lmp-about-dialog.c:12
+msgid "KelvenXu <kelvenxu@gmail.com>"
+msgstr ""
+
+#: ../src/lmp-about-dialog.c:13
+msgid "Echo <liushuang520@gmail.com>"
+msgstr ""
+
+#: ../src/lmp-about-dialog.c:16
+msgid "kelvenxu\t <kelvenxu@gmail.com>"
+msgstr ""
+
+#: ../src/lmp-about-dialog.c:21
+msgid "GNU General Public License Version 3"
+msgstr "GNU通用公共许可证第三版"
+
+#: ../src/lmp-about-dialog.c:25
+msgid ""
+"Concern entertainment experience on Linux, Create entertainment platform "
+"under Linux!"
+msgstr "关注Linux娱乐体验，打造Linux娱乐平台！"
+
+#: ../src/lmp-about-dialog.c:30
+msgid "Copyleft © 2007-2008 lmplayer"
+msgstr ""
+
+#: ../src/lmp-about-dialog.c:39
+msgid "Welcome to Project Home Page"
+msgstr "欢迎访问项目主页"
+
+#: ../src/lmp-about-dialog.c:40
+msgid "http://www.lmplayer.org/"
+msgstr ""
