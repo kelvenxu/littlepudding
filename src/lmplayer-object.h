@@ -45,6 +45,7 @@ G_BEGIN_DECLS
 #define LMPLAYER_OBJECT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), LMPLAYER_TYPE_OBJECT, LmplayerObjectClass))
 
 typedef struct _LmplayerObject			LmplayerObject;
+typedef struct _LmplayerObject			Lmplayer;
 typedef struct _LmplayerObjectClass		LmplayerObjectClass;
 typedef struct _LmplayerObjectPrivate	LmplayerObjectPrivate;
 
