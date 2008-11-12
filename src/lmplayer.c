@@ -62,9 +62,6 @@ static gboolean lmplayer_action_open_files (LmplayerObject *lmplayer, char **lis
 static gboolean lmplayer_action_open_dialog (LmplayerObject *lmplayer, const char *path, gboolean play);
 static gboolean lmplayer_action_open_files_list (LmplayerObject *lmplayer, GSList *list);
 
-static void lmplayer_notebook_add_playlist_tab(LmplayerObject *lmplayer, char *filename, char *label);
-static void lmplayer_notebook_save_playlists(LmplayerObject *lmplayer);
-static void lmplayer_notebook_load_playlists(LmplayerObject *lmplayer);
 
 gboolean seek_slider_pressed_cb (GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer);
 void seek_slider_changed_cb (GtkAdjustment *adj, LmplayerObject *lmplayer);
@@ -451,7 +448,8 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
 
-	lmplayer_notebook_save_playlists(lmplayer);
+	lmplayer_playlist_save_current_playlist(lmplayer->playlist, lmplayer->pls);
+
 	/* Exit forcefully if we can't do the shutdown in 10 seconds */
 	g_thread_create ((GThreadFunc) lmplayer_action_wait_force_exit,
 			 NULL, FALSE, NULL);
@@ -805,14 +803,7 @@ playlist_changed_cb (GtkWidget *playlist, LmplayerObject *lmplayer)
 {
 	char *mrl, *subtitle;
 
-	//FIXME: 
-	return;
-
-	lmplayer_debug("playlist_changed_cb");
-	int id = gtk_notebook_get_current_page(GTK_NOTEBOOK(lmplayer->notebook));
-	lmplayer->playlist = LMPLAYER_PLAYLIST (gtk_notebook_get_nth_page( GTK_NOTEBOOK(lmplayer->notebook), id));
-	//update_buttons (lmplayer);
-	mrl = lmplayer_playlist_get_current_mrl (lmplayer->playlist, &subtitle);
+	mrl = lmplayer_playlist_get_current_mrl(lmplayer->playlist, &subtitle);
 
 	if (mrl == NULL)
 		return;
@@ -1065,44 +1056,7 @@ playlist_active_name_changed_cb (LmplayerPlaylist *playlist, LmplayerObject *lmp
 static void
 playlist_item_activated_cb (GtkWidget *playlist, LmplayerObject *lmplayer)
 {
-	char *mrl, *subtitle;
-	gint i, n, id;
-	LmplayerPlaylist *pl = NULL;
-
-	lmplayer_debug("playlist_item_activated_cb\n");
-
-	id = gtk_notebook_get_current_page(GTK_NOTEBOOK(lmplayer->notebook));
-	n = gtk_notebook_get_n_pages(GTK_NOTEBOOK(lmplayer->notebook));
-	//playlist = LMPLAYER_PLAYLIST(gtk_notebook_get_nth_page( GTK_NOTEBOOK(lmplayer->notebook), id));
-	//lmplayer_action_stop(lmplayer);
-	lmplayer->playlist = LMPLAYER_PLAYLIST(playlist);
-
-	//update_buttons (lmplayer);
-	mrl = lmplayer_playlist_get_current_mrl (lmplayer->playlist, &subtitle);
-
-	if (mrl == NULL)
-		return;
-
-	if (lmplayer_playlist_get_playing (lmplayer->playlist) == LMPLAYER_PLAYLIST_STATUS_NONE)
-	{
-		lmplayer_debug("ready to play");
-		lmplayer_action_set_mrl_and_play (lmplayer, mrl, subtitle);
-	}
-
-	lmplayer_debug("set playlist status to none");
-	for(i = 0; i < n; ++i)
-	{
-		if(i != id)
-		{
-			pl = LMPLAYER_PLAYLIST(gtk_notebook_get_nth_page(GTK_NOTEBOOK(lmplayer->notebook), i));
-			if(LMPLAYER_IS_PLAYLIST(pl))
-				lmplayer_playlist_set_playing(pl, LMPLAYER_PLAYLIST_STATUS_NONE);
-		}
-	}
-
-	lmplayer_debug("ok");
-	g_free (mrl);
-	g_free (subtitle);
+	lmplayer_action_seek(lmplayer, 0);
 }
 
 static void
@@ -1181,17 +1135,23 @@ playlist_shuffle_toggled_cb (LmplayerPlaylist *playlist, gboolean shuffle, Lmpla
 	//		NULL, NULL, totem);
 }
 
-static void lmplayer_notebook_add_playlist_tab(LmplayerObject *lmplayer, gchar *filename, gchar *label)
+static void playlist_widget_setup(LmplayerObject *lmplayer)
 {
-	gchar *label_string;
-	static int id = 0;
+	GtkHBox *hbox;
 	LmplayerPlaylist *playlist = NULL;
 
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
 
 	playlist = LMPLAYER_PLAYLIST(lmplayer_playlist_new());
+	lmplayer->playlist = playlist;
 
-	g_return_if_fail(LMPLAYER_IS_PLAYLIST(playlist));
+	if(lmplayer->playlist == NULL)
+		lmplayer_action_exit(lmplayer);
+
+	hbox = GTK_HBOX(gtk_builder_get_object(lmplayer->xml, "lmplayer_playlist_hbox"));
+	gtk_container_add(GTK_CONTAINER(hbox), GTK_WIDGET(lmplayer->playlist));
+
+	gtk_widget_show_all(GTK_WIDGET(lmplayer->playlist));
 
 	g_signal_connect (G_OBJECT (playlist), "active-name-changed",
 			G_CALLBACK (playlist_active_name_changed_cb), lmplayer);
@@ -1207,217 +1167,7 @@ static void lmplayer_notebook_add_playlist_tab(LmplayerObject *lmplayer, gchar *
 			G_CALLBACK (playlist_shuffle_toggled_cb), lmplayer);
 	g_signal_connect (G_OBJECT (playlist), "subtitle-changed",
 			G_CALLBACK (playlist_subtitle_changed_cb), lmplayer);
-
-	if(label != NULL)
-	{
-		g_object_set_data (G_OBJECT (playlist), "playlist-name", g_strdup(label));
-	}
-	else
-	{
-		label_string = g_strdup_printf(_("Default%d"), ++id);
-		g_object_set_data (G_OBJECT (playlist), "playlist-name", label_string);
-	}
-
-	if(filename != NULL)
-	{
-		gchar *mrl = g_filename_to_uri(filename, NULL, NULL);
-		lmplayer_debug("mrl: %s", mrl);
-		lmplayer_playlist_add_mrl(playlist, mrl, NULL);
-		g_free(mrl);
-	}
-
-	gint tab_n = gtk_notebook_get_n_pages(GTK_NOTEBOOK(lmplayer->notebook));
-	lmplayer_notebook_add_tab(lmplayer->notebook, GTK_WIDGET (playlist), tab_n, TRUE);
-
-	gtk_widget_show_all(GTK_WIDGET(playlist));
-	lmplayer_playlist_set_playing(playlist, LMPLAYER_PLAYLIST_STATUS_NONE);
 }
-
-static void lmplayer_notebook_save_playlists(LmplayerObject *lmplayer)
-{
-	xmlDocPtr doc;
-	xmlNodePtr root_node, node;
-	LmplayerPlaylist *playlist = NULL;
-	gchar *label = NULL;
-	gchar *path = NULL;
-	gchar filename[256];
-	int i;
-
-	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
-	g_return_if_fail(GTK_IS_NOTEBOOK(lmplayer->notebook));
-
-	doc = xmlNewDoc(BAD_CAST "1.0");
-	root_node = xmlNewNode(NULL, BAD_CAST "playlists");
-
-	xmlDocSetRootElement(doc, root_node);
-	
-	int tab_n = gtk_notebook_get_n_pages(GTK_NOTEBOOK(lmplayer->notebook));
-
-	for(i = 0; i < tab_n; ++i)
-	{
-		playlist = LMPLAYER_PLAYLIST(gtk_notebook_get_nth_page(GTK_NOTEBOOK(lmplayer->notebook), i));
-		lmplayer_playlist_get_current_mrl(playlist, NULL);
-		
-		if(!LMPLAYER_IS_PLAYLIST(playlist))
-			continue;
-
-		label = g_object_get_data(G_OBJECT(playlist), "playlist-name");
-
-		lmplayer_debug("label: %s", label);
-
-		path = g_path_get_dirname(lmplayer->pls);
-		g_sprintf(filename, "%s/pl%02d.pls", path, i);
-		lmplayer_debug("filename= %s", filename);
-		//g_free(path);
-
-		lmplayer_playlist_save_current_playlist(playlist, filename);
-
-		node = xmlNewChild(root_node, NULL, BAD_CAST "tab", NULL);
-
-		if(label != NULL)
-			xmlNewProp(node, BAD_CAST "label", BAD_CAST label);
-		else
-			xmlNewProp(node, BAD_CAST "label", BAD_CAST " ");
-
-		xmlNewProp(node, BAD_CAST "filename", BAD_CAST filename);
-
-		lmplayer_debug(" ");
-		xmlAddChild(root_node, node);
-
-		//if(label != NULL)
-		//	g_free(label);
-	}
-
-	xmlSaveFormatFileEnc(lmplayer->pls, doc, "UTF-8", 1);
-	xmlFreeDoc(doc);
-	xmlCleanupParser();
-}
-
-static void lmplayer_notebook_load_playlists(LmplayerObject *lmplayer)
-{
-	xmlDoc* doc = NULL;
-	xmlNode* root_node = NULL;
-	xmlNode* cur_node = NULL;
-
-	gchar *filename = NULL;
-	gchar *label = NULL;
-
-	gboolean find = FALSE;
-
-	if(lmplayer->pls == NULL)
-	{
-		lmplayer_notebook_add_playlist_tab(lmplayer, NULL, NULL);
-		return;
-	}
-
-	if(!g_file_test(lmplayer->pls, G_FILE_TEST_EXISTS))
-	{
-		lmplayer_notebook_add_playlist_tab(lmplayer, NULL, NULL);
-		return;
-	}
-
-	doc = xmlReadFile(lmplayer->pls, "UTF-8", 0);
-	if(doc == NULL)
-	{
-		lmplayer_notebook_add_playlist_tab(lmplayer, NULL, NULL);
-		return;
-	}
-
-	root_node = xmlDocGetRootElement(doc);
-	if(root_node == NULL)
-	{
-		lmplayer_notebook_add_playlist_tab(lmplayer, NULL, NULL);
-		return;
-	}
-
-	for(cur_node = root_node->children; cur_node; cur_node = cur_node->next)
-	{
-		if(cur_node->type == XML_ELEMENT_NODE)
-		{
-			label = (gchar *)xmlGetProp(cur_node, (const xmlChar*)"label");
-			filename = (gchar*)xmlGetProp(cur_node, (const xmlChar*)"filename");
-			lmplayer_debug("label: %s, filename: %s", label, filename);
-			
-			lmplayer_notebook_add_playlist_tab(lmplayer, filename, label);
-
-			find = TRUE;
-		}
-	}
-
-	xmlFreeDoc(doc);
-
-	if(!find)
-	{
-		lmplayer_notebook_add_playlist_tab(lmplayer, NULL, NULL);
-	}
-}
-
-static void notebook_tab_close_cb(LmplayerNotebook *notebook, GtkWidget *tab, LmplayerObject *lmplayer)
-{
-	if (gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook)) == 1)
-		return;
-
-	if (LMPLAYER_PLAYLIST (tab) == lmplayer->playlist)
-	{
-		lmplayer_action_stop(lmplayer);
-	}
-
-	lmplayer_notebook_remove_tab(notebook, tab);
-}
-
-static gint notebook_clicked_cb(GtkWidget *widget, GdkEvent *event, LmplayerObject *lmplayer)
-{
-	GdkEventButton *event_button;
-	if(event->type == GDK_BUTTON_PRESS)
-	{
-		event_button = (GdkEventButton *) event;
-		if(event_button->button == 3)
-		{
-			/*
-			GtkWidget *menu = create_notebook_menu(GTK_NOTEBOOK(widget));
-			gtk_widget_show_all(menu);
-			gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
-					event_button->button, event_button->time);
-			*/
-			return TRUE;
-		}
-	}
-	else if (event->type == GDK_2BUTTON_PRESS)
-	{
-		lmplayer_notebook_add_playlist_tab(lmplayer, NULL, NULL);
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-static void
-notebook_widget_setup (LmplayerObject *lmplayer)
-{
-	GtkHBox *hbox;
-	lmplayer_debug(" ");
-
-	lmplayer->notebook = LMPLAYER_NOTEBOOK(lmplayer_notebook_new());
-	if (lmplayer->notebook == NULL)
-		lmplayer_action_exit (lmplayer);
-
-	hbox = GTK_HBOX(gtk_builder_get_object(lmplayer->xml, "lmplayer_playlist_hbox"));
-	gtk_container_add(GTK_CONTAINER(hbox), GTK_WIDGET(lmplayer->notebook));
-
-	g_signal_connect(G_OBJECT (lmplayer->notebook), "tab-close-request",
-			G_CALLBACK (notebook_tab_close_cb), lmplayer);
-	g_signal_connect(G_OBJECT (lmplayer->notebook), "button_press_event",
-			G_CALLBACK (notebook_clicked_cb), lmplayer);
-
-	//TODO: load playlist list from file
-	//lmplayer_notebook_add_playlist_tab(lmplayer, NULL, NULL);
-
-	int id = gtk_notebook_get_current_page(GTK_NOTEBOOK(lmplayer->notebook));
-	lmplayer->playlist = LMPLAYER_PLAYLIST(gtk_notebook_get_nth_page(GTK_NOTEBOOK(lmplayer->notebook), id));
-	
-	gtk_widget_show_all(GTK_WIDGET(lmplayer->notebook));
-}
-
 
 static void lmplayer_action_error_and_exit(const char *title,
 		const char *reason, LmplayerObject *lmplayer)
@@ -1427,15 +1177,6 @@ static void lmplayer_action_error_and_exit(const char *title,
 	lmplayer_action_exit (lmplayer);
 }
 
-static gboolean 
-load_playlist_cb(LmplayerObject *lmplayer)
-{
-	g_return_val_if_fail(LMPLAYER_IS_OBJECT(lmplayer), FALSE);
-	lmplayer_window_set_waiting_cursor(lmplayer->win->window);
-	lmplayer_notebook_load_playlists(lmplayer);
-	gdk_window_set_cursor(lmplayer->win->window, NULL);
-	return FALSE;
-}
 
 static gboolean 
 main_window_destroy_cb (GtkWidget *widget, GdkEvent *event, LmplayerObject *lmplayer)
@@ -1915,7 +1656,8 @@ main (int argc, char* argv[])
 	lmplayer_ui_manager_setup(lmplayer);
 
 	lmplayer_debug(" ");
-	notebook_widget_setup(lmplayer);
+	//notebook_widget_setup(lmplayer);
+	playlist_widget_setup(lmplayer);
 
 	lmplayer_debug(" ");
 	video_widget_create(lmplayer);
@@ -1964,12 +1706,15 @@ main (int argc, char* argv[])
 	gchar *cfg_path = g_build_path(G_DIR_SEPARATOR_S, home, ".lmplayer", NULL);
 	if(cfg_path != NULL)
 	{
-		lmplayer->pls = g_build_filename(cfg_path, "default_playlist.xml", NULL);
+		lmplayer->pls = g_build_filename(cfg_path, "default_playlist.pls", NULL);
 	}
 
-	g_timeout_add(500, (GSourceFunc)load_playlist_cb, lmplayer);
+	gchar *uri = g_filename_to_uri(lmplayer->pls, NULL, NULL);
+	lmplayer_playlist_add_mrl(lmplayer->playlist, uri, NULL);
+	g_free(uri);
 	gtk_widget_show_all(lmplayer->win);
 	
 	gtk_main();
 	return 0;
 }
+

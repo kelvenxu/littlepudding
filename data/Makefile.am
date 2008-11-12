@@ -14,8 +14,7 @@ stuff_DATA=\
 		   lmplayer.png\
 		   lmplayer-16x16.png\
 		   lmplayer-24x24.png\
-		   lmplayer-32x32.png\
-		   lmp.xpm
+		   lmplayer-32x32.png
 
 desktopdir=$(datadir)/applications
 desktop_in_files=lmplayer.desktop.in.in

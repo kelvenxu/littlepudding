@@ -601,6 +601,8 @@ data/icons/hicolor/32x32/Makefile
 data/icons/hicolor/32x32/apps/Makefile
 data/icons/hicolor/48x48/Makefile
 data/icons/hicolor/48x48/apps/Makefile
+data/icons/hicolor/scalable/Makefile
+data/icons/hicolor/scalable/apps/Makefile
 tests/Makefile
 po/Makefile.in
 ])
