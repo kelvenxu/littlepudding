@@ -24,6 +24,7 @@
 
 #include "lmplayer-object.h"
 #include "lmplayerobject-marshal.h"
+#include "lmplayer-debug.h"
 
 enum {
 	PROP_0,
@@ -208,6 +209,7 @@ void
 lmplayer_file_opened (LmplayerObject *lmplayer,
 		   const char *mrl)
 {
+	lmplayer_debug(" ");
 	g_signal_emit (G_OBJECT (lmplayer),
 		       lmplayer_table_signals[FILE_OPENED],
 		       0, mrl);

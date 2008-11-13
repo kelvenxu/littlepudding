@@ -36,6 +36,7 @@
 #include "lmplayer-interface.h"
 #include "video-utils.h"
 #include "debug.h"
+#include "lmplayer-debug.h"
 
 #define PL_LEN (gtk_tree_model_iter_n_children (playlist->priv->model, NULL))
 
@@ -383,6 +384,7 @@ drop_cb (GtkWidget        *widget,
 	list = g_uri_list_extract_uris ((char *)data->data);
 	file_list = NULL;
 
+	lmplayer_debug(" ");
 	for (i = 0; list[i] != NULL; i++) {
 		/* We get the list in the wrong order here,
 		 * so when we insert the files at the same position
@@ -669,6 +671,7 @@ button_release_cb (GtkWidget *treeview, GdkEventButton *event, gpointer data)
 {
 	LmplayerPlaylist *playlist = (LmplayerPlaylist *)data;
 
+	lmplayer_debug(" ");
 	if (!playlist->priv->drag_started && playlist->priv->drop_disabled)
 	{
 		playlist->priv->drop_disabled = FALSE;
@@ -689,6 +692,7 @@ drag_begin_cb (GtkWidget *treeview, GdkDragContext *context, gpointer data)
 {
 	LmplayerPlaylist *playlist = (LmplayerPlaylist *)data;
 
+	lmplayer_debug(" ");
 	playlist->priv->drag_started = TRUE;
 
 	return;
