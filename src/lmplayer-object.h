@@ -29,6 +29,7 @@
 #include <gio/gio.h>
 #include <gconf/gconf-client.h>
 #include <gtk/gtk.h>
+#include <libskin/skin.h>
 #include "bacon-message-connection.h"
 #include <totem-pl-parser.h>
 #include "bacon-video-widget.h"
@@ -63,8 +64,16 @@ struct _LmplayerObject
 	//gpointer player;
 	//gpointer ui;
 
-	GtkBuilder *xml;
-	GtkWidget *win;
+	SkinArchive *ar;
+	SkinBuilder *builder;
+
+	//GtkBuilder *xml;
+	SkinWindow *win;
+	SkinWindow *pl_win;
+	SkinWindow *lyric_win;
+	SkinWindow *eq_win;
+	SkinWindow *mini_win;
+
 	LmplayerNotebook *notebook;
 	BaconVideoWidget *bvw;
 	GtkWidget *statusbar;
@@ -75,19 +84,20 @@ struct _LmplayerObject
 	//GtkWidget *
 	
 	/* Volume */
-	GtkWidget *volume;
+	GtkWidget *volume; //FIXME:
 	gboolean volume_sensitive;
 
-	GtkActionGroup *main_action_group;
-	GtkUIManager *ui_manager;
+	//GtkActionGroup *main_action_group;
+	//GtkUIManager *ui_manager;
 
 	BaconMessageConnection* conn;
 	GVolumeMonitor* monitor;
 	gboolean drives_changed;
 
 	/* Seek */
-	GtkWidget *seek;
-	GtkAdjustment *seekadj;
+	//GtkWidget *seek;
+	//GtkAdjustment *seekadj;
+	SkinHScale *seek;
 	gboolean seek_lock;
 	gboolean seekable;
 

@@ -45,6 +45,7 @@ GNOMEICON_REQS=2.15.90
 DBUS_REQS=0.61
 VALA_REQS=0.1.6
 TOTEM_PLPARSER_REQS=2.23.91
+LIBSKIN_REQS=0.1.0
 
 LMPLAYER_VERSION_MAJOR=lmplayer_version_major
 LMPLAYER_VERSION_MINOR=lmplayer_version_minor
@@ -278,6 +279,7 @@ if test x$ENABLE_GTK = "xno" ; then
 					  gnome-icon-theme >= $GNOMEICON_REQS 
 					  totem-plparser >= $TOTEM_PLPARSER_REQS
 					  gmodule-2.0 
+					  libskin >= $LIBSKIN_REQS
 					  $ISO_CODES)
 	HAVE_GNOME=yes
 else

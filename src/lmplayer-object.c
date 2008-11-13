@@ -56,7 +56,7 @@ static void lmplayer_object_finalize(GObject *lmplayer);
 
 static int lmplayer_table_signals[LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (LmplayerObject, lmplayer_object, G_TYPE_OBJECT)
+G_DEFINE_TYPE(LmplayerObject, lmplayer_object, G_TYPE_OBJECT);
 
 /*
 #define LMPLAYER_OBJECT_GET_PRIVATE(o)\
@@ -253,7 +253,7 @@ lmplayer_get_ui_manager(LmplayerObject *lmplayer)
 {
 	g_return_val_if_fail(LMPLAYER_IS_OBJECT(lmplayer), NULL);
 
-	return lmplayer->ui_manager;
+	//return lmplayer->ui_manager;
 }
 
 GtkWidget *

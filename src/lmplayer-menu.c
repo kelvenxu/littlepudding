@@ -45,8 +45,8 @@ void previous_music_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 
 void lmplayer_ui_manager_setup (LmplayerObject *lmplayer)
 {
-	lmplayer->main_action_group = GTK_ACTION_GROUP (gtk_builder_get_object (lmplayer->xml, "main-action-group"));
+	//lmplayer->main_action_group = GTK_ACTION_GROUP (gtk_builder_get_object (lmplayer->xml, "main-action-group"));
 
-	lmplayer->ui_manager = GTK_UI_MANAGER (gtk_builder_get_object (lmplayer->xml, "lmplayer-ui-manager"));
+	//lmplayer->ui_manager = GTK_UI_MANAGER (gtk_builder_get_object (lmplayer->xml, "lmplayer-ui-manager"));
 }
 

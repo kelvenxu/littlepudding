@@ -80,7 +80,8 @@ lmplayer_SOURCES = 					\
 	lmplayer-encode.c lmplayer-encode.h\
 	lmplayer-debug.c lmplayer-debug.h \
 	lmplayer-utils.c lmplayer-utils.h \
-	lmplayer-uri.c lmplayer-uri.h
+	lmplayer-uri.c lmplayer-uri.h\
+	lmplayer-skin.c lmplayer-skin.h
 
 lmplayer_CPPFLAGS = \
 	-I$(top_srcdir)/		\

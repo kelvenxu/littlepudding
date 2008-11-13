@@ -44,6 +44,7 @@
 #include "lmplayer-utils.h"
 #include "lmplayer-debug.h"
 #include "lmplayer-statusbar.h"
+#include "lmplayer-skin.h"
 
 #define REWIND_OR_PREVIOUS 4000
 
@@ -278,10 +279,10 @@ play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 		return;
 	}
 
-	action = gtk_action_group_get_action(lmplayer->main_action_group, "play");
-	g_object_set (G_OBJECT (action),
-			"tooltip", _(tip),
-			"stock-id", id, NULL);
+	//action = gtk_action_group_get_action(lmplayer->main_action_group, "play");
+	//g_object_set (G_OBJECT (action),
+	//		"tooltip", _(tip),
+	//		"stock-id", id, NULL);
 
 	proxies = gtk_action_get_proxies (action);
 	for (l = proxies; l != NULL; l = l->next) 
@@ -309,14 +310,13 @@ lmplayer_action_play (LmplayerObject *lmplayer)
 
 	
 	retval = bacon_video_widget_play (lmplayer->bvw,  &err);
-	play_pause_set_label(lmplayer, retval ? STATE_PLAYING : STATE_STOPPED);
+	//play_pause_set_label(lmplayer, retval ? STATE_PLAYING : STATE_STOPPED);
 
 	if (retval != FALSE)
 		return;
 
 	disp = lmplayer_uri_escape_for_display (lmplayer->mrl);
 	msg = g_strdup_printf(_("LmplayerObject could not play '%s'."), disp);
-	lmplayer_debug("%s", msg);
 	g_free (disp);
 
 	lmplayer_action_error (msg, err->message, lmplayer);
@@ -377,7 +377,7 @@ void
 lmplayer_action_stop (LmplayerObject *lmplayer)
 {
 	bacon_video_widget_stop (lmplayer->bvw);
-	play_pause_set_label (lmplayer, STATE_STOPPED);
+	//play_pause_set_label (lmplayer, STATE_STOPPED);
 }
 
 /**
@@ -398,13 +398,11 @@ lmplayer_action_play_pause (LmplayerObject *lmplayer)
 		mrl = lmplayer_playlist_get_current_mrl (lmplayer->playlist, &subtitle);
 		if (mrl == NULL) 
 		{
-			lmplayer_debug("stop ");
-			play_pause_set_label (lmplayer, STATE_STOPPED);
+			//play_pause_set_label (lmplayer, STATE_STOPPED);
 			return;
 		} 
 		else 
 		{
-			lmplayer_debug("play ");
 			lmplayer_action_set_mrl_and_play (lmplayer, mrl, subtitle);
 			g_free (mrl);
 			g_free (subtitle);
@@ -415,12 +413,12 @@ lmplayer_action_play_pause (LmplayerObject *lmplayer)
 	if (bacon_video_widget_is_playing (lmplayer->bvw) == FALSE)
 	{
 		bacon_video_widget_play (lmplayer->bvw, NULL);
-		play_pause_set_label (lmplayer, STATE_PLAYING);
+		//play_pause_set_label (lmplayer, STATE_PLAYING);
 	} 
 	else 
 	{
 		bacon_video_widget_pause (lmplayer->bvw);
-		play_pause_set_label (lmplayer, STATE_PAUSED);
+		//play_pause_set_label (lmplayer, STATE_PAUSED);
 	}
 }
 
@@ -437,7 +435,7 @@ lmplayer_action_pause(LmplayerObject *lmplayer)
 	if (bacon_video_widget_is_playing(lmplayer->bvw) != FALSE) 
 	{
 		bacon_video_widget_pause(lmplayer->bvw);
-		play_pause_set_label(lmplayer, STATE_PAUSED);
+		//play_pause_set_label(lmplayer, STATE_PAUSED);
 	}
 }
 
@@ -446,31 +444,28 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 {
 	GdkDisplay *display = NULL;
 
+	lmplayer_debug(" ");
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
 
-	lmplayer_playlist_save_current_playlist(lmplayer->playlist, lmplayer->pls);
+	if(lmplayer->playlist && lmplayer->pls)
+		lmplayer_playlist_save_current_playlist(lmplayer->playlist, lmplayer->pls);
 
 	/* Exit forcefully if we can't do the shutdown in 10 seconds */
 	g_thread_create ((GThreadFunc) lmplayer_action_wait_force_exit,
 			 NULL, FALSE, NULL);
-
-	lmplayer_debug(" ");
 	
 	if (gtk_main_level () > 0)
 		gtk_main_quit ();
 
-	lmplayer_debug(" ");
 	if (lmplayer == NULL)
 		exit (0);
 
-	lmplayer_debug(" ");
 	if (lmplayer->win != NULL) 
 	{
-		gtk_widget_hide (lmplayer->win);
-		display = gtk_widget_get_display (lmplayer->win);
+		gtk_widget_hide(GTK_WIDGET(lmplayer->win));
+		display = gtk_widget_get_display(GTK_WIDGET(lmplayer->win));
 	}
 
-	lmplayer_debug(" ");
 	if (display != NULL)
 		gdk_display_sync (display);
 
@@ -532,12 +527,12 @@ update_mrl_label (LmplayerObject *lmplayer, const char *name)
 	} 
 	else 
 	{
-		lmplayer_statusbar_set_time_and_length(LMPLAYER_STATUSBAR
-				(lmplayer->statusbar), 0, 0);
-		lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar),
-				_("Stopped"));
+		//lmplayer_statusbar_set_time_and_length(LMPLAYER_STATUSBAR
+		//		(lmplayer->statusbar), 0, 0);
+		//lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar),
+		//		_("Stopped"));
 
-		g_object_notify(G_OBJECT(lmplayer), "stream-length");
+		//g_object_notify(G_OBJECT(lmplayer), "stream-length");
 
 		/* Update the mrl label */
 		//totem_fullscreen_set_title (totem->fs, NULL);
@@ -562,7 +557,7 @@ lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
 		lmplayer->mrl = NULL;
 		bacon_video_widget_close (lmplayer->bvw);
 		lmplayer_file_closed(lmplayer);
-		play_pause_set_label(lmplayer, LMPLAYER_PLAYLIST_STATUS_NONE);
+		//play_pause_set_label(lmplayer, LMPLAYER_PLAYLIST_STATUS_NONE);
 	}
 
 	if (mrl == NULL)
@@ -571,7 +566,7 @@ lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
 
 		retval = FALSE;
 
-		play_pause_set_label (lmplayer, LMPLAYER_PLAYLIST_STATUS_NONE);
+		//play_pause_set_label (lmplayer, LMPLAYER_PLAYLIST_STATUS_NONE);
 
 		/* Play/Pause */
 		//lmplayer_action_set_sensitivity ("play", FALSE);
@@ -596,7 +591,7 @@ lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
 
 		/* Set the logo */
 		//bacon_video_widget_set_logo_mode (lmplayer->bvw, TRUE);
-		update_mrl_label (lmplayer, NULL);
+		//update_mrl_label (lmplayer, NULL);
 	} 
 	else 
 	{
@@ -611,11 +606,11 @@ lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
 			autoload_sub = lmplayer_uri_get_subtitle_uri (mrl);
 
 		lmplayer_debug("bacon_video_widget_open_with_subtitle: mrl=%s", mrl);
-		lmplayer_window_set_waiting_cursor (lmplayer->win->window);
+		lmplayer_window_set_waiting_cursor (GTK_WIDGET(lmplayer->win)->window);
 		retval = bacon_video_widget_open_with_subtitle (lmplayer->bvw, mrl,
 								subtitle ? subtitle : autoload_sub, &err);
 		g_free (autoload_sub);
-		gdk_window_set_cursor (lmplayer->win->window, NULL);
+		gdk_window_set_cursor (GTK_WIDGET(lmplayer->win)->window, NULL);
 		lmplayer->mrl = g_strdup (mrl);
 
 		/* Play/Pause */
@@ -637,12 +632,14 @@ lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
 		//lmplayer_action_set_sensitivity ("clear-playlist", retval);
 
 		/* Set the playlist */
-		play_pause_set_label(lmplayer, retval ? STATE_PAUSED : STATE_STOPPED);
+		//play_pause_set_label(lmplayer, retval ? STATE_PAUSED : STATE_STOPPED);
 
+		lmplayer_debug(" ");
 		if (retval == FALSE && warn != FALSE)
 		{
 			char *msg, *disp;
 
+			lmplayer_debug(" ");
 			lmplayer_debug(" ");
 			disp = lmplayer_uri_escape_for_display (lmplayer->mrl);
 			msg = g_strdup_printf(_("Lmplayer could not play '%s'."), disp);
@@ -671,6 +668,7 @@ lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
 		{
 			lmplayer_debug(" ");
 			lmplayer_file_opened (lmplayer, lmplayer->mrl);
+			lmplayer_debug(" ");
 		}
 	}
 	//update_buttons (lmplayer);
@@ -830,7 +828,7 @@ lmplayer_action_open_files_list (LmplayerObject *lmplayer, GSList *list)
 		return changed;
 
 	lmplayer_debug(" ");
-	lmplayer_window_set_waiting_cursor(lmplayer->win->window);
+	lmplayer_window_set_waiting_cursor(GTK_WIDGET(lmplayer->win)->window);
 
 	for (l = list ; l != NULL; l = l->next)
 	{
@@ -906,7 +904,7 @@ lmplayer_action_open_files_list (LmplayerObject *lmplayer, GSList *list)
 	}
 
 	lmplayer_debug(" ");
-	gdk_window_set_cursor (lmplayer->win->window, NULL);
+	gdk_window_set_cursor (GTK_WIDGET(lmplayer->win)->window, NULL);
 
 	/* ... and reconnect because we're nice people */
 	if (cleared != FALSE)
@@ -938,7 +936,7 @@ gboolean
 seek_slider_pressed_cb (GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer)
 {
 	lmplayer->seek_lock = TRUE;
-	lmplayer_statusbar_set_seeking (LMPLAYER_STATUSBAR(lmplayer->statusbar), TRUE);
+	//lmplayer_statusbar_set_seeking (LMPLAYER_STATUSBAR(lmplayer->statusbar), TRUE);
 	//totem_time_label_set_seeking (TOTEM_TIME_LABEL (totem->fs->time_label), TRUE);
 
 	return FALSE;
@@ -955,8 +953,8 @@ seek_slider_changed_cb (GtkAdjustment *adj, LmplayerObject *lmplayer)
 
 	pos = gtk_adjustment_get_value (adj) / 65535;
 	time = bacon_video_widget_get_stream_length(lmplayer->bvw);
-	lmplayer_statusbar_set_time_and_length (LMPLAYER_STATUSBAR(lmplayer->statusbar),
-			(int) (pos * time / 1000), time / 1000);
+	//lmplayer_statusbar_set_time_and_length (LMPLAYER_STATUSBAR(lmplayer->statusbar),
+	//		(int) (pos * time / 1000), time / 1000);
 	/*
 	lmplayer_time_label_set_time
 			(LMPLAYER_TIME_LABEL (totem->fs->time_label),
@@ -984,7 +982,7 @@ seek_slider_released_cb(GtkWidget *widget, GdkEventButton *event, LmplayerObject
 	if(bacon_video_widget_can_direct_seek(lmplayer->bvw) == FALSE)
 		lmplayer_action_seek(lmplayer, val / 65535.0);
 
-	lmplayer_statusbar_set_seeking(LMPLAYER_STATUSBAR(lmplayer->statusbar), FALSE);
+	//lmplayer_statusbar_set_seeking(LMPLAYER_STATUSBAR(lmplayer->statusbar), FALSE);
 	//totem_time_label_set_seeking (TOTEM_TIME_LABEL (totem->fs->time_label),
 	//		FALSE);
 	return FALSE;
@@ -1048,7 +1046,7 @@ playlist_active_name_changed_cb (LmplayerPlaylist *playlist, LmplayerObject *lmp
 
 	if ((name = lmplayer_playlist_get_current_title (playlist, &cur)) != NULL) 
 	{
-		update_mrl_label(lmplayer, name);
+		//update_mrl_label(lmplayer, name);
 		g_free (name);
 	}
 }
@@ -1067,7 +1065,7 @@ playlist_current_removed_cb (GtkWidget *playlist, LmplayerObject *lmplayer)
 	lmplayer_debug("playlist_current_removed_cb");
 
 	/* Set play button status */
-	play_pause_set_label (lmplayer, STATE_STOPPED);
+	//play_pause_set_label (lmplayer, STATE_STOPPED);
 	mrl = lmplayer_playlist_get_current_mrl (lmplayer->playlist, &subtitle);
 
 	if (mrl == NULL) 
@@ -1137,7 +1135,8 @@ playlist_shuffle_toggled_cb (LmplayerPlaylist *playlist, gboolean shuffle, Lmpla
 
 static void playlist_widget_setup(LmplayerObject *lmplayer)
 {
-	GtkHBox *hbox;
+	//GtkHBox *hbox;
+	GnomeCanvasItem *item;
 	LmplayerPlaylist *playlist = NULL;
 
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
@@ -1148,8 +1147,13 @@ static void playlist_widget_setup(LmplayerObject *lmplayer)
 	if(lmplayer->playlist == NULL)
 		lmplayer_action_exit(lmplayer);
 
-	hbox = GTK_HBOX(gtk_builder_get_object(lmplayer->xml, "lmplayer_playlist_hbox"));
-	gtk_container_add(GTK_CONTAINER(hbox), GTK_WIDGET(lmplayer->playlist));
+	//hbox = GTK_HBOX(gtk_builder_get_object(lmplayer->xml, "lmplayer_playlist_hbox"));
+	item = GNOME_CANVAS_ITEM(skin_builder_get_object(lmplayer->builder, "playlist-playlistbox"));
+	
+	gnome_canvas_item_set(item, 
+			"widget", lmplayer->playlist,
+			NULL);
+	//gtk_container_add(GTK_CONTAINER(hbox), GTK_WIDGET(lmplayer->playlist));
 
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->playlist));
 
@@ -1243,6 +1247,7 @@ on_channels_change_event (BaconVideoWidget *bvw, LmplayerObject *lmplayer)
 static void
 on_got_metadata_event (BaconVideoWidget *bvw, LmplayerObject *lmplayer)
 {
+	lmplayer_debug(" ");
 	/*
 	GValue value = { 0, };
 	char *title, *artist;
@@ -1308,21 +1313,21 @@ update_current_time (BaconVideoWidget *bvw,
 {
 	if(lmplayer->seek_lock == FALSE)
 	{
-		gtk_adjustment_set_value(lmplayer->seekadj,
-				current_position * 65535);
+		//gtk_adjustment_set_value(lmplayer->seekadj,
+		//		current_position * 65535);
 
 		if(stream_length == 0 && lmplayer->mrl != NULL)
 		{
-			lmplayer_statusbar_set_time_and_length
-				(LMPLAYER_STATUSBAR(lmplayer->statusbar),
-				(int) (current_time / 1000), -1);
+			//lmplayer_statusbar_set_time_and_length
+			//	(LMPLAYER_STATUSBAR(lmplayer->statusbar),
+			//	(int) (current_time / 1000), -1);
 		} 
 		else 
 		{
-			lmplayer_statusbar_set_time_and_length
-				(LMPLAYER_STATUSBAR(lmplayer->statusbar),
-				(int) (current_time / 1000),
-				(int) (stream_length / 1000));
+			//lmplayer_statusbar_set_time_and_length
+			//	(LMPLAYER_STATUSBAR(lmplayer->statusbar),
+			//	(int) (current_time / 1000),
+			//	(int) (stream_length / 1000));
 		}
 
 		//totem_time_label_set_time
@@ -1351,7 +1356,7 @@ static void
 video_widget_create (LmplayerObject *lmplayer) 
 {
 	GError *err = NULL;
-	GtkContainer *container;
+	//GtkContainer *container;
 	BaconVideoWidget **bvw;
 
 	/*
@@ -1402,8 +1407,14 @@ video_widget_create (LmplayerObject *lmplayer)
 			G_CALLBACK (on_error_event),
 			lmplayer);
 
-	container = GTK_CONTAINER(gtk_builder_get_object(lmplayer->xml, "tmw_bvw_box"));
-	gtk_container_add (container, GTK_WIDGET(lmplayer->bvw));
+	//container = GTK_CONTAINER(gtk_builder_get_object(lmplayer->xml, "tmw_bvw_box"));
+	//gtk_container_add (container, GTK_WIDGET(lmplayer->bvw));
+
+	GnomeCanvasItem *item;
+	item = GNOME_CANVAS_ITEM(skin_builder_get_object(lmplayer->builder, "player-visualbox"));
+	gnome_canvas_item_set(item,
+			"widget", lmplayer->bvw,
+			NULL);
 
 	bvw = &(lmplayer->bvw);
 	g_object_add_weak_pointer(G_OBJECT(lmplayer->bvw), (gpointer *)bvw);
@@ -1447,7 +1458,9 @@ lmplayer_message_connection_receive_cb (const char *msg, LmplayerObject *lmp)
 	else
 		url = NULL;
 
+	lmplayer_debug(" ");
 	lmplayer_action_remote (lmp, command, url);
+	lmplayer_debug(" ");
 
 	g_free (url);
 }
@@ -1457,6 +1470,7 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmpRemoteCommand cmd, const ch
 {
 	gboolean handled = TRUE;
 
+	lmplayer_debug(" ");
 	switch (cmd) {
 	case LMP_REMOTE_COMMAND_PLAY:
 		g_print("remote command: play\n");
@@ -1564,6 +1578,7 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmpRemoteCommand cmd, const ch
 		handled = FALSE;
 		break;
 	}
+	lmplayer_debug(" ");
 }
 
 int 
@@ -1585,7 +1600,6 @@ main (int argc, char* argv[])
 
 	bacon_video_widget_init_backend(NULL, NULL);
 
-	lmplayer_debug(" ");
 	context = g_option_context_new(N_("[FILES] - Play songs"));
 	baconoptiongroup = bacon_video_widget_get_option_group();
 	g_option_context_add_main_entries(context, options, GETTEXT_PACKAGE);
@@ -1600,19 +1614,15 @@ main (int argc, char* argv[])
 		lmplayer_action_exit (NULL);
 	}
 
-	lmplayer_debug(" ");
 	g_set_application_name(_("Linux Music Player"));
 	gtk_window_set_default_icon_name ("lmplayer");
 
-	lmplayer_debug(" ");
 	gc = gconf_client_get_default ();
 	if (gc == NULL)
 	{
-		lmplayer_debug(" ");
 		lmplayer_action_error_and_exit (_("Lmplayer could not initialize the configuration engine."), _("Make sure that GNOME is properly installed."), NULL);
 	}
 
-	lmplayer_debug(" ");
 	lmplayer = lmplayer_object_new();
 	lmplayer->gc = gc;
 
@@ -1621,14 +1631,12 @@ main (int argc, char* argv[])
 		lmplayer->conn = bacon_message_connection_new(GETTEXT_PACKAGE);
 		if(bacon_message_connection_get_is_server(lmplayer->conn) == FALSE)
 		{
-			lmplayer_debug(" ");
 			lmplayer_options_process_for_server(lmplayer->conn, &optionstate);
 			gdk_notify_startup_complete ();
 			lmplayer_action_exit (lmplayer);
 		}
 		else
 		{
-			lmplayer_debug(" ");
 			lmplayer_options_process_early(lmplayer, &optionstate);
 		}
 	}
@@ -1637,70 +1645,110 @@ main (int argc, char* argv[])
 		lmplayer_options_process_early (lmplayer, &optionstate);
 	}
 
-	lmplayer_debug(" ");
-	lmplayer->xml = lmplayer_interface_load("lmplayer.ui", TRUE, NULL, lmplayer);
-	if(lmplayer->xml == NULL)
+	lmplayer->ar = skin_archive_new();
+	if(lmplayer->ar == NULL)
 	{
-		lmplayer_debug("lmplayer->xml is NULL");
+		lmplayer_debug("lmplayer->ar is NULL");
 		lmplayer_action_exit(NULL);
 	}
 
-	lmplayer->win = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "lmplayer_main_window"));
+	gchar *filename = lmplayer_skin_get_full_path("tt.zip");
+	lmplayer_debug("skin file: %s", filename);
+	if(filename == NULL)
+	{
+		//FIXME: search other skins
+		lmplayer_action_exit(NULL);
+	}
+
+	skin_archive_load(lmplayer->ar, filename);
+
+	lmplayer->builder = skin_builder_new();
+	skin_builder_add_from_archive(lmplayer->builder, lmplayer->ar);
+
+
+	//lmplayer->xml = lmplayer_interface_load("lmplayer.ui", TRUE, NULL, lmplayer);
+	//if(lmplayer->xml == NULL)
+	//{
+	//	lmplayer_debug("lmplayer->xml is NULL");
+	//	lmplayer_action_exit(NULL);
+	//}
+
+	//lmplayer->win = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "lmplayer_main_window"));
+	lmplayer->win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "player-window"));
 	if(lmplayer->win == NULL)
 	{
 		lmplayer_action_exit(NULL);
 	}
-	gtk_window_set_default_size(GTK_WINDOW(lmplayer->win), 640, 480);
+
+	lmplayer->pl_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "playlist-window"));
+	if(lmplayer->pl_win == NULL)
+	{
+		lmplayer_action_exit(NULL);
+	}
+
+	lmplayer->lyric_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "lyric-window"));
+	if(lmplayer->lyric_win == NULL)
+	{
+		lmplayer_action_exit(NULL);
+	}
+
+	lmplayer->eq_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "eq-window"));
+	if(lmplayer->lyric_win == NULL)
+	{
+		lmplayer_action_exit(NULL);
+	}
+
+	lmplayer->mini_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "mini-window"));
+	if(lmplayer->mini_win == NULL)
+	{
+		g_warning("No mini mode window");
+	}
+
+	//gtk_window_set_default_size(GTK_WINDOW(lmplayer->win), 640, 480);
 	gtk_window_set_position(GTK_WINDOW(lmplayer->win), GTK_WIN_POS_CENTER);
 
 	lmplayer_ui_manager_setup(lmplayer);
 
-	lmplayer_debug(" ");
 	//notebook_widget_setup(lmplayer);
 	playlist_widget_setup(lmplayer);
 
-	lmplayer_debug(" ");
 	video_widget_create(lmplayer);
 	
 	//TODO: 安装其它如会话管理、cd播放、文件监视等功能
 	lmplayer->state = STATE_STOPPED;
-	lmplayer->seek = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_seek_hscale"));
-	lmplayer->seekadj = gtk_range_get_adjustment(GTK_RANGE(lmplayer->seek));
-	lmplayer->volume = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_volume_button"));
-	lmplayer->statusbar = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_statusbar"));
+	//lmplayer->seek = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_seek_hscale"));
+	//lmplayer->seekadj = gtk_range_get_adjustment(GTK_RANGE(lmplayer->seek));
+	//lmplayer->volume = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_volume_button"));
+	//lmplayer->statusbar = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_statusbar"));
 	lmplayer->seek_lock = FALSE;
 
 	lmplayer_setup_file_filters();
 
 	lmplayer_callback_connect(lmplayer);
 
-	gtk_widget_show(lmplayer->win);
+	gtk_widget_show(GTK_WIDGET(lmplayer->win));
+	gtk_widget_show(GTK_WIDGET(lmplayer->pl_win));
+	gtk_widget_show(GTK_WIDGET(lmplayer->lyric_win));
+	gtk_widget_show(GTK_WIDGET(lmplayer->eq_win));
 
-	lmplayer_debug(" ");
 	lmplayer_options_process_late(lmplayer, &optionstate);
 
-	lmplayer_debug(" ");
 	if(optionstate.filenames != NULL && lmplayer_action_open_files(lmplayer, optionstate.filenames))
 	{
-		lmplayer_debug(" ");
 		lmplayer_action_play_pause(lmplayer);
 	}
 	else
 	{
-		lmplayer_debug(" ");
 		lmplayer_action_set_mrl(lmplayer, NULL, NULL);
 	}
 
-	lmplayer_debug(" ");
 	if(lmplayer->conn != NULL && bacon_message_connection_get_is_server (lmplayer->conn) != FALSE)
 	{
-		lmplayer_debug(" ");
 		bacon_message_connection_set_callback (lmplayer->conn,
 				(BaconMessageReceivedFunc)
 				lmplayer_message_connection_receive_cb, lmplayer);
 	}
 
-	lmplayer_debug(" ");
 	
 	const gchar *home = g_getenv("HOME");
 	gchar *cfg_path = g_build_path(G_DIR_SEPARATOR_S, home, ".lmplayer", NULL);
@@ -1710,9 +1758,12 @@ main (int argc, char* argv[])
 	}
 
 	gchar *uri = g_filename_to_uri(lmplayer->pls, NULL, NULL);
-	lmplayer_playlist_add_mrl(lmplayer->playlist, uri, NULL);
+	//lmplayer_playlist_add_mrl(lmplayer->playlist, uri, NULL);
 	g_free(uri);
-	gtk_widget_show_all(lmplayer->win);
+	gtk_widget_show_all(GTK_WIDGET(lmplayer->win));
+	gtk_widget_show_all(GTK_WIDGET(lmplayer->pl_win));
+	gtk_widget_show_all(GTK_WIDGET(lmplayer->lyric_win));
+	gtk_widget_show_all(GTK_WIDGET(lmplayer->eq_win));
 	
 	gtk_main();
 	return 0;
