@@ -130,6 +130,8 @@ GType lmplayer_object_get_type();
 
 LmplayerObject* lmplayer_object_new();
 
+void lmplayer_action_open(LmplayerObject *lmplayer);
+
 void lmplayer_file_opened (LmplayerObject *lmplayer, const char *mrl);
 void lmplayer_file_closed (LmplayerObject *lmplayer);
 void lmplayer_metadata_updated (LmplayerObject *lmplayer,

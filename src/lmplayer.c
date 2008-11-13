@@ -33,12 +33,12 @@
 #include <gtk/gtk.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <totem-disc.h>
 #include "lmplayer.h"
 #include "lmplayer-options.h"
 #include "lmplayer-interface.h"
 #include "lmplayer-menu.h"
 #include "lmplayer-uri.h"
-#include <totem-disc.h>
 #include "lmplayer-dvb-setup.h"
 #include "lmplayer-encode.h"
 #include "lmplayer-utils.h"
@@ -783,6 +783,12 @@ lmplayer_action_open_dialog (LmplayerObject *lmplayer, const char *path, gboolea
 	return TRUE;
 }
 
+void 
+lmplayer_action_open(LmplayerObject *lmplayer)
+{
+	lmplayer_action_open_dialog(lmplayer, NULL, TRUE);
+}
+
 gboolean
 lmplayer_action_set_mrl (LmplayerObject *lmplayer, const char *mrl, const char *subtitle)
 {
@@ -1148,7 +1154,8 @@ static void playlist_widget_setup(LmplayerObject *lmplayer)
 		lmplayer_action_exit(lmplayer);
 
 	//hbox = GTK_HBOX(gtk_builder_get_object(lmplayer->xml, "lmplayer_playlist_hbox"));
-	item = GNOME_CANVAS_ITEM(skin_builder_get_object(lmplayer->builder, "playlist-playlistbox"));
+	
+	item = (GnomeCanvasItem*)skin_builder_get_object(lmplayer->builder, "playlist-playlistbox");
 	
 	gnome_canvas_item_set(item, 
 			"widget", lmplayer->playlist,
@@ -1196,6 +1203,8 @@ main_window_destroy_cb (GtkWidget *widget, GdkEvent *event, LmplayerObject *lmpl
 
 static void lmplayer_callback_connect(LmplayerObject *lmplayer)
 {
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+
 	//g_signal_connect(G_OBJECT(lmplayer->win), "destroy", 
 	//		G_CALLBACK(main_window_destroy_cb), lmplayer);
 	
@@ -1355,9 +1364,9 @@ property_notify_cb_volume (BaconVideoWidget *bvw, GParamSpec *spec, LmplayerObje
 static void
 video_widget_create (LmplayerObject *lmplayer) 
 {
-	GError *err = NULL;
-	//GtkContainer *container;
+	GnomeCanvasItem *item;
 	BaconVideoWidget **bvw;
+	GError *err = NULL;
 
 	/*
 	const GtkTargetEntry source_table[] = {
@@ -1407,11 +1416,7 @@ video_widget_create (LmplayerObject *lmplayer)
 			G_CALLBACK (on_error_event),
 			lmplayer);
 
-	//container = GTK_CONTAINER(gtk_builder_get_object(lmplayer->xml, "tmw_bvw_box"));
-	//gtk_container_add (container, GTK_WIDGET(lmplayer->bvw));
-
-	GnomeCanvasItem *item;
-	item = GNOME_CANVAS_ITEM(skin_builder_get_object(lmplayer->builder, "player-visualbox"));
+	item = (GnomeCanvasItem*)skin_builder_get_object(lmplayer->builder, "player-visualbox");
 	gnome_canvas_item_set(item,
 			"widget", lmplayer->bvw,
 			NULL);
@@ -1661,19 +1666,9 @@ main (int argc, char* argv[])
 	}
 
 	skin_archive_load(lmplayer->ar, filename);
-
 	lmplayer->builder = skin_builder_new();
 	skin_builder_add_from_archive(lmplayer->builder, lmplayer->ar);
 
-
-	//lmplayer->xml = lmplayer_interface_load("lmplayer.ui", TRUE, NULL, lmplayer);
-	//if(lmplayer->xml == NULL)
-	//{
-	//	lmplayer_debug("lmplayer->xml is NULL");
-	//	lmplayer_action_exit(NULL);
-	//}
-
-	//lmplayer->win = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "lmplayer_main_window"));
 	lmplayer->win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "player-window"));
 	if(lmplayer->win == NULL)
 	{
@@ -1704,12 +1699,10 @@ main (int argc, char* argv[])
 		g_warning("No mini mode window");
 	}
 
-	//gtk_window_set_default_size(GTK_WINDOW(lmplayer->win), 640, 480);
 	gtk_window_set_position(GTK_WINDOW(lmplayer->win), GTK_WIN_POS_CENTER);
 
 	lmplayer_ui_manager_setup(lmplayer);
 
-	//notebook_widget_setup(lmplayer);
 	playlist_widget_setup(lmplayer);
 
 	video_widget_create(lmplayer);
@@ -1730,6 +1723,7 @@ main (int argc, char* argv[])
 	gtk_widget_show(GTK_WIDGET(lmplayer->pl_win));
 	gtk_widget_show(GTK_WIDGET(lmplayer->lyric_win));
 	gtk_widget_show(GTK_WIDGET(lmplayer->eq_win));
+	gtk_widget_show(GTK_WIDGET(lmplayer->mini_win));
 
 	lmplayer_options_process_late(lmplayer, &optionstate);
 
@@ -1758,12 +1752,13 @@ main (int argc, char* argv[])
 	}
 
 	gchar *uri = g_filename_to_uri(lmplayer->pls, NULL, NULL);
-	//lmplayer_playlist_add_mrl(lmplayer->playlist, uri, NULL);
+	lmplayer_playlist_add_mrl(lmplayer->playlist, uri, NULL);
 	g_free(uri);
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->win));
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->pl_win));
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->lyric_win));
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->eq_win));
+	gtk_widget_show_all(GTK_WIDGET(lmplayer->mini_win));
 	
 	gtk_main();
 	return 0;

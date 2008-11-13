@@ -1,6 +1,8 @@
-
+*.lo
+*.la
 ABOUT-NLS
 ABOUT-NLS~
+autom4te.cache
 aclocal.m4
 compile
 config.guess
@@ -37,6 +39,8 @@ stamp-h1
 svntool
 tags
 TAGS
+.deps
+.libs
 
 data/lmplayer.desktop
 data/lmplayer.desktop.in
