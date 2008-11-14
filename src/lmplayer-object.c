@@ -254,6 +254,7 @@ lmplayer_get_ui_manager(LmplayerObject *lmplayer)
 	g_return_val_if_fail(LMPLAYER_IS_OBJECT(lmplayer), NULL);
 
 	//return lmplayer->ui_manager;
+	return NULL;
 }
 
 GtkWidget *

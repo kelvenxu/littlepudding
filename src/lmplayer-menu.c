@@ -64,7 +64,7 @@ void prev_music_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 
 void stop_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
-	lmplayer_action_play_pause(lmplayer);
+	lmplayer_action_stop(lmplayer);
 }
 
 void open_action_callback(GtkAction *action, LmplayerObject *lmplayer)
