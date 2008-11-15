@@ -1307,7 +1307,6 @@ playlist_shuffle_toggled_cb (LmplayerPlaylist *playlist, gboolean shuffle, Lmpla
 
 static void playlist_widget_setup(LmplayerObject *lmplayer)
 {
-	//GtkHBox *hbox;
 	GnomeCanvasItem *item;
 	LmplayerPlaylist *playlist = NULL;
 
@@ -1319,18 +1318,28 @@ static void playlist_widget_setup(LmplayerObject *lmplayer)
 	if(lmplayer->playlist == NULL)
 		lmplayer_action_exit(lmplayer);
 
-	//gdk_color_parse(lmplayer->ar->playlist->attr.color_bg, &color);
+	//FIXME: 在ubuntu8.10中没有效果，而在ubuntu8.04中可以改变背景
 	gtk_widget_modify_base(GTK_WIDGET(playlist), 
 			GTK_STATE_NORMAL, 
 			&lmplayer->ar->playlist->attr.color_bg);
-	//hbox = GTK_HBOX(gtk_builder_get_object(lmplayer->xml, "lmplayer_playlist_hbox"));
+	gtk_widget_modify_base(GTK_WIDGET(playlist), 
+			GTK_STATE_ACTIVE, 
+			&lmplayer->ar->playlist->attr.color_bg);
+	gtk_widget_modify_base(GTK_WIDGET(playlist), 
+			GTK_STATE_PRELIGHT, 
+			&lmplayer->ar->playlist->attr.color_bg);
+	gtk_widget_modify_base(GTK_WIDGET(playlist), 
+			GTK_STATE_SELECTED, 
+			&lmplayer->ar->playlist->attr.color_bg);
+	gtk_widget_modify_base(GTK_WIDGET(playlist), 
+			GTK_STATE_INSENSITIVE, 
+			&lmplayer->ar->playlist->attr.color_bg);
 	
 	item = (GnomeCanvasItem*)skin_builder_get_object(lmplayer->builder, "playlist-playlistbox");
 	
 	gnome_canvas_item_set(item, 
 			"widget", lmplayer->playlist,
 			NULL);
-	//gtk_container_add(GTK_CONTAINER(hbox), GTK_WIDGET(lmplayer->playlist));
 
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->playlist));
 
