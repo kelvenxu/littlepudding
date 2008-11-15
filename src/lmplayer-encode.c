@@ -7,6 +7,9 @@
 gchar* lmplayer_encode_convert_to_utf8(const char* str)
 {
 	GError* error = NULL;
+
+	g_return_val_if_fail(str != NULL, NULL);
+
 	gchar* pgb18030 = g_convert(str, -1, "iso-8859-1", "utf-8", NULL, NULL, &error);
 	if(error)
 	{

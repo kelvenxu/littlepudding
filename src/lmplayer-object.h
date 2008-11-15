@@ -84,7 +84,8 @@ struct _LmplayerObject
 	//GtkWidget *
 	
 	/* Volume */
-	GtkWidget *volume; //FIXME:
+	//GtkWidget *volume; //FIXME:
+	SkinHScale *volume;
 	gboolean volume_sensitive;
 
 	//GtkActionGroup *main_action_group;
@@ -100,6 +101,8 @@ struct _LmplayerObject
 	SkinHScale *seek;
 	gboolean seek_lock;
 	gboolean seekable;
+
+	SkinDigitalTime *led;
 
 	gint index;
 	gint seek_to;

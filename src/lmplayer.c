@@ -67,6 +67,7 @@ static gboolean lmplayer_action_open_files_list (LmplayerObject *lmplayer, GSLis
 gboolean seek_slider_pressed_cb (GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer);
 void seek_slider_changed_cb (GtkAdjustment *adj, LmplayerObject *lmplayer);
 gboolean seek_slider_released_cb(GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer);
+static void lmplayer_volume_value_changed_cb(SkinHScale *hscale, LmplayerObject *lmplayer);
 
 static void
 reset_seek_status (LmplayerObject *lmplayer)
@@ -255,31 +256,43 @@ lmplayer_info_update(LmplayerObject *lmplayer)
 {
 	SkinDynamicText *info;
 	gchar *title, *artist, *album, *duration;
-	gchar *title_utf8, *artist_utf8, *album_utf8;
+	gchar *title_utf8 = NULL;
+	gchar *artist_utf8 = NULL;
+	gchar *album_utf8 = NULL;
 	int length;
 	GValue value = { 0, };
 
 	bacon_video_widget_get_metadata(lmplayer->bvw, BVW_INFO_TITLE, &value);
 	title = g_value_dup_string (&value);
 	g_value_unset (&value);
-	title_utf8 = lmplayer_encode_convert_to_utf8(title);
-	g_free (title);
+	if(title)
+	{
+		title_utf8 = lmplayer_encode_convert_to_utf8(title);
+		g_free (title);
+	}
 	title = g_strdup_printf (_("Title: %s"), title_utf8);
 	g_free (title_utf8);
 
 	bacon_video_widget_get_metadata(lmplayer->bvw, BVW_INFO_ARTIST, &value);
 	artist = g_value_dup_string(&value);
 	g_value_unset (&value);
-	artist_utf8 = lmplayer_encode_convert_to_utf8(artist);
-	g_free (artist);
+
+	if(artist)
+	{
+		artist_utf8 = lmplayer_encode_convert_to_utf8(artist);
+		g_free (artist);
+	}
 	artist = g_strdup_printf(_("Artist: %s"), artist_utf8);
 	g_free (artist_utf8);
 
 	bacon_video_widget_get_metadata(lmplayer->bvw, BVW_INFO_ALBUM, &value);
 	album = g_value_dup_string(&value);
 	g_value_unset (&value);
-	album_utf8 = lmplayer_encode_convert_to_utf8(album);
-	g_free (album);
+	if(album)
+	{
+		album_utf8 = lmplayer_encode_convert_to_utf8(album);
+		g_free (album);
+	}
 	album = g_strdup_printf(_("Album: %s"), album_utf8);
 	g_free (album_utf8);
 
@@ -309,6 +322,7 @@ play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 {
 	SkinButton *play, *stop, *pause;
 
+	lmplayer_debug(" ");
 	play = (SkinButton*)skin_builder_get_object(lmplayer->builder, "player-play");
 	stop = (SkinButton*)skin_builder_get_object(lmplayer->builder, "player-stop");
 	pause = (SkinButton*)skin_builder_get_object(lmplayer->builder, "player-pause");
@@ -346,6 +360,7 @@ play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 
 	lmplayer->state = state;
 
+	lmplayer_debug(" ");
 	g_object_notify(G_OBJECT(lmplayer), "playing");
 }
 
@@ -535,6 +550,15 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	if (display != NULL)
 		gdk_display_sync (display);
 
+	if (lmplayer->eq_win != NULL) 
+	{
+		gtk_widget_hide(GTK_WIDGET(lmplayer->eq_win));
+		display = gtk_widget_get_display(GTK_WIDGET(lmplayer->eq_win));
+	}
+
+	if (display != NULL)
+		gdk_display_sync (display);
+
 	if (lmplayer->mini_win != NULL) 
 	{
 		gtk_widget_hide(GTK_WIDGET(lmplayer->mini_win));
@@ -588,12 +612,15 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	if (lmplayer->lyric_win)
 		gtk_widget_destroy (GTK_WIDGET (lmplayer->lyric_win));
 
+	lmplayer_debug(" ");
 	if (lmplayer->eq_win)
 		gtk_widget_destroy (GTK_WIDGET (lmplayer->eq_win));
 
+	lmplayer_debug(" ");
 	if (lmplayer->mini_win)
 		gtk_widget_destroy (GTK_WIDGET (lmplayer->mini_win));
 
+	lmplayer_debug(" ");
 	if (lmplayer->win)
 	{
 		//FIXME:
@@ -601,6 +628,7 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 		gtk_main_quit ();
 	}
 
+	lmplayer_debug(" ");
 	g_object_unref (lmplayer);
 	exit (0);
 }
@@ -613,32 +641,42 @@ lmplayer_action_error (const char *title, const char *reason, LmplayerObject *lm
 void 
 lmplayer_action_minimize(LmplayerObject *lmplayer)
 {
-	gtk_widget_hide(GTK_WIDGET(lmplayer->pl_win));
-	gtk_widget_hide(GTK_WIDGET(lmplayer->lyric_win));
-	gtk_widget_hide(GTK_WIDGET(lmplayer->eq_win));
-	gtk_widget_hide(GTK_WIDGET(lmplayer->mini_win));
-
+	gtk_window_iconify(GTK_WINDOW(lmplayer->pl_win));
+	gtk_window_iconify(GTK_WINDOW(lmplayer->lyric_win));
+	gtk_window_iconify(GTK_WINDOW(lmplayer->eq_win));
+	gtk_window_iconify(GTK_WINDOW(lmplayer->mini_win));
 	gtk_window_iconify(GTK_WINDOW(lmplayer->win));
 }
 
 void 
 lmplayer_action_minimode(LmplayerObject *lmplayer, gboolean minimode)
 {
+	SkinCheckButton *button;
+
 	if(minimode)
 	{
 		gtk_widget_hide(GTK_WIDGET(lmplayer->pl_win));
 		gtk_widget_hide(GTK_WIDGET(lmplayer->lyric_win));
 		gtk_widget_hide(GTK_WIDGET(lmplayer->eq_win));
 		gtk_widget_hide(GTK_WIDGET(lmplayer->win));
-		gtk_widget_show(GTK_WIDGET(lmplayer->mini_win));
+		gtk_widget_show_all(GTK_WIDGET(lmplayer->mini_win));
 	}
 	else
 	{
 		gtk_widget_hide(GTK_WIDGET(lmplayer->mini_win));
-		gtk_widget_show(GTK_WIDGET(lmplayer->win));
-		gtk_widget_show(GTK_WIDGET(lmplayer->pl_win));
-		gtk_widget_show(GTK_WIDGET(lmplayer->lyric_win));
-		gtk_widget_show(GTK_WIDGET(lmplayer->eq_win));
+		gtk_widget_show_all(GTK_WIDGET(lmplayer->win));
+
+		button = (SkinCheckButton *)skin_builder_get_object(lmplayer->builder, "player-playlist");
+		if(skin_check_button_get_active(button))
+			gtk_widget_show_all(GTK_WIDGET(lmplayer->pl_win));
+
+		button = (SkinCheckButton *)skin_builder_get_object(lmplayer->builder, "player-lyric");
+		if(skin_check_button_get_active(button))
+			gtk_widget_show_all(GTK_WIDGET(lmplayer->lyric_win));
+
+		button = (SkinCheckButton *)skin_builder_get_object(lmplayer->builder, "player-equalizer");
+		if(skin_check_button_get_active(button))
+			gtk_widget_show_all(GTK_WIDGET(lmplayer->eq_win));
 	}
 }
 
@@ -1281,6 +1319,10 @@ static void playlist_widget_setup(LmplayerObject *lmplayer)
 	if(lmplayer->playlist == NULL)
 		lmplayer_action_exit(lmplayer);
 
+	//gdk_color_parse(lmplayer->ar->playlist->attr.color_bg, &color);
+	gtk_widget_modify_base(GTK_WIDGET(playlist), 
+			GTK_STATE_NORMAL, 
+			&lmplayer->ar->playlist->attr.color_bg);
 	//hbox = GTK_HBOX(gtk_builder_get_object(lmplayer->xml, "lmplayer_playlist_hbox"));
 	
 	item = (GnomeCanvasItem*)skin_builder_get_object(lmplayer->builder, "playlist-playlistbox");
@@ -1329,6 +1371,47 @@ main_window_destroy_cb (GtkWidget *widget, GdkEvent *event, LmplayerObject *lmpl
 	return FALSE;
 }
 
+static gboolean 
+main_window_state_changed_cb (GtkWidget *widget, GdkEventWindowState *event, LmplayerObject *lmplayer)
+{
+	switch(event->changed_mask)
+	{
+		case GDK_WINDOW_STATE_WITHDRAWN:
+			lmplayer_debug("withdrawn");
+			break;
+		case GDK_WINDOW_STATE_ICONIFIED:
+			if(gdk_window_get_state(widget->window) == 2)
+			{
+				gtk_window_iconify(GTK_WINDOW(lmplayer->pl_win));
+				gtk_window_iconify(GTK_WINDOW(lmplayer->lyric_win));
+				gtk_window_iconify(GTK_WINDOW(lmplayer->eq_win));
+			}
+			else if(gdk_window_get_state(widget->window) == 0)
+			{
+				gtk_window_deiconify(GTK_WINDOW(lmplayer->pl_win));
+				gtk_window_deiconify(GTK_WINDOW(lmplayer->lyric_win));
+				gtk_window_deiconify(GTK_WINDOW(lmplayer->eq_win));
+			}
+			break;
+		case GDK_WINDOW_STATE_MAXIMIZED:
+			lmplayer_debug("maximized");
+			break;
+		case GDK_WINDOW_STATE_STICKY:
+			lmplayer_debug("sticky");
+			break;
+		case GDK_WINDOW_STATE_FULLSCREEN:
+			lmplayer_debug("fullscreen");
+			break;
+		case GDK_WINDOW_STATE_ABOVE:
+			lmplayer_debug("above");
+			break;
+		case GDK_WINDOW_STATE_BELOW:
+			break;
+	}
+
+	return FALSE;
+}
+
 static void lmplayer_callback_connect(LmplayerObject *lmplayer)
 {
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
@@ -1339,6 +1422,12 @@ static void lmplayer_callback_connect(LmplayerObject *lmplayer)
 	//FIXME: 为什么用destroy这个信号LMPLAYER_IS_OBJECT(lmplayer)通不过呢?
 	g_signal_connect(G_OBJECT(lmplayer->win), "delete-event", 
 			G_CALLBACK(main_window_destroy_cb), lmplayer);
+
+	g_signal_connect(G_OBJECT(lmplayer->win), "window-state-event",
+			G_CALLBACK(main_window_state_changed_cb), lmplayer);
+
+	g_signal_connect(G_OBJECT(lmplayer->volume), "value-changed",
+			G_CALLBACK(lmplayer_volume_value_changed_cb), lmplayer);
 }
 
 static gboolean
@@ -1384,7 +1473,6 @@ on_channels_change_event (BaconVideoWidget *bvw, LmplayerObject *lmplayer)
 static void
 on_got_metadata_event (BaconVideoWidget *bvw, LmplayerObject *lmplayer)
 {
-	lmplayer_debug(" ");
 	/*
 	GValue value = { 0, };
 	char *title, *artist;
@@ -1454,6 +1542,8 @@ update_current_time (BaconVideoWidget *bvw,
 		//gtk_adjustment_set_value(lmplayer->seekadj,
 		//		current_position * 65535);
 
+		//skin_hscale_set_value(lmplayer->seek, (gdouble)current_position * 65535.0);
+		//skin_digital_time_set_value(lmplayer->led, (gdouble)current_position * 65535.0);
 		if(stream_length == 0 && lmplayer->mrl != NULL)
 		{
 			//lmplayer_statusbar_set_time_and_length
@@ -1466,6 +1556,14 @@ update_current_time (BaconVideoWidget *bvw,
 			//	(LMPLAYER_STATUSBAR(lmplayer->statusbar),
 			//	(int) (current_time / 1000),
 			//	(int) (stream_length / 1000));
+
+			//lmplayer_debug(" ");
+			//skin_hscale_set_range(lmplayer->seek, 0.0, (gdouble)stream_length / 1000.0);
+			//skin_hscale_set_value(lmplayer->seek, (gdouble)current_time / 1000.0);
+			skin_hscale_set_range_and_value(lmplayer->seek, 0.0, 
+					(gdouble)stream_length / 1000.0,
+					(gdouble)current_time / 1000.0);
+			skin_digital_time_set_value(lmplayer->led, (gdouble)current_time / 1000.0);
 		}
 
 		//totem_time_label_set_time
@@ -1480,9 +1578,42 @@ update_current_time (BaconVideoWidget *bvw,
 	}
 }
 
+void
+lmplayer_action_volume_relative (LmplayerObject *lmplayer, double off_pct)
+{
+	double vol;
+
+	if (bacon_video_widget_can_set_volume (lmplayer->bvw) == FALSE)
+		return;
+
+	vol = bacon_video_widget_get_volume (lmplayer->bvw);
+	bacon_video_widget_set_volume (lmplayer->bvw, vol + off_pct);
+}
+
+static void 
+lmplayer_volume_value_changed_cb(SkinHScale *hscale, LmplayerObject *lmplayer)
+{
+	double volume;
+	volume = skin_hscale_get_value(lmplayer->volume);
+	lmplayer_debug("volume : %f", volume);
+	bacon_video_widget_set_volume(lmplayer->bvw, volume / 100.0);
+}
+
+
+static void
+update_volume_slider(LmplayerObject *lmplayer)
+{
+	double volume;
+
+	volume = bacon_video_widget_get_volume(lmplayer->bvw);
+
+	skin_hscale_set_value(lmplayer->volume, volume * 100.0);
+}
+
 static void
 property_notify_cb_seekable (BaconVideoWidget *bvw, GParamSpec *spec, LmplayerObject *lmplayer)
 {
+	update_volume_slider(lmplayer);
 }
 
 static void
@@ -1809,18 +1940,21 @@ main (int argc, char* argv[])
 	{
 		lmplayer_action_exit(NULL);
 	}
+	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(lmplayer->pl_win), TRUE);
 
 	lmplayer->lyric_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "lyric-window"));
 	if(lmplayer->lyric_win == NULL)
 	{
 		lmplayer_action_exit(NULL);
 	}
+	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(lmplayer->lyric_win), TRUE);
 
-	lmplayer->eq_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "eq-window"));
-	if(lmplayer->lyric_win == NULL)
+	lmplayer->eq_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "equalizer-window"));
+	if(lmplayer->eq_win == NULL)
 	{
 		lmplayer_action_exit(NULL);
 	}
+	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(lmplayer->eq_win), TRUE);
 
 	lmplayer->mini_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "mini-window"));
 	if(lmplayer->mini_win == NULL)
@@ -1838,6 +1972,9 @@ main (int argc, char* argv[])
 	
 	//TODO: 安装其它如会话管理、cd播放、文件监视等功能
 	lmplayer->state = STATE_STOPPED;
+	lmplayer->seek = (SkinHScale *)skin_builder_get_object(lmplayer->builder, "player-progressbar");
+	lmplayer->led = (SkinDigitalTime *)skin_builder_get_object(lmplayer->builder, "player-led");
+	lmplayer->volume = (SkinHScale *)skin_builder_get_object(lmplayer->builder, "player-volume");
 	//lmplayer->seek = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_seek_hscale"));
 	//lmplayer->seekadj = gtk_range_get_adjustment(GTK_RANGE(lmplayer->seek));
 	//lmplayer->volume = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_volume_button"));
@@ -1852,7 +1989,7 @@ main (int argc, char* argv[])
 	gtk_widget_show(GTK_WIDGET(lmplayer->pl_win));
 	gtk_widget_show(GTK_WIDGET(lmplayer->lyric_win));
 	gtk_widget_show(GTK_WIDGET(lmplayer->eq_win));
-	gtk_widget_show(GTK_WIDGET(lmplayer->mini_win));
+	//gtk_widget_show(GTK_WIDGET(lmplayer->mini_win));
 
 	lmplayer_options_process_late(lmplayer, &optionstate);
 
@@ -1887,8 +2024,15 @@ main (int argc, char* argv[])
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->pl_win));
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->lyric_win));
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->eq_win));
-	gtk_widget_show_all(GTK_WIDGET(lmplayer->mini_win));
 	
+	SkinCheckButton *button;
+	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-playlist");
+	skin_check_button_set_active(button, TRUE);
+	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-lyric");
+	skin_check_button_set_active(button, TRUE);
+	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-equalizer");
+	skin_check_button_set_active(button, TRUE);
+
 	gtk_main();
 	return 0;
 }

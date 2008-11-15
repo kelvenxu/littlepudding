@@ -49,4 +49,5 @@ void lmplayer_action_next (LmplayerObject *lmplayer);
 void lmplayer_action_minimize(LmplayerObject *lmplayer);
 void lmplayer_action_minimode(LmplayerObject *lmplayer, gboolean minimode);
 
+void lmplayer_action_volume_relative (LmplayerObject *lmplayer, double off_pct);
 #endif /*__LMPLAYER_H__ */

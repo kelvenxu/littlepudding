@@ -36,6 +36,7 @@ void minimode_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void mini_minimode_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void minimize_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void mini_minimize_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void mute_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void lyric_close_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void lyric_ontop_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void lyric_show_action_callback(GtkAction *action, LmplayerObject *lmplayer);
@@ -100,32 +101,107 @@ void mini_minimize_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 	gtk_window_iconify(GTK_WINDOW(lmplayer->mini_win));
 }
 
+void mute_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+	// FIXME: how to mute?
+	SkinCheckButton *button;
+	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-lyric");
+	if(skin_check_button_get_active(button))
+	{
+		lmplayer_action_volume_relative(lmplayer, -1.0);
+	}
+	else
+	{
+		lmplayer_action_volume_relative(lmplayer, 0.1);
+	}
+}
+
 void lyric_close_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
+	SkinCheckButton *button;
+	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-lyric");
+	skin_window_hide(lmplayer->lyric_win);
+	skin_check_button_set_active(button, FALSE);
 }
 
 void lyric_ontop_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
+	SkinCheckButton *button;
+	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "lyric-ontop");
+
+	if(skin_check_button_get_active(button))
+	{
+		gtk_window_set_keep_above(GTK_WINDOW(lmplayer->lyric_win), TRUE);
+	}
+	else
+	{
+		gtk_window_set_keep_above(GTK_WINDOW(lmplayer->lyric_win), FALSE);
+	}
 }
 
 void lyric_show_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
+	SkinCheckButton *button;
+	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-lyric");
+
+	if(skin_check_button_get_active(button))
+	{
+		skin_window_show(lmplayer->lyric_win);
+	}
+	else
+	{
+		skin_window_hide(lmplayer->lyric_win);
+	}
 }
 
 void playlist_show_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
+	SkinCheckButton *button;
+	SkinWindow *win;
+	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-playlist");
+	win = (SkinWindow*)skin_builder_get_object(lmplayer->builder, "playlist-window");
+
+	if(skin_check_button_get_active(button))
+	{
+		skin_window_show(win);
+	}
+	else
+	{
+		skin_window_hide(win);
+	}
 }
 
 void playlist_close_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
+	SkinCheckButton *button;
+	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-playlist");
+	skin_window_hide(lmplayer->pl_win);
+	skin_check_button_set_active(button, FALSE);
 }
 
 void eq_show_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
+	SkinCheckButton *button;
+	SkinWindow *win;
+	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-equalizer");
+	win = (SkinWindow*)skin_builder_get_object(lmplayer->builder, "equalizer-window");
+
+	if(skin_check_button_get_active(button))
+	{
+		skin_window_show(win);
+	}
+	else
+	{
+		skin_window_hide(win);
+	}
 }
 
 void eq_close_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
+	SkinCheckButton *button;
+	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-equalizer");
+	skin_window_hide(lmplayer->eq_win);
+	skin_check_button_set_active(button, FALSE);
 }
 
 void lmplayer_ui_manager_setup (LmplayerObject *lmplayer)
@@ -171,6 +247,9 @@ void lmplayer_ui_manager_setup (LmplayerObject *lmplayer)
 
 	button = (SkinButton*)skin_builder_get_object(builder, "player-equalizer");
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(eq_show_action_callback), lmplayer);
+
+	button = (SkinButton*)skin_builder_get_object(builder, "player-mute");
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(mute_action_callback), lmplayer);
 
 	// lyric window
 	button = (SkinButton*)skin_builder_get_object(builder, "lyric-ontop");
