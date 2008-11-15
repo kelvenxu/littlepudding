@@ -33,7 +33,9 @@ void stop_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void open_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void quit_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void minimode_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void mini_minimode_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void minimize_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void mini_minimize_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void lyric_close_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void lyric_ontop_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void lyric_show_action_callback(GtkAction *action, LmplayerObject *lmplayer);
@@ -79,10 +81,23 @@ void quit_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 
 void minimode_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
+	lmplayer_action_minimode(lmplayer, TRUE);
+}
+
+void mini_minimode_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+	lmplayer_action_minimode(lmplayer, FALSE);
 }
 
 void minimize_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
+	lmplayer_action_minimize(lmplayer);
+}
+
+void mini_minimize_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+	//lmplayer_action_minimize(lmplayer, FALSE);
+	gtk_window_iconify(GTK_WINDOW(lmplayer->mini_win));
 }
 
 void lyric_close_action_callback(GtkAction *action, LmplayerObject *lmplayer)
@@ -190,6 +205,12 @@ void lmplayer_ui_manager_setup (LmplayerObject *lmplayer)
 
 	button = (SkinButton*)skin_builder_get_object(builder, "mini-stop");
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(stop_action_callback), lmplayer);
+
+	button = (SkinButton*)skin_builder_get_object(builder, "mini-minimize");
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(mini_minimize_action_callback), lmplayer);
+
+	button = (SkinButton*)skin_builder_get_object(builder, "mini-minimode");
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(mini_minimode_action_callback), lmplayer);
 
 	button = (SkinButton*)skin_builder_get_object(builder, "mini-exit");
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(quit_action_callback), lmplayer);

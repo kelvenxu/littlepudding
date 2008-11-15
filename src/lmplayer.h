@@ -45,4 +45,8 @@ void lmplayer_action_play_pause (LmplayerObject *lmplayer);
 
 void lmplayer_action_previous (LmplayerObject *lmplayer);
 void lmplayer_action_next (LmplayerObject *lmplayer);
+
+void lmplayer_action_minimize(LmplayerObject *lmplayer);
+void lmplayer_action_minimode(LmplayerObject *lmplayer, gboolean minimode);
+
 #endif /*__LMPLAYER_H__ */

@@ -509,10 +509,40 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 			 NULL, FALSE, NULL);
 	
 	if (gtk_main_level () > 0)
-		gtk_main_quit ();
+	{
+		lmplayer_debug(" gtk main quit");
+		//gtk_main_quit ();
+	}
 
 	if (lmplayer == NULL)
 		exit (0);
+
+	if (lmplayer->pl_win != NULL) 
+	{
+		gtk_widget_hide(GTK_WIDGET(lmplayer->pl_win));
+		display = gtk_widget_get_display(GTK_WIDGET(lmplayer->pl_win));
+	}
+
+	if (display != NULL)
+		gdk_display_sync (display);
+
+	if (lmplayer->lyric_win != NULL) 
+	{
+		gtk_widget_hide(GTK_WIDGET(lmplayer->lyric_win));
+		display = gtk_widget_get_display(GTK_WIDGET(lmplayer->lyric_win));
+	}
+
+	if (display != NULL)
+		gdk_display_sync (display);
+
+	if (lmplayer->mini_win != NULL) 
+	{
+		gtk_widget_hide(GTK_WIDGET(lmplayer->mini_win));
+		display = gtk_widget_get_display(GTK_WIDGET(lmplayer->mini_win));
+	}
+
+	if (display != NULL)
+		gdk_display_sync (display);
 
 	if (lmplayer->win != NULL) 
 	{
@@ -526,7 +556,6 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	if (lmplayer->bvw) 
 	{
 		int vol;
-
 		lmplayer_debug("Save volume value");
 		//vol = bacon_video_widget_get_volume (lmplayer->bvw) * 100.0 + 0.5;
 		vol = 100.0;
@@ -544,7 +573,6 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 		*/
 	}
 
-	lmplayer_debug(" ");
 	if (lmplayer->conn != NULL)
 		bacon_message_connection_free (lmplayer->conn);
 
@@ -554,18 +582,64 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	if (lmplayer->gc)
 		g_object_unref (G_OBJECT (lmplayer->gc));
 
+	if (lmplayer->pl_win)
+		gtk_widget_destroy (GTK_WIDGET (lmplayer->pl_win));
+
+	if (lmplayer->lyric_win)
+		gtk_widget_destroy (GTK_WIDGET (lmplayer->lyric_win));
+
+	if (lmplayer->eq_win)
+		gtk_widget_destroy (GTK_WIDGET (lmplayer->eq_win));
+
+	if (lmplayer->mini_win)
+		gtk_widget_destroy (GTK_WIDGET (lmplayer->mini_win));
 
 	if (lmplayer->win)
-		gtk_widget_destroy (GTK_WIDGET (lmplayer->win));
+	{
+		//FIXME:
+		//gtk_widget_destroy (GTK_WIDGET (lmplayer->win));
+		gtk_main_quit ();
+	}
 
 	g_object_unref (lmplayer);
-
 	exit (0);
 }
 
 void
 lmplayer_action_error (const char *title, const char *reason, LmplayerObject *lmplayer)
 {
+}
+
+void 
+lmplayer_action_minimize(LmplayerObject *lmplayer)
+{
+	gtk_widget_hide(GTK_WIDGET(lmplayer->pl_win));
+	gtk_widget_hide(GTK_WIDGET(lmplayer->lyric_win));
+	gtk_widget_hide(GTK_WIDGET(lmplayer->eq_win));
+	gtk_widget_hide(GTK_WIDGET(lmplayer->mini_win));
+
+	gtk_window_iconify(GTK_WINDOW(lmplayer->win));
+}
+
+void 
+lmplayer_action_minimode(LmplayerObject *lmplayer, gboolean minimode)
+{
+	if(minimode)
+	{
+		gtk_widget_hide(GTK_WIDGET(lmplayer->pl_win));
+		gtk_widget_hide(GTK_WIDGET(lmplayer->lyric_win));
+		gtk_widget_hide(GTK_WIDGET(lmplayer->eq_win));
+		gtk_widget_hide(GTK_WIDGET(lmplayer->win));
+		gtk_widget_show(GTK_WIDGET(lmplayer->mini_win));
+	}
+	else
+	{
+		gtk_widget_hide(GTK_WIDGET(lmplayer->mini_win));
+		gtk_widget_show(GTK_WIDGET(lmplayer->win));
+		gtk_widget_show(GTK_WIDGET(lmplayer->pl_win));
+		gtk_widget_show(GTK_WIDGET(lmplayer->lyric_win));
+		gtk_widget_show(GTK_WIDGET(lmplayer->eq_win));
+	}
 }
 
 static void
