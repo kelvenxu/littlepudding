@@ -110,7 +110,7 @@ lmplayer_action_save_state (LmplayerObject *lmplayer, const char *page_id)
 static void
 lmplayer_action_wait_force_exit (gpointer user_data)
 {
-	g_usleep (10 * G_USEC_PER_SEC);
+	g_usleep (5 * G_USEC_PER_SEC);
 	exit (1);
 }
 
@@ -517,7 +517,10 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
 
 	if(lmplayer->playlist && lmplayer->pls)
+	{
 		lmplayer_playlist_save_current_playlist(lmplayer->playlist, lmplayer->pls);
+		g_free(lmplayer->pls);
+	}
 
 	/* Exit forcefully if we can't do the shutdown in 10 seconds */
 	g_thread_create ((GThreadFunc) lmplayer_action_wait_force_exit,
@@ -526,7 +529,7 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	if (gtk_main_level () > 0)
 	{
 		lmplayer_debug(" gtk main quit");
-		//gtk_main_quit ();
+		gtk_main_quit ();
 	}
 
 	if (lmplayer == NULL)
@@ -580,21 +583,17 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	if (lmplayer->bvw) 
 	{
 		int vol;
-		lmplayer_debug("Save volume value");
-		//vol = bacon_video_widget_get_volume (lmplayer->bvw) * 100.0 + 0.5;
-		vol = 100.0;
+		lmplayer_action_stop (lmplayer);
+
+		vol = bacon_video_widget_get_volume (lmplayer->bvw) * 100.0 + 0.5;
+
 		/* FIXME move the volume to the static file? */
-		lmplayer_debug("gconf_client_add_dir");
-		g_assert(lmplayer->gc);
-		//gconf_client_add_dir (lmplayer->gc, GCONF_PREFIX,
-		//		GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-		lmplayer_debug("set volume");
-		/*
+		gconf_client_add_dir (lmplayer->gc, GCONF_PREFIX,
+				GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
 		gconf_client_set_int (lmplayer->gc,
 				GCONF_PREFIX"/volume",
 				CLAMP (vol, 0, 100),
 				NULL);
-		*/
 	}
 
 	if (lmplayer->conn != NULL)
@@ -624,8 +623,8 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	if (lmplayer->win)
 	{
 		//FIXME:
-		//gtk_widget_destroy (GTK_WIDGET (lmplayer->win));
-		gtk_main_quit ();
+		gtk_widget_destroy (GTK_WIDGET (lmplayer->win));
+		//gtk_main_quit ();
 	}
 
 	lmplayer_debug(" ");
@@ -1364,6 +1363,7 @@ static void lmplayer_action_error_and_exit(const char *title,
 {
 	//reset_seek_status (lmplayer);
 	//lmplayer_interface_error_blocking (title, reason, GTK_WINDOW (lmplayer->win));
+	lmplayer_action_stop (lmplayer);
 	lmplayer_action_exit (lmplayer);
 }
 
@@ -1394,12 +1394,14 @@ main_window_state_changed_cb (GtkWidget *widget, GdkEventWindowState *event, Lmp
 				gtk_window_iconify(GTK_WINDOW(lmplayer->pl_win));
 				gtk_window_iconify(GTK_WINDOW(lmplayer->lyric_win));
 				gtk_window_iconify(GTK_WINDOW(lmplayer->eq_win));
+				gtk_window_iconify(GTK_WINDOW(lmplayer->win));
 			}
 			else if(gdk_window_get_state(widget->window) == 0)
 			{
 				gtk_window_deiconify(GTK_WINDOW(lmplayer->pl_win));
 				gtk_window_deiconify(GTK_WINDOW(lmplayer->lyric_win));
 				gtk_window_deiconify(GTK_WINDOW(lmplayer->eq_win));
+				gtk_window_deiconify(GTK_WINDOW(lmplayer->win));
 			}
 			break;
 		case GDK_WINDOW_STATE_MAXIMIZED:
@@ -1415,6 +1417,10 @@ main_window_state_changed_cb (GtkWidget *widget, GdkEventWindowState *event, Lmp
 			lmplayer_debug("above");
 			break;
 		case GDK_WINDOW_STATE_BELOW:
+			lmplayer_debug("below");
+			break;
+		default:
+			lmplayer_debug("default");
 			break;
 	}
 
@@ -1604,7 +1610,6 @@ lmplayer_volume_value_changed_cb(SkinHScale *hscale, LmplayerObject *lmplayer)
 {
 	double volume;
 	volume = skin_hscale_get_value(lmplayer->volume);
-	lmplayer_debug("volume : %f", volume);
 	bacon_video_widget_set_volume(lmplayer->bvw, volume / 100.0);
 }
 
@@ -1622,12 +1627,12 @@ update_volume_slider(LmplayerObject *lmplayer)
 static void
 property_notify_cb_seekable (BaconVideoWidget *bvw, GParamSpec *spec, LmplayerObject *lmplayer)
 {
-	update_volume_slider(lmplayer);
 }
 
 static void
 property_notify_cb_volume (BaconVideoWidget *bvw, GParamSpec *spec, LmplayerObject *lmplayer)
 {
+	update_volume_slider(lmplayer);
 }
 
 static void
@@ -1697,21 +1702,17 @@ video_widget_create (LmplayerObject *lmplayer)
 	gtk_widget_show(GTK_WIDGET(lmplayer->bvw));
 
 	bacon_video_widget_set_visuals(lmplayer->bvw, "GOOM:what a GOOM!");
-	g_object_set(G_OBJECT(lmplayer->bvw), "height-request", 32, 
-			"width-request", 80, NULL);
 
 	bacon_video_widget_set_volume (lmplayer->bvw,
 			((double) gconf_client_get_int (lmplayer->gc,
 				GCONF_PREFIX"/volume", NULL)) / 100.0);
-
-	bacon_video_widget_set_volume (lmplayer->bvw, 100.0);
 
 	g_signal_connect (G_OBJECT (lmplayer->bvw), "notify::volume",
 			G_CALLBACK (property_notify_cb_volume), lmplayer);
 	g_signal_connect (G_OBJECT (lmplayer->bvw), "notify::seekable",
 			G_CALLBACK (property_notify_cb_seekable), lmplayer);
 
-	//update_volume_sliders (lmplayer); //TODO:
+	update_volume_slider (lmplayer); //TODO:
 }
 
 static void
@@ -1971,12 +1972,13 @@ main (int argc, char* argv[])
 		g_warning("No mini mode window");
 	}
 
-	gtk_window_set_position(GTK_WINDOW(lmplayer->win), GTK_WIN_POS_CENTER);
+	gtk_widget_show_all(GTK_WIDGET(lmplayer->win));
+	gtk_widget_show_all(GTK_WIDGET(lmplayer->pl_win));
+	gtk_widget_show_all(GTK_WIDGET(lmplayer->lyric_win));
+	gtk_widget_show_all(GTK_WIDGET(lmplayer->eq_win));
 
 	lmplayer_ui_manager_setup(lmplayer);
-
 	playlist_widget_setup(lmplayer);
-
 	video_widget_create(lmplayer);
 	
 	//TODO: 安装其它如会话管理、cd播放、文件监视等功能
@@ -1984,21 +1986,11 @@ main (int argc, char* argv[])
 	lmplayer->seek = (SkinHScale *)skin_builder_get_object(lmplayer->builder, "player-progressbar");
 	lmplayer->led = (SkinDigitalTime *)skin_builder_get_object(lmplayer->builder, "player-led");
 	lmplayer->volume = (SkinHScale *)skin_builder_get_object(lmplayer->builder, "player-volume");
-	//lmplayer->seek = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_seek_hscale"));
-	//lmplayer->seekadj = gtk_range_get_adjustment(GTK_RANGE(lmplayer->seek));
-	//lmplayer->volume = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_volume_button"));
 	//lmplayer->statusbar = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_statusbar"));
 	lmplayer->seek_lock = FALSE;
-
+	lmplayer_setup_file_monitoring(lmplayer);
 	lmplayer_setup_file_filters();
-
 	lmplayer_callback_connect(lmplayer);
-
-	gtk_widget_show(GTK_WIDGET(lmplayer->win));
-	gtk_widget_show(GTK_WIDGET(lmplayer->pl_win));
-	gtk_widget_show(GTK_WIDGET(lmplayer->lyric_win));
-	gtk_widget_show(GTK_WIDGET(lmplayer->eq_win));
-	//gtk_widget_show(GTK_WIDGET(lmplayer->mini_win));
 
 	lmplayer_options_process_late(lmplayer, &optionstate);
 
