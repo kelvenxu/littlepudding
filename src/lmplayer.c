@@ -1317,22 +1317,18 @@ static void playlist_widget_setup(LmplayerObject *lmplayer)
 	if(lmplayer->playlist == NULL)
 		lmplayer_action_exit(lmplayer);
 
-	//FIXME: 在ubuntu8.10中没有效果，而在ubuntu8.04中可以改变背景
+	gtk_widget_modify_text(GTK_WIDGET(playlist), 
+			GTK_STATE_NORMAL, 
+			&lmplayer->ar->playlist->attr.color_text);
+	gtk_widget_modify_text(GTK_WIDGET(playlist), 
+			GTK_STATE_ACTIVE, 
+			&lmplayer->ar->playlist->attr.color_hilight);
+	gtk_widget_modify_text(GTK_WIDGET(playlist), 
+			GTK_STATE_SELECTED, 
+			&lmplayer->ar->playlist->attr.color_select);
 	gtk_widget_modify_base(GTK_WIDGET(playlist), 
 			GTK_STATE_NORMAL, 
-			&lmplayer->ar->playlist->attr.color_bg);
-	gtk_widget_modify_base(GTK_WIDGET(playlist), 
-			GTK_STATE_ACTIVE, 
-			&lmplayer->ar->playlist->attr.color_bg);
-	gtk_widget_modify_base(GTK_WIDGET(playlist), 
-			GTK_STATE_PRELIGHT, 
-			&lmplayer->ar->playlist->attr.color_bg);
-	gtk_widget_modify_base(GTK_WIDGET(playlist), 
-			GTK_STATE_SELECTED, 
-			&lmplayer->ar->playlist->attr.color_bg);
-	gtk_widget_modify_base(GTK_WIDGET(playlist), 
-			GTK_STATE_INSENSITIVE, 
-			&lmplayer->ar->playlist->attr.color_bg);
+			&(lmplayer->ar->playlist->attr.color_bg));
 	
 	item = (GnomeCanvasItem*)skin_builder_get_object(lmplayer->builder, "playlist-playlistbox");
 	
@@ -1488,26 +1484,6 @@ on_channels_change_event (BaconVideoWidget *bvw, LmplayerObject *lmplayer)
 static void
 on_got_metadata_event (BaconVideoWidget *bvw, LmplayerObject *lmplayer)
 {
-	/*
-	GValue value = { 0, };
-	char *title, *artist;
-
-	bacon_video_widget_get_metadata (BACON_VIDEO_WIDGET (bvw),
-			BVW_INFO_TITLE, &value);
-	title = g_value_dup_string (&value);
-	g_value_unset (&value);
-
-	bacon_video_widget_get_metadata (BACON_VIDEO_WIDGET (bvw),
-			BVW_INFO_ARTIST, &value);
-	artist = g_value_dup_string (&value);
-	g_value_unset (&value);
-
-	g_message ("Got metadata: title = %s artist = %s", title, artist);
-
-	title = lmplayer_encode_convert_to_utf8(title);
-	artist = lmplayer_encode_convert_to_utf8(artist);
-	g_message ("Got metadata: title = %s artist = %s", title, artist);
-	*/
 	char *name = NULL;
 	
 	lmplayer_metadata_updated(lmplayer, NULL, NULL, NULL);
@@ -1519,9 +1495,6 @@ on_got_metadata_event (BaconVideoWidget *bvw, LmplayerObject *lmplayer)
 			(LMPLAYER_PLAYLIST(lmplayer->playlist), name, FALSE);
 		g_free (name);
 	}
-	
-	//totem_action_set_sensitivity ("take-screenshot",
-	//			      bacon_video_widget_can_get_frames (bvw, NULL));
 	
 	lmplayer_info_update(lmplayer);
 	playlist_active_name_changed_cb (LMPLAYER_PLAYLIST (lmplayer->playlist), lmplayer);

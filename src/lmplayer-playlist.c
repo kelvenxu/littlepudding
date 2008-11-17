@@ -539,9 +539,9 @@ playlist_show_popup_menu (LmplayerPlaylist *playlist, GdkEventButton *event)
        	guint32 time;
 	GtkTreePath *path;
 	gint count;
-	GtkWidget *menu;
-	GtkAction *copy_location;
-	GtkAction *select_subtitle;
+	//GtkWidget *menu;
+	//GtkAction *copy_location;
+	//GtkAction *select_subtitle;
 
 	if (event != NULL) {
 		button = event->button;
@@ -1227,7 +1227,7 @@ static GtkTreeModel *
 create_model()
 {
 	GtkListStore *store;
-	GtkTreeIter iter;
+	//GtkTreeIter iter;
 
 	store = gtk_list_store_new(NUM_COLS, 
 			G_TYPE_INT, 
@@ -1320,7 +1320,7 @@ init_treeview (GtkWidget *treeview, LmplayerPlaylist *playlist)
 
 	init_columns (GTK_TREE_VIEW (treeview), playlist);
 
-	gtk_tree_view_set_headers_visible(treeview, FALSE);
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), FALSE);
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_MULTIPLE);
@@ -1350,8 +1350,6 @@ init_treeview (GtkWidget *treeview, LmplayerPlaylist *playlist)
 					      GDK_ACTION_COPY | GDK_ACTION_MOVE);
 
 	playlist->priv->selection = selection;
-
-	gtk_widget_show (treeview);
 }
 
 static void
@@ -1610,8 +1608,6 @@ lmplayer_playlist_init (LmplayerPlaylist *playlist)
 
 	/* The configuration */
 	init_config (playlist);
-
-	gtk_widget_show_all (GTK_WIDGET (playlist));
 }
 
 GtkWidget*
