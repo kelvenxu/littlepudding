@@ -511,7 +511,7 @@ lmplayer_action_pause(LmplayerObject *lmplayer)
 void
 lmplayer_action_exit(LmplayerObject *lmplayer)
 {
-	GdkDisplay *display = NULL;
+	//GdkDisplay *display = NULL;
 
 	lmplayer_debug(" ");
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
@@ -526,6 +526,7 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	g_thread_create ((GThreadFunc) lmplayer_action_wait_force_exit,
 			 NULL, FALSE, NULL);
 	
+	/*
 	if (gtk_main_level () > 0)
 	{
 		lmplayer_debug(" gtk main quit");
@@ -579,6 +580,7 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 
 	if (display != NULL)
 		gdk_display_sync (display);
+	*/
 
 	if (lmplayer->bvw) 
 	{
@@ -605,6 +607,7 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	if (lmplayer->gc)
 		g_object_unref (G_OBJECT (lmplayer->gc));
 
+	/*
 	if (lmplayer->pl_win)
 		gtk_widget_destroy (GTK_WIDGET (lmplayer->pl_win));
 
@@ -626,8 +629,9 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 		gtk_widget_destroy (GTK_WIDGET (lmplayer->win));
 		//gtk_main_quit ();
 	}
+	*/
 
-	lmplayer_debug(" ");
+	gtk_main_quit();
 	g_object_unref (lmplayer);
 	exit (0);
 }

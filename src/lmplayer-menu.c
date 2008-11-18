@@ -105,14 +105,17 @@ void mute_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
 	// FIXME: how to mute?
 	SkinCheckButton *button;
-	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-lyric");
+	static double old_volume;
+	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-mute");
 	if(skin_check_button_get_active(button))
 	{
+		old_volume = bacon_video_widget_get_volume(lmplayer->bvw);
 		lmplayer_action_volume_relative(lmplayer, -1.0);
 	}
 	else
 	{
-		lmplayer_action_volume_relative(lmplayer, 0.1);
+		//lmplayer_action_volume_relative(lmplayer, old_volume);
+		bacon_video_widget_set_volume(lmplayer->bvw, old_volume);
 	}
 }
 
