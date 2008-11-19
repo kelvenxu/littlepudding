@@ -83,6 +83,8 @@ struct _LmplayerObject
 	LmplayerPlaylist *playlist;
 	//GtkWidget *
 	
+	gboolean minimode;
+
 	/* Volume */
 	//GtkWidget *volume; //FIXME:
 	SkinHScale *volume;

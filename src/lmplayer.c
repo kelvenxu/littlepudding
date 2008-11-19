@@ -311,6 +311,14 @@ lmplayer_info_update(LmplayerObject *lmplayer)
 			"format", duration,
 			NULL);
 
+	info = (SkinDynamicText *)skin_builder_get_object(lmplayer->builder, "mini-info");
+	g_object_set(G_OBJECT(info), 
+			"title", title,
+			"artist", artist,
+			"album", album,
+			"format", duration,
+			NULL);
+
 	g_free (artist);
 	g_free (title);
 	g_free (album);
@@ -323,16 +331,26 @@ play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 	SkinButton *play, *stop, *pause;
 
 	lmplayer_debug(" ");
-	play = (SkinButton*)skin_builder_get_object(lmplayer->builder, "player-play");
-	stop = (SkinButton*)skin_builder_get_object(lmplayer->builder, "player-stop");
-	pause = (SkinButton*)skin_builder_get_object(lmplayer->builder, "player-pause");
+	if(lmplayer->minimode)
+	{
+		play = (SkinButton*)skin_builder_get_object(lmplayer->builder, "mini-play");
+		stop = (SkinButton*)skin_builder_get_object(lmplayer->builder, "mini-stop");
+		pause = (SkinButton*)skin_builder_get_object(lmplayer->builder, "mini-pause");
+	}
+	else
+	{
+		play = (SkinButton*)skin_builder_get_object(lmplayer->builder, "player-play");
+		stop = (SkinButton*)skin_builder_get_object(lmplayer->builder, "player-stop");
+		pause = (SkinButton*)skin_builder_get_object(lmplayer->builder, "player-pause");
+	}
 
-	if (state == lmplayer->state)
-		return;
+	//if (state == lmplayer->state)
+	//	return;
 
 	switch (state)
 	{
 	case STATE_PLAYING:
+		lmplayer_debug("playing");
 		lmplayer_statusbar_set_text(lmplayer, _("Status: Playing"));
 		lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_PLAYING);
 		skin_button_hide(play);
@@ -656,6 +674,8 @@ lmplayer_action_minimode(LmplayerObject *lmplayer, gboolean minimode)
 {
 	SkinCheckButton *button;
 
+	lmplayer->minimode = minimode;
+
 	if(minimode)
 	{
 		gtk_widget_hide(GTK_WIDGET(lmplayer->pl_win));
@@ -681,6 +701,9 @@ lmplayer_action_minimode(LmplayerObject *lmplayer, gboolean minimode)
 		if(skin_check_button_get_active(button))
 			gtk_widget_show_all(GTK_WIDGET(lmplayer->eq_win));
 	}
+
+	lmplayer_debug("play_pause_set_label");
+	play_pause_set_label(lmplayer, lmplayer->state);
 }
 
 static void
@@ -1121,13 +1144,14 @@ void
 seek_slider_changed_cb (GtkAdjustment *adj, LmplayerObject *lmplayer)
 {
 	double pos;
-	gint time;
+	//gint time;
 
-	if (lmplayer->seek_lock == FALSE)
-		return;
+	//if (lmplayer->seek_lock == FALSE)
+	//	return;
 
-	pos = gtk_adjustment_get_value (adj) / 65535;
-	time = bacon_video_widget_get_stream_length(lmplayer->bvw);
+	//pos = gtk_adjustment_get_value (adj) / 65535;
+	//time = bacon_video_widget_get_stream_length(lmplayer->bvw);
+
 	//lmplayer_statusbar_set_time_and_length (LMPLAYER_STATUSBAR(lmplayer->statusbar),
 	//		(int) (pos * time / 1000), time / 1000);
 	/*
@@ -1136,6 +1160,7 @@ seek_slider_changed_cb (GtkAdjustment *adj, LmplayerObject *lmplayer)
 			 (int) (pos * time), time);
 	*/
 
+	pos = skin_hscale_get_value(lmplayer->seek);
 	if(bacon_video_widget_can_direct_seek(lmplayer->bvw) != FALSE)
 		lmplayer_action_seek(lmplayer, pos);
 }
@@ -1143,7 +1168,7 @@ seek_slider_changed_cb (GtkAdjustment *adj, LmplayerObject *lmplayer)
 gboolean
 seek_slider_released_cb(GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer)
 {
-	GtkAdjustment *adj;
+	//GtkAdjustment *adj;
 	gdouble val;
 
 	/* set to FALSE here to avoid triggering a final seek when
@@ -1151,8 +1176,9 @@ seek_slider_released_cb(GtkWidget *widget, GdkEventButton *event, LmplayerObject
 	lmplayer->seek_lock = FALSE;
 
 	/* sync both adjustments */
-	adj = gtk_range_get_adjustment (GTK_RANGE (widget));
-	val = gtk_adjustment_get_value (adj);
+	//adj = gtk_range_get_adjustment (GTK_RANGE (widget));
+	//val = gtk_adjustment_get_value (adj);
+	val = skin_hscale_get_value(lmplayer->seek);
 
 	if(bacon_video_widget_can_direct_seek(lmplayer->bvw) == FALSE)
 		lmplayer_action_seek(lmplayer, val / 65535.0);
@@ -1372,7 +1398,8 @@ static gboolean
 main_window_destroy_cb (GtkWidget *widget, GdkEvent *event, LmplayerObject *lmplayer)
 {
 	lmplayer_debug("window destroy");
-	g_assert(LMPLAYER_IS_OBJECT(lmplayer));
+	//g_assert(LMPLAYER_IS_OBJECT(lmplayer));
+	
 	lmplayer_debug("window destroy");
 	lmplayer_action_exit (lmplayer);
 	lmplayer_debug("window destroy");
@@ -1438,11 +1465,17 @@ static void lmplayer_callback_connect(LmplayerObject *lmplayer)
 	g_signal_connect(G_OBJECT(lmplayer->win), "delete-event", 
 			G_CALLBACK(main_window_destroy_cb), lmplayer);
 
+	g_signal_connect(G_OBJECT(lmplayer->mini_win), "delete-event", 
+			G_CALLBACK(main_window_destroy_cb), lmplayer);
+
 	g_signal_connect(G_OBJECT(lmplayer->win), "window-state-event",
 			G_CALLBACK(main_window_state_changed_cb), lmplayer);
 
 	g_signal_connect(G_OBJECT(lmplayer->volume), "value-changed",
 			G_CALLBACK(lmplayer_volume_value_changed_cb), lmplayer);
+
+	g_signal_connect(G_OBJECT(lmplayer->seek), "value-changed",
+			G_CALLBACK(seek_slider_changed_cb), lmplayer);
 }
 
 static gboolean
@@ -1949,6 +1982,7 @@ main (int argc, char* argv[])
 		g_warning("No mini mode window");
 	}
 
+	lmplayer->minimode = FALSE;
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->win));
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->pl_win));
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->lyric_win));
