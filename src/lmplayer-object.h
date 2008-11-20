@@ -91,7 +91,7 @@ struct _LmplayerObject
 	gboolean volume_sensitive;
 
 	//GtkActionGroup *main_action_group;
-	//GtkUIManager *ui_manager;
+	GtkUIManager *menus;
 
 	BaconMessageConnection* conn;
 	GVolumeMonitor* monitor;

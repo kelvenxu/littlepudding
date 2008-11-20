@@ -63,7 +63,6 @@ static gboolean lmplayer_action_open_files (LmplayerObject *lmplayer, char **lis
 static gboolean lmplayer_action_open_dialog (LmplayerObject *lmplayer, const char *path, gboolean play);
 static gboolean lmplayer_action_open_files_list (LmplayerObject *lmplayer, GSList *list);
 
-
 gboolean seek_slider_pressed_cb (GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer);
 void seek_slider_changed_cb (GtkAdjustment *adj, LmplayerObject *lmplayer);
 gboolean seek_slider_released_cb(GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer);
@@ -945,6 +944,8 @@ lmplayer_action_open_dialog (LmplayerObject *lmplayer, const char *path, gboolea
 {
 	GSList *filenames;
 	gboolean playlist_modified;
+
+	g_return_val_if_fail(LMPLAYER_IS_OBJECT(lmplayer), FALSE);
 
 	filenames = lmplayer_add_files (GTK_WINDOW (lmplayer->win), path);
 
@@ -2002,6 +2003,7 @@ main (int argc, char* argv[])
 	lmplayer_setup_file_monitoring(lmplayer);
 	lmplayer_setup_file_filters();
 	lmplayer_callback_connect(lmplayer);
+	lmplayer_setup_toolbar(lmplayer);
 
 	lmplayer_options_process_late(lmplayer, &optionstate);
 

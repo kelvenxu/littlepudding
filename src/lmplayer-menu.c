@@ -24,6 +24,7 @@
 
 #include "lmplayer-menu.h"
 #include "lmplayer.h"
+#include "lmplayer-debug.h"
 
 void play_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void pause_action_callback(GtkAction *action, LmplayerObject *lmplayer);
@@ -72,6 +73,8 @@ void stop_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 
 void open_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
+	lmplayer_debug(" ");
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
 	lmplayer_action_open(lmplayer);
 }
 
@@ -207,6 +210,20 @@ void eq_close_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 	skin_check_button_set_active(button, FALSE);
 }
 
+void toolbar_add_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+	GtkWidget *menu;
+
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+	g_return_if_fail(GTK_IS_UI_MANAGER(lmplayer->menus));
+
+	menu = gtk_ui_manager_get_widget(lmplayer->menus, "/Add");
+	g_return_if_fail(GTK_IS_MENU(menu));
+
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
+			1, gtk_get_current_event_time());
+}
+
 void lmplayer_ui_manager_setup (LmplayerObject *lmplayer)
 {
 	SkinButton *button;
@@ -296,5 +313,101 @@ void lmplayer_ui_manager_setup (LmplayerObject *lmplayer)
 
 	button = (SkinButton*)skin_builder_get_object(builder, "mini-exit");
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(quit_action_callback), lmplayer);
+
+	// toolbar
+	SkinToggleButton *tb;
+	tb = (SkinToggleButton*)skin_builder_get_object(builder, "toolbar-add");
+	g_signal_connect(G_OBJECT(tb), "clicked", G_CALLBACK(toolbar_add_action_callback), lmplayer);
 }
 
+void activate_action(GtkAction *action, LmplayerObject *lmplayer)
+{
+	printf("active actions\n");
+}
+
+static GtkActionEntry entries[] = {
+  { "New", GTK_STOCK_NEW,                      /* name, stock id */
+    "_New", "<control>N",                      /* label, accelerator */
+    "Create a new file",                       /* tooltip */ 
+    G_CALLBACK (activate_action) },      
+  { "Open", GTK_STOCK_OPEN,                    /* name, stock id */
+    "_Open","<control>O",                      /* label, accelerator */     
+    "Open a file",                             /* tooltip */
+    G_CALLBACK (open_action_callback) }, 
+  { "Save", GTK_STOCK_SAVE,                    /* name, stock id */
+    "_Save","<control>S",                      /* label, accelerator */     
+    "Save current file",                       /* tooltip */
+    G_CALLBACK (activate_action) },
+  { "SaveAs", GTK_STOCK_SAVE,                  /* name, stock id */
+    "Save _As...", NULL,                       /* label, accelerator */     
+    "Save to a file",                          /* tooltip */
+    G_CALLBACK (activate_action) },
+  { "Quit", GTK_STOCK_QUIT,                    /* name, stock id */
+    "_Quit", "<control>Q",                     /* label, accelerator */     
+    "Quit",                                    /* tooltip */
+    G_CALLBACK (activate_action) },
+  { "About", NULL,                             /* name, stock id */
+    "_About", "<control>A",                    /* label, accelerator */     
+    "About",                                   /* tooltip */  
+    G_CALLBACK (activate_action) },
+};
+
+static guint n_entries = G_N_ELEMENTS (entries);
+
+enum {
+  COLOR_RED,
+  COLOR_GREEN,
+  COLOR_BLUE
+};
+
+static GtkRadioActionEntry color_entries[] = {
+  { "Red", NULL,                               /* name, stock id */
+    "_Red", "<control>R",                      /* label, accelerator */     
+    "Blood", COLOR_RED },                      /* tooltip, value */
+  { "Green", NULL,                             /* name, stock id */
+    "_Green", "<control>G",                    /* label, accelerator */     
+    "Grass", COLOR_GREEN },                    /* tooltip, value */
+  { "Blue", NULL,                              /* name, stock id */
+    "_Blue", "<control>B",                     /* label, accelerator */     
+    "Sky", COLOR_BLUE },                       /* tooltip, value */
+};
+
+static guint n_color_entries = G_N_ELEMENTS (color_entries);
+
+static const gchar *ui_info = 
+"<ui>"
+"  <popup name='Add'>"
+"	 <menuitem name='new' action='New'/>"
+"    <menuitem name='open' action='Open'/>"
+"    <menuitem name='about' action='About'/>"
+"  </popup>"
+"</ui>";
+
+void
+lmplayer_setup_toolbar(LmplayerObject *lmplayer)
+{
+	GtkActionGroup *actions;
+	//GtkUIManager *ui;
+	
+	actions = gtk_action_group_new("ToolbarActions");
+	gtk_action_group_add_actions(actions, entries, n_entries, lmplayer);
+	/*
+	gtk_action_group_add_radio_actions(actions, 
+			color_entries, n_color_entries,
+			COLOR_RED,
+			G_CALLBACK(activate_radio_action),
+			NULL);
+	*/
+
+	lmplayer->menus = gtk_ui_manager_new();
+	gtk_ui_manager_insert_action_group(lmplayer->menus, actions, 0);
+	gtk_window_add_accel_group(GTK_WINDOW(lmplayer->win), gtk_ui_manager_get_accel_group(lmplayer->menus));
+	g_object_unref(actions);
+
+	gtk_ui_manager_add_ui_from_string(lmplayer->menus, ui_info, -1, NULL);
+
+	GtkWidget *menu;
+	menu = gtk_ui_manager_get_widget(lmplayer->menus, "/Add");
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
+			1, gtk_get_current_event_time());
+}

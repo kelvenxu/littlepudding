@@ -28,5 +28,6 @@
 #include "lmplayer-object.h"
 
 void lmplayer_ui_manager_setup (LmplayerObject *lmplayer);
+void lmplayer_setup_toolbar(LmplayerObject *lmplayer);
 
 #endif /*__LMPLAYER_MENU_H__ */
