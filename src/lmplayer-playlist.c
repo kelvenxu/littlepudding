@@ -52,14 +52,14 @@ static void lmplayer_playlist_clear_with_compare (LmplayerPlaylist *playlist,
 					       gconstpointer data);
 
 /* Callback function for GtkBuilder */
-void lmplayer_playlist_save_files (GtkWidget *widget, LmplayerPlaylist *playlist);
-void lmplayer_playlist_add_files (GtkWidget *widget, LmplayerPlaylist *playlist);
-void playlist_remove_button_clicked (GtkWidget *button, LmplayerPlaylist *playlist);
-void lmplayer_playlist_up_files (GtkWidget *widget, LmplayerPlaylist *playlist);
-void lmplayer_playlist_down_files (GtkWidget *widget, LmplayerPlaylist *playlist);
+//void lmplayer_playlist_save_files (GtkWidget *widget, LmplayerPlaylist *playlist);
+//void lmplayer_playlist_add_files (GtkWidget *widget, LmplayerPlaylist *playlist);
+//void playlist_remove_button_clicked (GtkWidget *button, LmplayerPlaylist *playlist);
+//void lmplayer_playlist_up_files (GtkWidget *widget, LmplayerPlaylist *playlist);
+//void lmplayer_playlist_down_files (GtkWidget *widget, LmplayerPlaylist *playlist);
 void playlist_copy_location_action_callback (GtkAction *action, LmplayerPlaylist *playlist);
 void playlist_select_subtitle_action_callback (GtkAction *action, LmplayerPlaylist *playlist);
-void playlist_remove_action_callback (GtkAction *action, LmplayerPlaylist *playlist);
+//void playlist_remove_action_callback (GtkAction *action, LmplayerPlaylist *playlist);
 
 
 typedef struct {
@@ -749,7 +749,7 @@ update_current_from_playlist (LmplayerPlaylist *playlist)
 }
 
 void
-lmplayer_playlist_add_files (GtkWidget *widget, LmplayerPlaylist *playlist)
+lmplayer_playlist_add_files (LmplayerPlaylist *playlist)
 {
 	GSList *filenames, *l;
 
@@ -929,6 +929,12 @@ playlist_remove_action_callback (GtkAction *action, LmplayerPlaylist *playlist)
 	playlist_remove_files (playlist);
 }
 
+void 
+lmplayer_playlist_remove_files (LmplayerPlaylist *playlist)
+{
+	playlist_remove_files (playlist);
+}
+
 static void
 lmplayer_playlist_save_playlist (LmplayerPlaylist *playlist, char *filename, gint active_format)
 {
@@ -988,7 +994,7 @@ lmplayer_playlist_save_add_format_combo_box (GtkFileChooser *fc)
 }
 
 void
-lmplayer_playlist_save_files (GtkWidget *widget, LmplayerPlaylist *playlist)
+lmplayer_playlist_save_files (LmplayerPlaylist *playlist)
 {
 	GtkWidget *fs, *combo_box;
 	char *filename;
@@ -1156,13 +1162,13 @@ lmplayer_playlist_move_files (LmplayerPlaylist *playlist, gboolean direction_up)
 }
 
 void
-lmplayer_playlist_up_files (GtkWidget *widget, LmplayerPlaylist *playlist)
+lmplayer_playlist_up_files (LmplayerPlaylist *playlist)
 {
 	lmplayer_playlist_move_files (playlist, TRUE);
 }
 
 void
-lmplayer_playlist_down_files (GtkWidget *widget, LmplayerPlaylist *playlist)
+lmplayer_playlist_down_files (LmplayerPlaylist *playlist)
 {
 	lmplayer_playlist_move_files (playlist, FALSE);
 }

@@ -138,6 +138,12 @@ void       lmplayer_playlist_foreach (LmplayerPlaylist *playlist,
 				   LmplayerPlaylistForeachFunc callback,
 				   gpointer user_data);
 
+void		lmplayer_playlist_save_files (LmplayerPlaylist *playlist);
+void		lmplayer_playlist_add_files (LmplayerPlaylist *playlist);
+void		lmplayer_playlist_remove_files (LmplayerPlaylist *playlist);
+void		lmplayer_playlist_up_files (LmplayerPlaylist *playlist);
+void		lmplayer_playlist_down_files (LmplayerPlaylist *playlist);
+
 G_END_DECLS
 
 #endif /* LMPLAYER_PLAYLIST_H */

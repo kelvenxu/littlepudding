@@ -32,7 +32,9 @@ void next_music_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void prev_music_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void stop_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void open_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void open_location_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void quit_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+
 void minimode_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void mini_minimode_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void minimize_action_callback(GtkAction *action, LmplayerObject *lmplayer);
@@ -45,6 +47,18 @@ void playlist_show_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void playlist_close_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void eq_show_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void eq_close_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+
+void toolbar_add_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void toolbar_remove_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void toolbar_list_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void toolbar_sort_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+
+void add_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void add_direction_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void remove_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void up_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void down_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void save_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 
 void play_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
@@ -76,6 +90,10 @@ void open_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 	lmplayer_debug(" ");
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
 	lmplayer_action_open(lmplayer);
+}
+
+void open_location_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
 }
 
 void quit_action_callback(GtkAction *action, LmplayerObject *lmplayer)
@@ -210,6 +228,35 @@ void eq_close_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 	skin_check_button_set_active(button, FALSE);
 }
 
+void add_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+	lmplayer_playlist_add_files(lmplayer->playlist);
+}
+
+void add_direction_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+}
+
+void remove_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+	lmplayer_playlist_remove_files(lmplayer->playlist);
+}
+
+void up_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+	lmplayer_playlist_up_files(lmplayer->playlist);
+}
+
+void down_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+	lmplayer_playlist_down_files(lmplayer->playlist);
+}
+
+void save_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+	lmplayer_playlist_save_files(lmplayer->playlist);
+}
+
 void toolbar_add_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
 	GtkWidget *menu;
@@ -224,6 +271,47 @@ void toolbar_add_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 			1, gtk_get_current_event_time());
 }
 
+void toolbar_remove_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+	GtkWidget *menu;
+
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+	g_return_if_fail(GTK_IS_UI_MANAGER(lmplayer->menus));
+
+	menu = gtk_ui_manager_get_widget(lmplayer->menus, "/Remove");
+	g_return_if_fail(GTK_IS_MENU(menu));
+
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
+			1, gtk_get_current_event_time());
+}
+
+void toolbar_list_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+	GtkWidget *menu;
+
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+	g_return_if_fail(GTK_IS_UI_MANAGER(lmplayer->menus));
+
+	menu = gtk_ui_manager_get_widget(lmplayer->menus, "/List");
+	g_return_if_fail(GTK_IS_MENU(menu));
+
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
+			1, gtk_get_current_event_time());
+}
+
+void toolbar_sort_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+	GtkWidget *menu;
+
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+	g_return_if_fail(GTK_IS_UI_MANAGER(lmplayer->menus));
+
+	menu = gtk_ui_manager_get_widget(lmplayer->menus, "/Sort");
+	g_return_if_fail(GTK_IS_MENU(menu));
+
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
+			1, gtk_get_current_event_time());
+}
 void lmplayer_ui_manager_setup (LmplayerObject *lmplayer)
 {
 	SkinButton *button;
@@ -318,38 +406,58 @@ void lmplayer_ui_manager_setup (LmplayerObject *lmplayer)
 	SkinToggleButton *tb;
 	tb = (SkinToggleButton*)skin_builder_get_object(builder, "toolbar-add");
 	g_signal_connect(G_OBJECT(tb), "clicked", G_CALLBACK(toolbar_add_action_callback), lmplayer);
-}
 
-void activate_action(GtkAction *action, LmplayerObject *lmplayer)
-{
-	printf("active actions\n");
+	tb = (SkinToggleButton*)skin_builder_get_object(builder, "toolbar-remove");
+	g_signal_connect(G_OBJECT(tb), "clicked", G_CALLBACK(toolbar_remove_action_callback), lmplayer);
+
+	tb = (SkinToggleButton*)skin_builder_get_object(builder, "toolbar-list");
+	g_signal_connect(G_OBJECT(tb), "clicked", G_CALLBACK(toolbar_list_action_callback), lmplayer);
+
+	tb = (SkinToggleButton*)skin_builder_get_object(builder, "toolbar-sort");
+	g_signal_connect(G_OBJECT(tb), "clicked", G_CALLBACK(toolbar_sort_action_callback), lmplayer);
 }
 
 static GtkActionEntry entries[] = {
-  { "New", GTK_STOCK_NEW,                      /* name, stock id */
-    "_New", "<control>N",                      /* label, accelerator */
-    "Create a new file",                       /* tooltip */ 
-    G_CALLBACK (activate_action) },      
+  { "Add", GTK_STOCK_ADD,
+	  "_Add", "<control>A",
+	  "Add files to playlist",
+	  G_CALLBACK (add_action_callback) },
+  { "Remove", GTK_STOCK_REMOVE,
+	  "_Remove", "<control>R",
+	  "Remove files from playlist",
+	  G_CALLBACK (remove_action_callback) },
+  { "AddDirection", NULL,
+	  "Add _Direction", "<control>D",
+	  "Add all files in given direction",
+	  G_CALLBACK (add_direction_action_callback) },
   { "Open", GTK_STOCK_OPEN,                    /* name, stock id */
     "_Open","<control>O",                      /* label, accelerator */     
     "Open a file",                             /* tooltip */
     G_CALLBACK (open_action_callback) }, 
+  { "OpenLocation", NULL,
+	  "Open _Location", "<control>L",
+	  "Open url",
+	  G_CALLBACK (open_location_action_callback) },
   { "Save", GTK_STOCK_SAVE,                    /* name, stock id */
     "_Save","<control>S",                      /* label, accelerator */     
     "Save current file",                       /* tooltip */
-    G_CALLBACK (activate_action) },
-  { "SaveAs", GTK_STOCK_SAVE,                  /* name, stock id */
-    "Save _As...", NULL,                       /* label, accelerator */     
-    "Save to a file",                          /* tooltip */
-    G_CALLBACK (activate_action) },
+    G_CALLBACK (save_action_callback) },
+  { "Up", GTK_STOCK_GO_UP,
+	  "Move _Up", NULL,
+	  "Move items up",
+	  G_CALLBACK (up_action_callback) },
+  { "Down", GTK_STOCK_GO_DOWN,
+	  "Move _Down", NULL,
+	  "Move items down",
+	  G_CALLBACK (down_action_callback) },
   { "Quit", GTK_STOCK_QUIT,                    /* name, stock id */
     "_Quit", "<control>Q",                     /* label, accelerator */     
     "Quit",                                    /* tooltip */
-    G_CALLBACK (activate_action) },
+    G_CALLBACK (quit_action_callback) },
   { "About", NULL,                             /* name, stock id */
     "_About", "<control>A",                    /* label, accelerator */     
     "About",                                   /* tooltip */  
-    G_CALLBACK (activate_action) },
+    G_CALLBACK (quit_action_callback) },
 };
 
 static guint n_entries = G_N_ELEMENTS (entries);
@@ -377,9 +485,19 @@ static guint n_color_entries = G_N_ELEMENTS (color_entries);
 static const gchar *ui_info = 
 "<ui>"
 "  <popup name='Add'>"
-"	 <menuitem name='new' action='New'/>"
-"    <menuitem name='open' action='Open'/>"
-"    <menuitem name='about' action='About'/>"
+"	 <menuitem name='Add' action='Add'/>"
+"    <menuitem name='AddDirection' action='AddDirection'/>"
+"    <menuitem name='OpenLocation' action='OpenLocation'/>"
+"  </popup>"
+"  <popup name='Remove'>"
+"    <menuitem name='Remove' action='Remove'/>"
+"  </popup>"
+"  <popup name='Sort'>"
+"    <menuitem name='Up' action='Up'/>"
+"    <menuitem name='Down' action='Down'/>"
+"  </popup>"
+"  <popup name='List'>"
+"    <menuitem name='Save' action='Save'/>"
 "  </popup>"
 "</ui>";
 
@@ -387,7 +505,6 @@ void
 lmplayer_setup_toolbar(LmplayerObject *lmplayer)
 {
 	GtkActionGroup *actions;
-	//GtkUIManager *ui;
 	
 	actions = gtk_action_group_new("ToolbarActions");
 	gtk_action_group_add_actions(actions, entries, n_entries, lmplayer);
@@ -401,13 +518,10 @@ lmplayer_setup_toolbar(LmplayerObject *lmplayer)
 
 	lmplayer->menus = gtk_ui_manager_new();
 	gtk_ui_manager_insert_action_group(lmplayer->menus, actions, 0);
-	gtk_window_add_accel_group(GTK_WINDOW(lmplayer->win), gtk_ui_manager_get_accel_group(lmplayer->menus));
+	gtk_window_add_accel_group(GTK_WINDOW(lmplayer->win), 
+			gtk_ui_manager_get_accel_group(lmplayer->menus));
 	g_object_unref(actions);
 
 	gtk_ui_manager_add_ui_from_string(lmplayer->menus, ui_info, -1, NULL);
-
-	GtkWidget *menu;
-	menu = gtk_ui_manager_get_widget(lmplayer->menus, "/Add");
-	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
-			1, gtk_get_current_event_time());
 }
+
