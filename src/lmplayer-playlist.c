@@ -60,6 +60,8 @@ static void lmplayer_playlist_clear_with_compare (LmplayerPlaylist *playlist,
 void playlist_copy_location_action_callback (GtkAction *action, LmplayerPlaylist *playlist);
 void playlist_select_subtitle_action_callback (GtkAction *action, LmplayerPlaylist *playlist);
 //void playlist_remove_action_callback (GtkAction *action, LmplayerPlaylist *playlist);
+void playlist_remove_button_clicked (GtkWidget *button, LmplayerPlaylist *playlist);
+void playlist_remove_action_callback (GtkAction *action, LmplayerPlaylist *playlist);
 
 
 typedef struct {

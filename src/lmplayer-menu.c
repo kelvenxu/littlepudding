@@ -52,6 +52,7 @@ void toolbar_add_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void toolbar_remove_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void toolbar_list_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void toolbar_sort_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void toolbar_mode_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 
 void add_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void add_direction_action_callback(GtkAction *action, LmplayerObject *lmplayer);
@@ -59,6 +60,12 @@ void remove_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void up_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void down_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void save_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void repeat_action_callback(GtkToggleAction *action, LmplayerObject *lmplayer);
+void shuffle_action_callback(GtkToggleAction *action, LmplayerObject *lmplayer);
+
+void skins_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void preferences_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void about_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 
 void play_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
@@ -257,6 +264,30 @@ void save_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 	lmplayer_playlist_save_files(lmplayer->playlist);
 }
 
+void repeat_action_callback(GtkToggleAction *action, LmplayerObject *lmplayer)
+{
+	lmplayer_playlist_set_repeat(lmplayer->playlist,
+			gtk_toggle_action_get_active(action));
+}
+
+void shuffle_action_callback(GtkToggleAction *action, LmplayerObject *lmplayer)
+{
+	lmplayer_playlist_set_shuffle(lmplayer->playlist,
+			gtk_toggle_action_get_active(action));
+}
+
+void skins_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+}
+
+void preferences_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+}
+
+void about_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+}
+
 void toolbar_add_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
 	GtkWidget *menu;
@@ -312,6 +343,21 @@ void toolbar_sort_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
 			1, gtk_get_current_event_time());
 }
+
+void toolbar_mode_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+	GtkWidget *menu;
+
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+	g_return_if_fail(GTK_IS_UI_MANAGER(lmplayer->menus));
+
+	menu = gtk_ui_manager_get_widget(lmplayer->menus, "/Mode");
+	g_return_if_fail(GTK_IS_MENU(menu));
+
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
+			1, gtk_get_current_event_time());
+}
+
 void lmplayer_ui_manager_setup (LmplayerObject *lmplayer)
 {
 	SkinButton *button;
@@ -415,9 +461,32 @@ void lmplayer_ui_manager_setup (LmplayerObject *lmplayer)
 
 	tb = (SkinToggleButton*)skin_builder_get_object(builder, "toolbar-sort");
 	g_signal_connect(G_OBJECT(tb), "clicked", G_CALLBACK(toolbar_sort_action_callback), lmplayer);
+
+	tb = (SkinToggleButton*)skin_builder_get_object(builder, "toolbar-mode");
+	g_signal_connect(G_OBJECT(tb), "clicked", G_CALLBACK(toolbar_mode_action_callback), lmplayer);
 }
 
 static GtkActionEntry entries[] = {
+  { "Play", GTK_STOCK_MEDIA_PLAY,
+	  "_Play", "<control>P",
+	  "Start playing",
+	  G_CALLBACK (play_action_callback) },
+  { "Pause", GTK_STOCK_MEDIA_PAUSE,
+	  "P_ause", "<control>A",
+	  "Pause",
+	  G_CALLBACK (pause_action_callback) },
+  { "Stop", GTK_STOCK_MEDIA_STOP,
+	  "_Stop", "<control>S",
+	  "Stop playing",
+	  G_CALLBACK (stop_action_callback) },
+  { "Next", GTK_STOCK_MEDIA_NEXT,
+	  "_Next", "<control>N",
+	  "Goto next song",
+	  G_CALLBACK (next_music_action_callback) },
+  { "Previous", GTK_STOCK_MEDIA_PREVIOUS,
+	  "Pre_vious", "<control>V",
+	  "Goto previous song",
+	  G_CALLBACK (prev_music_action_callback) },
   { "Add", GTK_STOCK_ADD,
 	  "_Add", "<control>A",
 	  "Add files to playlist",
@@ -447,9 +516,17 @@ static GtkActionEntry entries[] = {
 	  "Move items up",
 	  G_CALLBACK (up_action_callback) },
   { "Down", GTK_STOCK_GO_DOWN,
-	  "Move _Down", NULL,
+	  "Move _Down", "<control>D",
 	  "Move items down",
 	  G_CALLBACK (down_action_callback) },
+  { "Skins", NULL,
+	  "S_kins", "<control>K",
+	  "Select a skin for player",
+	  G_CALLBACK (skins_action_callback) },
+  { "Preferences", GTK_STOCK_PREFERENCES,
+	  "Pre_ferences", "<control>F",
+	  "Preferences",
+	  G_CALLBACK (preferences_action_callback) },
   { "Quit", GTK_STOCK_QUIT,                    /* name, stock id */
     "_Quit", "<control>Q",                     /* label, accelerator */     
     "Quit",                                    /* tooltip */
@@ -457,30 +534,24 @@ static GtkActionEntry entries[] = {
   { "About", NULL,                             /* name, stock id */
     "_About", "<control>A",                    /* label, accelerator */     
     "About",                                   /* tooltip */  
-    G_CALLBACK (quit_action_callback) },
+    G_CALLBACK (about_action_callback) },
 };
-
 static guint n_entries = G_N_ELEMENTS (entries);
 
-enum {
-  COLOR_RED,
-  COLOR_GREEN,
-  COLOR_BLUE
+static GtkToggleActionEntry toggle_entries[] = {
+  { "Repeat", GTK_STOCK_REFRESH,
+	  "_Repeat", "<control>R",
+	  "Repeat playing the songs",
+	  G_CALLBACK (repeat_action_callback),
+	  FALSE },
+  { "Shuffle", NULL,
+	  "_Shuffle", "<control>S",
+	  "Shuffle playing the songs",
+	  G_CALLBACK (shuffle_action_callback),
+	  FALSE },
 };
+static guint n_toggle_entries = G_N_ELEMENTS (toggle_entries);
 
-static GtkRadioActionEntry color_entries[] = {
-  { "Red", NULL,                               /* name, stock id */
-    "_Red", "<control>R",                      /* label, accelerator */     
-    "Blood", COLOR_RED },                      /* tooltip, value */
-  { "Green", NULL,                             /* name, stock id */
-    "_Green", "<control>G",                    /* label, accelerator */     
-    "Grass", COLOR_GREEN },                    /* tooltip, value */
-  { "Blue", NULL,                              /* name, stock id */
-    "_Blue", "<control>B",                     /* label, accelerator */     
-    "Sky", COLOR_BLUE },                       /* tooltip, value */
-};
-
-static guint n_color_entries = G_N_ELEMENTS (color_entries);
 
 static const gchar *ui_info = 
 "<ui>"
@@ -499,6 +570,34 @@ static const gchar *ui_info =
 "  <popup name='List'>"
 "    <menuitem name='Save' action='Save'/>"
 "  </popup>"
+"  <popup name='Mode'>"
+"    <menuitem name='Repeat' action='Repeat'/>"
+"    <menuitem name='Shuffle' action='Shuffle'/>"
+"  </popup>"
+"  <popup name='MainMenu'>"
+"    <separator/>"
+"	 <menuitem name='Open' action='Open'/>"
+"	 <menuitem name='OpenLocation' action='OpenLocation'/>"
+"	 <menuitem name='Add' action='Add'/>"
+"    <menuitem name='AddDirection' action='AddDirection'/>"
+"    <separator/>"
+"    <menuitem name='Play' action='Play'/>"
+"    <menuitem name='Pause' action='Pause'/>"
+"    <menuitem name='Stop' action='Stop'/>"
+"    <menuitem name='Next' action='Next'/>"
+"    <menuitem name='Previous' action='Previous'/>"
+"    <separator/>"
+"    <menuitem name='Repeat' action='Repeat'/>"
+"    <menuitem name='Shuffle' action='Shuffle'/>"
+"    <separator/>"
+"    <menuitem name='Skins' action='Skins'/>"
+"    <separator/>"
+"    <menuitem name='Preferences' action='Preferences'/>"
+"    <separator/>"
+"    <menuitem name='About' action='About'/>"
+"    <menuitem name='Quit' action='Quit'/>"
+"    <separator/>"
+"  </popup>"
 "</ui>";
 
 void
@@ -508,13 +607,9 @@ lmplayer_setup_toolbar(LmplayerObject *lmplayer)
 	
 	actions = gtk_action_group_new("ToolbarActions");
 	gtk_action_group_add_actions(actions, entries, n_entries, lmplayer);
-	/*
-	gtk_action_group_add_radio_actions(actions, 
-			color_entries, n_color_entries,
-			COLOR_RED,
-			G_CALLBACK(activate_radio_action),
-			NULL);
-	*/
+	gtk_action_group_add_toggle_actions(actions, 
+			toggle_entries, n_toggle_entries,
+			lmplayer);
 
 	lmplayer->menus = gtk_ui_manager_new();
 	gtk_ui_manager_insert_action_group(lmplayer->menus, actions, 0);

@@ -648,7 +648,9 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	}
 	*/
 
-	gtk_main_quit();
+	if (gtk_main_level () > 0)
+		gtk_main_quit();
+
 	g_object_unref (lmplayer);
 	exit (0);
 }
@@ -1455,9 +1457,31 @@ main_window_state_changed_cb (GtkWidget *widget, GdkEventWindowState *event, Lmp
 	return FALSE;
 }
 
+static void 
+main_window_right_button_press_cb(SkinWindow *win, LmplayerObject *lmplayer)
+{
+	GtkWidget *menu;
+
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+	g_return_if_fail(GTK_IS_UI_MANAGER(lmplayer->menus));
+
+	menu = gtk_ui_manager_get_widget(lmplayer->menus, "/MainMenu");
+	g_return_if_fail(GTK_IS_MENU(menu));
+
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
+			1, gtk_get_current_event_time());
+
+}
+
 static void lmplayer_callback_connect(LmplayerObject *lmplayer)
 {
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+
+	g_signal_connect(G_OBJECT(lmplayer->win), "right-button-press", 
+			G_CALLBACK(main_window_right_button_press_cb), lmplayer);
+
+	g_signal_connect(G_OBJECT(lmplayer->mini_win), "right-button-press", 
+			G_CALLBACK(main_window_right_button_press_cb), lmplayer);
 
 	//g_signal_connect(G_OBJECT(lmplayer->win), "destroy", 
 	//		G_CALLBACK(main_window_destroy_cb), lmplayer);
