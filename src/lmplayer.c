@@ -1340,6 +1340,7 @@ playlist_shuffle_toggled_cb (LmplayerPlaylist *playlist, gboolean shuffle, Lmpla
 static void playlist_widget_setup(LmplayerObject *lmplayer)
 {
 	GnomeCanvasItem *item;
+	GtkAdjustment *adj;
 	LmplayerPlaylist *playlist = NULL;
 
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
@@ -1364,10 +1365,14 @@ static void playlist_widget_setup(LmplayerObject *lmplayer)
 			&(lmplayer->ar->playlist->attr.color_bg));
 	
 	item = (GnomeCanvasItem*)skin_builder_get_object(lmplayer->builder, "playlist-playlistbox");
+	SkinScrollBar *scrollbar = (SkinScrollBar *)skin_builder_get_object(lmplayer->builder, "playlist-scrollbar");
 	
 	gnome_canvas_item_set(item, 
 			"widget", lmplayer->playlist,
 			NULL);
+
+	adj = gtk_tree_view_get_vadjustment(GTK_TREE_VIEW(lmplayer->playlist));
+	skin_scroll_bar_set_adjustment(scrollbar, adj);
 
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->playlist));
 
