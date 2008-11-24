@@ -27,6 +27,8 @@
 
 #include "lmplayer-object.h"
 
+#define SHOW_PLAYING_NO_TRACKS "NONE"
+
 void lmplayer_action_play (LmplayerObject *lmplayer);
 void lmplayer_action_play_media (LmplayerObject *lmplayer, TotemDiscMediaType type, const char *device);
 void lmplayer_action_stop (LmplayerObject *lmplayer);
@@ -53,5 +55,6 @@ void lmplayer_action_volume_relative (LmplayerObject *lmplayer, double off_pct);
 
 void lmplayer_action_load_lyric(LmplayerObject *lmplayer);
 void lmplayer_action_load_default_playlist(LmplayerObject *lmplayer);
+void lmplayer_action_seek_relative(LmplayerObject *lmplayer, gint64 offset);
 
 #endif /*__LMPLAYER_H__ */

@@ -69,6 +69,7 @@ lmplayer_SOURCES = 					\
 	lmplayer.c lmplayer.h				\
 	lmplayer-object.c					\
 	lmplayer-object.h					\
+	lmplayer-remote-command.h\
 	$(LMPLAYERMARSHALFILES)				\
 	lmplayer-options.c lmplayer-options.h	 \
 	lmplayer-playlist.c lmplayer-playlist.h  \

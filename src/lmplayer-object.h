@@ -38,6 +38,16 @@
 
 G_BEGIN_DECLS
 
+#define SEEK_FORWARD_OFFSET 60
+#define SEEK_BACKWARD_OFFSET -15
+
+#define VOLUME_DOWN_OFFSET (-0.08)
+#define VOLUME_UP_OFFSET (0.08)
+
+#define ZOOM_IN_OFFSET 1
+#define ZOOM_OUT_OFFSET -1
+
+
 #define LMPLAYER_TYPE_OBJECT (lmplayer_object_get_type ())
 #define LMPLAYER_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), LMPLAYER_TYPE_OBJECT, LmplayerObject))
 #define LMPLAYER_OBJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), LMPLAYER_TYPE_OBJECT, LmplayerObjectClass))

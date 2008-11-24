@@ -533,19 +533,11 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	//GdkDisplay *display = NULL;
 
 	lmplayer_debug(" ");
-	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
-
-	if(lmplayer->playlist && lmplayer->pls)
-	{
-		lmplayer_playlist_save_current_playlist(lmplayer->playlist, lmplayer->pls);
-		g_free(lmplayer->pls);
-	}
 
 	/* Exit forcefully if we can't do the shutdown in 10 seconds */
 	g_thread_create ((GThreadFunc) lmplayer_action_wait_force_exit,
 			 NULL, FALSE, NULL);
 	
-	/*
 	if (gtk_main_level () > 0)
 	{
 		lmplayer_debug(" gtk main quit");
@@ -555,6 +547,13 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	if (lmplayer == NULL)
 		exit (0);
 
+	if(lmplayer->playlist && lmplayer->pls)
+	{
+		lmplayer_playlist_save_current_playlist(lmplayer->playlist, lmplayer->pls);
+		g_free(lmplayer->pls);
+	}
+
+	/*
 	if (lmplayer->pl_win != NULL) 
 	{
 		gtk_widget_hide(GTK_WIDGET(lmplayer->pl_win));
@@ -789,6 +788,54 @@ lmplayer_action_load_default_playlist(LmplayerObject *lmplayer)
 		lmplayer_playlist_add_mrl(lmplayer->playlist, uri, NULL);
 		g_free(uri);
 	}
+}
+
+static void
+lmplayer_seek_time_rel(LmplayerObject *lmplayer, gint64 time, gboolean relative)
+{
+	GError *err = NULL;
+	gint64 sec;
+
+	if (lmplayer->mrl == NULL)
+		return;
+	if (bacon_video_widget_is_seekable (lmplayer->bvw) == FALSE)
+		return;
+
+	//totem_statusbar_set_seeking (TOTEM_STATUSBAR (totem->statusbar), TRUE);
+	//totem_time_label_set_seeking (TOTEM_TIME_LABEL (totem->fs->time_label), TRUE);
+
+	if (relative != FALSE) {
+		gint64 oldmsec;
+		oldmsec = bacon_video_widget_get_current_time (lmplayer->bvw);
+		sec = MAX (0, oldmsec + time);
+	} else {
+		sec = time;
+	}
+
+	bacon_video_widget_seek_time (lmplayer->bvw, sec, &err);
+
+	//totem_statusbar_set_seeking (TOTEM_STATUSBAR (totem->statusbar), FALSE);
+	//totem_time_label_set_seeking (TOTEM_TIME_LABEL (totem->fs->time_label), FALSE);
+
+	if (err != NULL)
+	{
+		char *msg, *disp;
+
+		disp = lmplayer_uri_escape_for_display (lmplayer->mrl);
+		msg = g_strdup_printf(_("Totem could not play '%s'."), disp);
+		g_free (disp);
+
+		lmplayer_action_stop (lmplayer);
+		lmplayer_action_error (msg, err->message, lmplayer);
+		g_free (msg);
+		g_error_free (err);
+	}
+}
+
+void
+lmplayer_action_seek_relative(LmplayerObject *lmplayer, gint64 offset)
+{
+	lmplayer_seek_time_rel(lmplayer, offset, TRUE);
 }
 
 static void
@@ -1873,7 +1920,7 @@ lmplayer_message_connection_receive_cb (const char *msg, LmplayerObject *lmp)
 	else
 		url = NULL;
 
-	lmplayer_debug(" ");
+	lmplayer_debug("url: %s", url);
 	lmplayer_action_remote (lmp, command, url);
 	lmplayer_debug(" ");
 
@@ -1885,19 +1932,15 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmpRemoteCommand cmd, const ch
 {
 	gboolean handled = TRUE;
 
-	lmplayer_debug(" ");
 	switch (cmd) {
 	case LMP_REMOTE_COMMAND_PLAY:
-		g_print("remote command: play\n");
 		lmplayer_action_play(lmplayer);
 		break;
 	case LMP_REMOTE_COMMAND_PLAYPAUSE:
-		g_print("remote command: playpause\n");
 		lmplayer_action_play_pause(lmplayer);
 		break;
 	case LMP_REMOTE_COMMAND_PAUSE:
 		lmplayer_action_pause(lmplayer);
-		g_print("remote command: pause\n");
 		break;
 	case LMP_REMOTE_COMMAND_STOP:
 		{
@@ -1915,85 +1958,143 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmpRemoteCommand cmd, const ch
 			}
 		};
 	case LMP_REMOTE_COMMAND_SEEK_FORWARD:
-		g_print("\n");
-		break;
+		{
+			double offset = 0;
+
+			if (url != NULL)
+				offset = g_ascii_strtod(url, NULL);
+			if (offset == 0)
+				lmplayer_action_seek_relative(lmplayer, SEEK_FORWARD_OFFSET * 1000);
+			else
+				lmplayer_action_seek_relative(lmplayer,  offset * 1000);
+			break;
+		}
 	case LMP_REMOTE_COMMAND_SEEK_BACKWARD:
-		g_print("\n");
-		break;
+		{
+			double offset = 0;
+
+			if (url != NULL)
+				offset = g_ascii_strtod(url, NULL);
+			if (offset == 0)
+				lmplayer_action_seek_relative(lmplayer, SEEK_BACKWARD_OFFSET * 1000);
+			else
+				lmplayer_action_seek_relative(lmplayer,  - (offset * 1000));
+			break;
+		}
 	case LMP_REMOTE_COMMAND_VOLUME_UP:
-		g_print("\n");
+		lmplayer_action_volume_relative(lmplayer, VOLUME_UP_OFFSET);
 		break;
 	case LMP_REMOTE_COMMAND_VOLUME_DOWN:
-		g_print("\n");
+		lmplayer_action_volume_relative(lmplayer, VOLUME_DOWN_OFFSET);
 		break;
 	case LMP_REMOTE_COMMAND_NEXT:
-		g_print("\n");
+		lmplayer_action_next(lmplayer);
 		break;
 	case LMP_REMOTE_COMMAND_PREVIOUS:
-		g_print("\n");
+		lmplayer_action_previous(lmplayer);
 		break;
 	case LMP_REMOTE_COMMAND_FULLSCREEN:
-		g_print("\n");
+		g_print(_("Do nothing!\n"));
 		break;
 	case LMP_REMOTE_COMMAND_QUIT:
-		g_print("\n");
+		lmplayer_action_exit(lmplayer);
 		break;
 	case LMP_REMOTE_COMMAND_ENQUEUE:
-		g_print("\n");
+		g_assert(url != NULL);
+		lmplayer_playlist_add_mrl_with_cursor(lmplayer->playlist, url, NULL);
 		break;
 	case LMP_REMOTE_COMMAND_REPLACE:
-		g_print("\n");
+		lmplayer_playlist_clear(lmplayer->playlist);
+		if(url == NULL)
+		{
+			bacon_video_widget_close(lmplayer->bvw);
+			lmplayer_file_closed(lmplayer);
+			lmplayer_action_set_mrl(lmplayer, NULL, NULL);
+			break;
+		}
+		if(strcmp(url, "dvd:") == 0)
+		{
+			lmplayer_action_play_media(lmplayer, MEDIA_TYPE_DVD, NULL);
+		}
+		else if(strcmp(url, "vcd:") == 0)
+		{
+			lmplayer_action_play_media(lmplayer, MEDIA_TYPE_VCD, NULL);
+		}
+		else if(g_str_has_prefix(url, "dvb:") != FALSE)
+		{
+			lmplayer_action_load_media(lmplayer, MEDIA_TYPE_DVB, "0");
+		}
+		else
+			lmplayer_playlist_add_mrl_with_cursor(lmplayer->playlist, url, NULL);
 		break;
 	case LMP_REMOTE_COMMAND_SHOW:
-		g_print("\n");
+		gtk_window_present(GTK_WINDOW(lmplayer->win));
 		break;
 	case LMP_REMOTE_COMMAND_TOGGLE_CONTROLS:
-		g_print("\n");
+		g_print(_("Do nothing!\n"));
 		break;
 	case LMP_REMOTE_COMMAND_SHOW_PLAYING:
-		g_print("\n");
+		{
+			char *title;
+			gboolean custom;
+
+			title = lmplayer_playlist_get_current_title(lmplayer->playlist, &custom);
+			bacon_message_connection_send(lmplayer->conn,
+					title ? title : SHOW_PLAYING_NO_TRACKS);
+			g_free (title);
+		}
 		break;
 	case LMP_REMOTE_COMMAND_SHOW_VOLUME:
-		g_print("\n");
+		{
+			char *vol_str;
+			int vol;
+
+			if (bacon_video_widget_can_set_volume(lmplayer->bvw) == FALSE)
+				vol = 0;
+			else
+				vol = bacon_video_widget_get_volume(lmplayer->bvw);
+			vol_str = g_strdup_printf ("%d", vol);
+			bacon_message_connection_send(lmplayer->conn, vol_str);
+			g_free (vol_str);
+		}
 		break;
 	case LMP_REMOTE_COMMAND_UP:
-		g_print("\n");
+		g_print(_("Do nothing!\n"));
 		break;
 	case LMP_REMOTE_COMMAND_DOWN:
-		g_print("\n");
+		g_print(_("Do nothing!\n"));
 		break;
 	case LMP_REMOTE_COMMAND_LEFT:
-		g_print("\n");
+		g_print(_("Do nothing!\n"));
 		break;
 	case LMP_REMOTE_COMMAND_RIGHT:
-		g_print("\n");
+		g_print(_("Do nothing!\n"));
 		break;
 	case LMP_REMOTE_COMMAND_SELECT:
-		g_print("\n");
+		g_print(_("Do nothing!\n"));
 		break;
 	case LMP_REMOTE_COMMAND_DVD_MENU:
-		g_print("\n");
+		g_print(_("Do nothing!\n"));
 		break;
 	case LMP_REMOTE_COMMAND_ZOOM_UP:
-		g_print("\n");
+		g_print(_("Do nothing!\n"));
 		break;
 	case LMP_REMOTE_COMMAND_ZOOM_DOWN:
-		g_print("\n");
+		g_print(_("Do nothing!\n"));
 		break;
 	case LMP_REMOTE_COMMAND_EJECT:
-		g_print("\n");
+		g_print(_("Do nothing!\n"));
 		break;
 	case LMP_REMOTE_COMMAND_PLAY_DVD:
-		g_print("\n");
+		g_print(_("Do nothing!\n"));
 		break;
 	case LMP_REMOTE_COMMAND_MUTE:
-		g_print("\n");
+		lmplayer_action_volume_relative(lmplayer, -1.0);
 		break;
 	default:
 		handled = FALSE;
 		break;
 	}
-	lmplayer_debug(" ");
 }
 
 int 
