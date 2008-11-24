@@ -74,6 +74,9 @@ struct _LmplayerObject
 	SkinWindow *eq_win;
 	SkinWindow *mini_win;
 
+	SkinLyric *lyricview;
+	gboolean has_lyric;
+
 	LmplayerNotebook *notebook;
 	BaconVideoWidget *bvw;
 	GtkWidget *statusbar;

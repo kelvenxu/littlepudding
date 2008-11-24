@@ -394,12 +394,14 @@ lmplayer_action_play (LmplayerObject *lmplayer)
 	if (bacon_video_widget_is_playing (lmplayer->bvw) != FALSE)
 		return;
 
-	
 	retval = bacon_video_widget_play (lmplayer->bvw,  &err);
 	play_pause_set_label(lmplayer, retval ? STATE_PLAYING : STATE_STOPPED);
 
 	if (retval != FALSE)
+	{
+		lmplayer_action_load_lyric(lmplayer);
 		return;
+	}
 
 	disp = lmplayer_uri_escape_for_display (lmplayer->mrl);
 	msg = g_strdup_printf(_("LmplayerObject could not play '%s'."), disp);
@@ -705,6 +707,57 @@ lmplayer_action_minimode(LmplayerObject *lmplayer, gboolean minimode)
 
 	lmplayer_debug("play_pause_set_label");
 	play_pause_set_label(lmplayer, lmplayer->state);
+}
+
+void
+lmplayer_action_load_lyric(LmplayerObject *lmplayer)
+{
+	gchar *fn, *lrc;
+	GError *error = NULL;
+	gboolean flag = FALSE;
+	gint i;
+
+	if(lmplayer->mrl == NULL)
+		return;
+
+	fn = g_filename_from_uri(lmplayer->mrl, NULL, &error);
+	if(fn == NULL)
+	{
+		printf("Not found lyric file: %s\n", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	for(i = strlen(fn) - 1; i >=0; --i)
+	{
+		if(fn[i] == '.')
+		{
+			fn[i] = '\0';
+			flag = TRUE;
+			break;
+		}
+	}
+
+	if(!flag)
+	{
+		lmplayer->has_lyric = FALSE;
+		return;
+	}
+	
+	lrc = g_strdup_printf("%s.lrc", fn);
+
+	if(!g_file_test(lrc, G_FILE_TEST_EXISTS))
+	{
+		lmplayer->has_lyric = FALSE;
+		return;
+	}
+
+	lmplayer->has_lyric = skin_lyric_add_file(lmplayer->lyricview, lrc);
+	printf("lrc: %s\n", lrc);
+
+	g_free(fn);
+	g_free(lrc);
+	printf("fn: %s\n", fn);
 }
 
 static void
@@ -1619,6 +1672,8 @@ update_current_time (BaconVideoWidget *bvw,
 					(gdouble)stream_length / 1000.0,
 					(gdouble)current_time / 1000.0);
 			skin_digital_time_set_value(lmplayer->led, (gdouble)current_time / 1000.0);
+			if(lmplayer->has_lyric)
+				skin_lyric_set_current_second(lmplayer->lyricview, current_time / 1000);
 		}
 
 		//totem_time_label_set_time
@@ -2018,6 +2073,8 @@ main (int argc, char* argv[])
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->lyric_win));
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->eq_win));
 
+	lmplayer->lyricview = SKIN_LYRIC(skin_builder_get_object(lmplayer->builder, "lyric-lyricview"));
+
 	lmplayer_ui_manager_setup(lmplayer);
 	playlist_widget_setup(lmplayer);
 	video_widget_create(lmplayer);
@@ -2051,7 +2108,6 @@ main (int argc, char* argv[])
 				(BaconMessageReceivedFunc)
 				lmplayer_message_connection_receive_cb, lmplayer);
 	}
-
 	
 	const gchar *home = g_getenv("HOME");
 	gchar *cfg_path = g_build_path(G_DIR_SEPARATOR_S, home, ".lmplayer", NULL);
