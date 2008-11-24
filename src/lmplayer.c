@@ -660,6 +660,8 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 void
 lmplayer_action_error (const char *title, const char *reason, LmplayerObject *lmplayer)
 {
+	reset_seek_status(lmplayer);
+	lmplayer_interface_error(title, reason, GTK_WINDOW(lmplayer->win));
 }
 
 void 
@@ -723,7 +725,7 @@ lmplayer_action_load_lyric(LmplayerObject *lmplayer)
 	fn = g_filename_from_uri(lmplayer->mrl, NULL, &error);
 	if(fn == NULL)
 	{
-		printf("Not found lyric file: %s\n", error->message);
+		fprintf(stderr, _("Not found lyric file: %s\n"), error->message);
 		g_error_free(error);
 		return;
 	}
@@ -753,11 +755,40 @@ lmplayer_action_load_lyric(LmplayerObject *lmplayer)
 	}
 
 	lmplayer->has_lyric = skin_lyric_add_file(lmplayer->lyricview, lrc);
-	printf("lrc: %s\n", lrc);
 
 	g_free(fn);
 	g_free(lrc);
-	printf("fn: %s\n", fn);
+}
+
+void 
+lmplayer_action_load_default_playlist(LmplayerObject *lmplayer)
+{
+	const gchar *home;
+	gchar *cfg_path;
+	gchar *uri;
+
+	if(lmplayer->pls == NULL)
+	{
+		home = g_getenv("HOME");
+		cfg_path = g_build_path(G_DIR_SEPARATOR_S, home, ".lmplayer", NULL);
+
+		if(cfg_path != NULL)
+		{
+			lmplayer->pls = g_build_filename(cfg_path, "default_playlist.pls", NULL);
+			g_free(cfg_path);
+
+		}
+
+		if(lmplayer->pls == NULL)
+			return;
+	}
+
+	uri = g_filename_to_uri(lmplayer->pls, NULL, NULL);
+	if(uri != NULL)
+	{
+		lmplayer_playlist_add_mrl(lmplayer->playlist, uri, NULL);
+		g_free(uri);
+	}
 }
 
 static void
@@ -1448,8 +1479,8 @@ static void playlist_widget_setup(LmplayerObject *lmplayer)
 static void lmplayer_action_error_and_exit(const char *title,
 		const char *reason, LmplayerObject *lmplayer)
 {
-	//reset_seek_status (lmplayer);
-	//lmplayer_interface_error_blocking (title, reason, GTK_WINDOW (lmplayer->win));
+	reset_seek_status (lmplayer);
+	lmplayer_interface_error_blocking (title, reason, GTK_WINDOW (lmplayer->win));
 	lmplayer_action_stop (lmplayer);
 	lmplayer_action_exit (lmplayer);
 }
@@ -1624,6 +1655,20 @@ static void
 on_error_event (BaconVideoWidget *bvw, char *message,
                 gboolean playback_stopped, gboolean fatal, LmplayerObject *lmplayer)
 {
+	lmplayer->seek_to = 0;
+	
+	if(playback_stopped)
+		play_pause_set_label(lmplayer, STATE_STOPPED);
+
+	if(fatal == FALSE)
+	{
+		lmplayer_action_error(_("An error occurred"), message, lmplayer);
+	}
+	else
+	{
+		lmplayer_action_error_and_exit(_("An error occurred"),
+				message, lmplayer);
+	}
 }
 
 static void
@@ -1990,7 +2035,8 @@ main (int argc, char* argv[])
 	gc = gconf_client_get_default ();
 	if (gc == NULL)
 	{
-		lmplayer_action_error_and_exit (_("Lmplayer could not initialize the configuration engine."), _("Make sure that GNOME is properly installed."), NULL);
+		lmplayer_action_error_and_exit (_("Lmplayer could not initialize the configuration engine."), 
+				_("Make sure that GNOME is properly installed."), NULL);
 	}
 
 	lmplayer = lmplayer_object_new();
@@ -2109,22 +2155,13 @@ main (int argc, char* argv[])
 				lmplayer_message_connection_receive_cb, lmplayer);
 	}
 	
-	const gchar *home = g_getenv("HOME");
-	gchar *cfg_path = g_build_path(G_DIR_SEPARATOR_S, home, ".lmplayer", NULL);
-	if(cfg_path != NULL)
-	{
-		lmplayer->pls = g_build_filename(cfg_path, "default_playlist.pls", NULL);
-	}
-
-	gchar *uri = g_filename_to_uri(lmplayer->pls, NULL, NULL);
-	lmplayer_playlist_add_mrl(lmplayer->playlist, uri, NULL);
-	g_free(uri);
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->win));
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->pl_win));
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->lyric_win));
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->eq_win));
 	
 	SkinCheckButton *button;
+
 	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-playlist");
 	skin_check_button_set_active(button, TRUE);
 	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-lyric");
@@ -2132,7 +2169,10 @@ main (int argc, char* argv[])
 	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-equalizer");
 	skin_check_button_set_active(button, TRUE);
 
+	lmplayer_action_load_default_playlist(lmplayer);
+
 	gtk_main();
 	return 0;
 }
+
 

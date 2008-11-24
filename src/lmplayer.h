@@ -52,4 +52,6 @@ void lmplayer_action_minimode(LmplayerObject *lmplayer, gboolean minimode);
 void lmplayer_action_volume_relative (LmplayerObject *lmplayer, double off_pct);
 
 void lmplayer_action_load_lyric(LmplayerObject *lmplayer);
+void lmplayer_action_load_default_playlist(LmplayerObject *lmplayer);
+
 #endif /*__LMPLAYER_H__ */
