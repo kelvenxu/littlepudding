@@ -78,6 +78,8 @@
 #define DEFAULT_HEIGHT 420
 #define DEFAULT_WIDTH  315
 
+#define EQ_NBANDS 10
+
 #define is_error(e, d, c) \
   (e->domain == GST_##d##_ERROR && \
    e->code == GST_##d##_ERROR_##c)
@@ -129,6 +131,7 @@ struct BaconVideoWidgetPrivate
   BaconVideoWidgetAspectRatio  ratio_type;
 
   GstElement                  *play;
+  GstElement				  *equalizer;
   GstXOverlay                 *xoverlay;      /* protect with lock */
   GstColorBalance             *balance;       /* protect with lock */
   guint                        col_update_id; /* protect with lock */
@@ -162,6 +165,9 @@ struct BaconVideoWidgetPrivate
   VisualsQuality               visq;
   gchar                       *vis_element_name;
   GstElement                  *audio_capsfilter;
+
+  /* EQ */
+  gdouble					  eq_gains[EQ_NBANDS];
 
   /* Other stuff */
   gint                         xpos, ypos;
@@ -5305,14 +5311,22 @@ bacon_video_widget_new (int width, int height,
 
     bvw->priv->audio_capsfilter =
         gst_element_factory_make ("capsfilter", "audiofilter");
+    bvw->priv->equalizer =
+        gst_element_factory_make ("equalizer-10bands", "equalizer");
     bin = gst_bin_new ("audiosinkbin");
     gst_bin_add_many (GST_BIN (bin), bvw->priv->audio_capsfilter,
+		bvw->priv->equalizer,
         audio_sink, NULL);
+    //gst_element_link_pads (bvw->priv->audio_capsfilter, "src",
+     //   audio_sink, "sink");
     gst_element_link_pads (bvw->priv->audio_capsfilter, "src",
+        bvw->priv->equalizer, "sink");
+    gst_element_link_pads (bvw->priv->equalizer, "src",
         audio_sink, "sink");
 
     pad = gst_element_get_pad (bvw->priv->audio_capsfilter, "sink");
     gst_element_add_pad (bin, gst_ghost_pad_new ("sink", pad));
+	
     gst_object_unref (pad);
 
     audio_sink = bin;
@@ -5458,6 +5472,32 @@ sink_error:
 
     return NULL;
   }
+}
+
+void
+bacon_video_widget_set_equalizer_gain(BaconVideoWidget *bvw, gdouble *gains)
+{
+	gint i;
+	for(i = 0; i < EQ_NBANDS; ++i)
+	{
+		GstObject *band;
+		band = gst_child_proxy_get_child_by_index(GST_CHILD_PROXY(bvw->priv->equalizer), i);
+		g_object_set(G_OBJECT(band), "gain", gains[i], NULL);
+	}
+}
+
+gdouble *
+bacon_video_widget_get_equalizer_gain(BaconVideoWidget *bvw)
+{
+	gint i;
+	GstObject *band;
+
+	for(i = 0; i < EQ_NBANDS; ++i)
+	{
+		band = gst_child_proxy_get_child_by_index(GST_CHILD_PROXY(bvw->priv->equalizer), i);
+		g_object_get(G_OBJECT(band), "gain", &(bvw->priv->eq_gains[i]), NULL);
+	}
+	return bvw->priv->eq_gains;
 }
 
 /*

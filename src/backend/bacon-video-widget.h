@@ -343,6 +343,9 @@ gboolean bacon_video_widget_set_audio_out_type   (BaconVideoWidget *bvw,
 						  BaconVideoWidgetAudioOutType
 						  type);
 
+void bacon_video_widget_set_equalizer_gain(BaconVideoWidget *bvw, gdouble *gains);
+gdouble * bacon_video_widget_get_equalizer_gain(BaconVideoWidget *bvw);
+
 G_END_DECLS
 
 #endif				/* HAVE_BACON_VIDEO_WIDGET_H */

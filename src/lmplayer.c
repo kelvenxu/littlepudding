@@ -1903,6 +1903,60 @@ video_widget_create (LmplayerObject *lmplayer)
 }
 
 static void
+eqfactor_value_changed_cb(SkinVScale *vscale, LmplayerObject *lmplayer)
+{
+	gdouble *gains;
+	gdouble value;
+	gchar name[24];
+	gint i;
+
+	gains = bacon_video_widget_get_equalizer_gain(lmplayer->bvw);
+
+	for(i = 0; i < 10; ++i)
+	{
+		SkinVScale *scale;
+		sprintf(name, "equalizer-eqfactor%d", i);
+		scale = (SkinVScale*)skin_builder_get_object(lmplayer->builder, name);
+		g_object_get(G_OBJECT(scale), 
+				"value", &value,
+				NULL);
+
+		gains[i] = value / 100.0 * (12.0 - (-24.0)) + (-24.0);
+	}
+
+	bacon_video_widget_set_equalizer_gain(lmplayer->bvw, gains);
+}
+
+static void
+lmplayer_equalizer_setup(LmplayerObject *lmplayer)
+{
+	gchar name[24];
+	gdouble *gains;
+	gdouble value;
+	gint i;
+
+	gains = bacon_video_widget_get_equalizer_gain(lmplayer->bvw);
+
+	for(i = 0; i < 10; ++i)
+	{
+		SkinVScale *vscale;
+		sprintf(name, "equalizer-eqfactor%d", i);
+		vscale = (SkinVScale*)skin_builder_get_object(lmplayer->builder, name);
+
+		value = (gains[i] - (-24.0)) / (12.0 - (-24.0)) * 100.0 + 0.0;
+		g_object_set(G_OBJECT(vscale), 
+				//"min", -24.0,
+				//"max", 12.0,
+				"min", 0.0,
+				"max", 100.0,
+				"value", value,
+				NULL);
+		g_signal_connect(G_OBJECT(vscale), "value_changed", 
+				G_CALLBACK(eqfactor_value_changed_cb), lmplayer);
+	}
+}
+
+static void
 lmplayer_message_connection_receive_cb (const char *msg, LmplayerObject *lmp)
 {
 	char *command_str, *url;
@@ -2271,6 +2325,7 @@ main (int argc, char* argv[])
 	skin_check_button_set_active(button, TRUE);
 
 	lmplayer_action_load_default_playlist(lmplayer);
+	lmplayer_equalizer_setup(lmplayer);
 
 	gtk_main();
 	return 0;
