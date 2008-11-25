@@ -34,6 +34,7 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <totem-disc.h>
+
 #include "lmplayer.h"
 #include "lmplayer-options.h"
 #include "lmplayer-interface.h"
@@ -43,7 +44,6 @@
 #include "lmplayer-encode.h"
 #include "lmplayer-utils.h"
 #include "lmplayer-debug.h"
-//#include "lmplayer-statusbar.h"
 #include "lmplayer-skin.h"
 
 #define REWIND_OR_PREVIOUS 4000
@@ -1113,6 +1113,71 @@ void
 lmplayer_action_open(LmplayerObject *lmplayer)
 {
 	lmplayer_action_open_dialog(lmplayer, NULL, TRUE);
+}
+
+static void
+lmplayer_open_location_destroy (LmplayerObject *lmplayer)
+{
+	if (lmplayer->open_location != NULL) {
+		g_object_remove_weak_pointer (G_OBJECT (lmplayer->open_location), (gpointer *)&(lmplayer->open_location));
+		gtk_widget_destroy (GTK_WIDGET (lmplayer->open_location));
+		lmplayer->open_location = NULL;
+	}
+}
+
+static void
+lmplayer_open_location_response_cb (GtkDialog *dialog, gint response, LmplayerObject *lmplayer)
+{
+	char *uri;
+
+	if (response != GTK_RESPONSE_OK) {
+		lmplayer_open_location_destroy (lmplayer);
+		return;
+	}
+
+	gtk_widget_hide (GTK_WIDGET (dialog));
+
+	/* Open the specified URI */
+	uri = lmplayer_open_location_get_uri (lmplayer->open_location);
+
+	if (uri != NULL)
+	{
+		char *mrl, *subtitle;
+		const char *filenames[2];
+
+		filenames[0] = uri;
+		filenames[1] = NULL;
+		lmplayer_action_open_files (lmplayer, (char **) filenames);
+
+		mrl = lmplayer_playlist_get_current_mrl (lmplayer->playlist, &subtitle);
+		lmplayer_action_set_mrl_and_play (lmplayer, mrl, subtitle);
+		g_free (mrl);
+		g_free (subtitle);
+	}
+ 	g_free (uri);
+
+	lmplayer_open_location_destroy (lmplayer);
+}
+void 
+lmplayer_action_open_location(LmplayerObject *lmplayer)
+{
+	if(lmplayer->open_location != NULL)
+	{
+		gtk_window_present(GTK_WINDOW(lmplayer->open_location));
+	}
+
+	lmplayer->open_location = LMPLAYER_OPEN_LOCATION(lmplayer_open_location_new(lmplayer));
+
+	g_signal_connect(G_OBJECT(lmplayer->open_location), "delete-event",
+			G_CALLBACK(gtk_widget_destroy), NULL);
+	g_signal_connect(G_OBJECT(lmplayer->open_location), "response",
+			G_CALLBACK(lmplayer_open_location_response_cb), lmplayer);
+
+	g_object_add_weak_pointer(G_OBJECT(lmplayer->open_location), (gpointer *)&(lmplayer->open_location));
+
+	gtk_window_set_transient_for(GTK_WINDOW(lmplayer->open_location),
+			GTK_WINDOW(lmplayer->win));
+	gtk_widget_show(GTK_WIDGET(lmplayer->open_location));
 }
 
 gboolean

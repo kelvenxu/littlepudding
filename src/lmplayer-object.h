@@ -30,11 +30,13 @@
 #include <gconf/gconf-client.h>
 #include <gtk/gtk.h>
 #include <libskin/skin.h>
+
 #include "bacon-message-connection.h"
 #include <totem-pl-parser.h>
 #include "bacon-video-widget.h"
 #include "lmplayer-notebook.h"
 #include "lmplayer-playlist.h"
+#include "lmplayer-open-location.h"
 
 G_BEGIN_DECLS
 
@@ -129,6 +131,8 @@ struct _LmplayerObject
 
 	LmplayerStates state;
 	gint64 stream_length;
+
+	LmplayerOpenLocation *open_location;
 };
 
 struct _LmplayerObjectClass
@@ -149,6 +153,7 @@ GType lmplayer_object_get_type();
 LmplayerObject* lmplayer_object_new();
 
 void lmplayer_action_open(LmplayerObject *lmplayer);
+void lmplayer_action_open_location(LmplayerObject *lmplayer);
 
 void lmplayer_file_opened (LmplayerObject *lmplayer, const char *mrl);
 void lmplayer_file_closed (LmplayerObject *lmplayer);

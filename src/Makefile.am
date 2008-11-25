@@ -78,6 +78,7 @@ lmplayer_SOURCES = 					\
 	lmplayer-statusbar.c lmplayer-statusbar.h  \
 	lmplayer-dvb-setup.c lmplayer-dvb-setup.h\
 	lmplayer-interface.c lmplayer-interface.h\
+	lmplayer-open-location.c lmplayer-open-location.h\
 	lmplayer-encode.c lmplayer-encode.h\
 	lmplayer-debug.c lmplayer-debug.h \
 	lmplayer-utils.c lmplayer-utils.h \

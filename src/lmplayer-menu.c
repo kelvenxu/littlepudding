@@ -22,8 +22,14 @@
  * Boston, MA 02111-1307, USA.
  * */
 
+#include "config.h"
+
+#include <gtk/gtk.h>
+#include <glib/gi18n.h>
+
 #include "lmplayer-menu.h"
 #include "lmplayer.h"
+#include "lmplayer-interface.h"
 #include "lmplayer-debug.h"
 
 void play_action_callback(GtkAction *action, LmplayerObject *lmplayer);
@@ -94,13 +100,12 @@ void stop_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 
 void open_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
-	lmplayer_debug(" ");
-	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
 	lmplayer_action_open(lmplayer);
 }
 
 void open_location_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
+	lmplayer_action_open_location(lmplayer);
 }
 
 void quit_action_callback(GtkAction *action, LmplayerObject *lmplayer)
@@ -286,6 +291,40 @@ void preferences_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 
 void about_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
+	char *backend_version, *description;
+
+	const char *authors[] =
+	{
+		"Kelven Xu <kelvenxu@gmail.com>",
+		NULL
+	};
+	const char *artists[] = { "Kelven Xu <kelvenxu@gmail.com>", NULL };
+	const char *documenters[] = { "Kelven Xu <kelvenxu@gmail.com>", NULL };
+	char *license = lmplayer_interface_get_license ();
+
+	backend_version = bacon_video_widget_get_backend_name (lmplayer->bvw);
+	/* This lists the back-end type and version, such as
+	 * Movie Player using GStreamer 0.10.1 */
+	description = g_strdup_printf (_("Movie Player using %s"), backend_version);
+
+	gtk_show_about_dialog (GTK_WINDOW (lmplayer->win),
+				     "version", VERSION,
+				     "copyright", _("Copyright \xc2\xa9 2007-2010 Kelven Xu"),
+				     "comments", description,
+				     "authors", authors,
+				     "documenters", documenters,
+				     "artists", artists,
+				     "translator-credits", _("translator-credits"),
+				     "logo-icon-name", "lmplayer",
+				     "license", license,
+				     "wrap-license", TRUE,
+				     "website-label", _("Lmplayer Website"),
+				     "website", "http://www.lmplayer.org/",
+				     NULL);
+
+	g_free (backend_version);
+	g_free (description);
+	g_free (license);
 }
 
 void toolbar_add_action_callback(GtkAction *action, LmplayerObject *lmplayer)
