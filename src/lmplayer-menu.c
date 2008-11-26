@@ -63,6 +63,7 @@ void toolbar_mode_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void add_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void add_direction_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void remove_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void remove_all_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void up_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void down_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void save_action_callback(GtkAction *action, LmplayerObject *lmplayer);
@@ -252,6 +253,12 @@ void add_direction_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 void remove_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
 	lmplayer_playlist_remove_files(lmplayer->playlist);
+}
+
+void remove_all_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+	lmplayer_playlist_clear(lmplayer->playlist);
+	lmplayer_action_stop(lmplayer);
 }
 
 void up_action_callback(GtkAction *action, LmplayerObject *lmplayer)
@@ -534,6 +541,10 @@ static GtkActionEntry entries[] = {
 	  "_Remove", "<control>R",
 	  "Remove files from playlist",
 	  G_CALLBACK (remove_action_callback) },
+  { "RemoveAll", GTK_STOCK_REMOVE,
+	  "_Remove all", "<control>R",
+	  "Clear playlist",
+	  G_CALLBACK (remove_all_action_callback) },
   { "AddDirection", NULL,
 	  "Add _Direction", "<control>D",
 	  "Add all files in given direction",
@@ -601,6 +612,7 @@ static const gchar *ui_info =
 "  </popup>"
 "  <popup name='Remove'>"
 "    <menuitem name='Remove' action='Remove'/>"
+"    <menuitem name='RemoveAll' action='RemoveAll'/>"
 "  </popup>"
 "  <popup name='Sort'>"
 "    <menuitem name='Up' action='Up'/>"

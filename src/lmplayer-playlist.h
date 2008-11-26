@@ -144,6 +144,7 @@ void		lmplayer_playlist_remove_files (LmplayerPlaylist *playlist);
 void		lmplayer_playlist_up_files (LmplayerPlaylist *playlist);
 void		lmplayer_playlist_down_files (LmplayerPlaylist *playlist);
 
+void lmplayer_playlist_set_color(LmplayerPlaylist *playlist, GdkColor *playing_color, GdkColor *noplaying_color);
 G_END_DECLS
 
 #endif /* LMPLAYER_PLAYLIST_H */

@@ -88,6 +88,10 @@ struct LmplayerPlaylistPrivate
 	GtkTreeSelection *selection;
 	TotemPlParser *parser;
 
+	/* color */
+	GdkColor playing_color;
+	GdkColor noplaying_color;
+
 	/* These is the current paths for the file selectors */
 	char *path;
 	char *save_path;
@@ -1231,6 +1235,36 @@ set_playing_icon (GtkTreeViewColumn *column, GtkCellRenderer *renderer,
 	g_object_set (renderer, "stock-id", stock_id, NULL);
 }
 
+static void
+set_playing_color (GtkTreeViewColumn *column, GtkCellRenderer *renderer,
+		  GtkTreeModel *model, GtkTreeIter *iter, LmplayerPlaylist *playlist)
+{
+	LmplayerPlaylistStatus playing;
+
+	gtk_tree_model_get (model, iter, PLAYING_COL, &playing, -1);
+
+	switch (playing) {
+		case LMPLAYER_PLAYLIST_STATUS_PLAYING:
+			g_object_set(renderer,
+					"foreground-gdk", &(playlist->priv->playing_color),
+					"foreground-set", TRUE,
+					"weight", 500,
+					"weight-set", TRUE,
+					NULL);
+			break;
+		default:
+		//case LMPLAYER_PLAYLIST_STATUS_PAUSED:
+			g_object_set(renderer,
+					"foreground-gdk", &(playlist->priv->noplaying_color),
+					"foreground-set", TRUE,
+					"weight-set", FALSE,
+					NULL);
+			break;
+		//default:
+		//	break;
+	}
+}
+
 static GtkTreeModel * 
 create_model()
 {
@@ -1255,12 +1289,13 @@ init_columns (GtkTreeView *treeview, LmplayerPlaylist *playlist)
 	GtkTreeViewColumn *column;
 
 	/* Playing pix */
-	renderer = gtk_cell_renderer_pixbuf_new ();
+	//renderer = gtk_cell_renderer_pixbuf_new ();
+	renderer = gtk_cell_renderer_text_new ();
 	column = gtk_tree_view_column_new ();
 	gtk_tree_view_column_pack_start (column, renderer, FALSE);
 	gtk_tree_view_column_set_cell_data_func (column, renderer,
-			(GtkTreeCellDataFunc) set_playing_icon, playlist, NULL);
-	g_object_set (renderer, "stock-size", GTK_ICON_SIZE_MENU, NULL);
+			(GtkTreeCellDataFunc) set_playing_color, playlist, NULL);
+	//g_object_set (renderer, "stock-size", GTK_ICON_SIZE_MENU, NULL);
 	gtk_tree_view_append_column (treeview, column);
 
 	/* Labels */
@@ -1268,6 +1303,8 @@ init_columns (GtkTreeView *treeview, LmplayerPlaylist *playlist)
 	gtk_tree_view_column_pack_start (column, renderer, TRUE);
 	gtk_tree_view_column_set_attributes (column, renderer,
 			"text", FILENAME_COL, NULL);
+	gtk_tree_view_column_set_cell_data_func (column, renderer,
+			(GtkTreeCellDataFunc) set_playing_color, playlist, NULL);
 }
 
 static void
@@ -2521,4 +2558,29 @@ lmplayer_playlist_foreach (LmplayerPlaylist            *playlist,
 	gtk_tree_model_foreach (playlist->priv->model,
 				lmplayer_playlist_foreach_cb,
 				&context);
+}
+
+void
+lmplayer_playlist_set_color(LmplayerPlaylist *playlist, GdkColor *playing_color, GdkColor *noplaying_color)
+{
+	g_return_if_fail(LMPLAYER_IS_PLAYLIST(playlist));
+
+	playlist->priv->playing_color.red = playing_color->red;
+	playlist->priv->playing_color.green = playing_color->green;
+	playlist->priv->playing_color.blue = playing_color->blue;
+	playlist->priv->playing_color.pixel = playing_color->pixel;
+
+	playlist->priv->noplaying_color.red = noplaying_color->red;
+	playlist->priv->noplaying_color.green = noplaying_color->green;
+	playlist->priv->noplaying_color.blue = noplaying_color->blue;
+	playlist->priv->noplaying_color.pixel = noplaying_color->pixel;
+
+	printf("playing: r: %d, g: %d, b: %d\n",
+		playlist->priv->playing_color.red,
+		playlist->priv->playing_color.green,
+		playlist->priv->playing_color.blue);
+	printf("noplaying: r: %d, g: %d, b: %d\n",
+		playlist->priv->noplaying_color.red,
+		playlist->priv->noplaying_color.green,
+		playlist->priv->noplaying_color.blue);
 }

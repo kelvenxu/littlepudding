@@ -1547,6 +1547,7 @@ static void playlist_widget_setup(LmplayerObject *lmplayer)
 	if(lmplayer->playlist == NULL)
 		lmplayer_action_exit(lmplayer);
 
+	/*
 	gtk_widget_modify_text(GTK_WIDGET(playlist), 
 			GTK_STATE_NORMAL, 
 			&lmplayer->ar->playlist->attr.color_text);
@@ -1556,10 +1557,14 @@ static void playlist_widget_setup(LmplayerObject *lmplayer)
 	gtk_widget_modify_text(GTK_WIDGET(playlist), 
 			GTK_STATE_SELECTED, 
 			&lmplayer->ar->playlist->attr.color_select);
+	*/
 	gtk_widget_modify_base(GTK_WIDGET(playlist), 
 			GTK_STATE_NORMAL, 
 			&(lmplayer->ar->playlist->attr.color_bg));
 	
+	lmplayer_playlist_set_color(playlist, 
+			&(lmplayer->ar->playlist->attr.color_hilight),
+			&(lmplayer->ar->playlist->attr.color_text));
 	item = (GnomeCanvasItem*)skin_builder_get_object(lmplayer->builder, "playlist-playlistbox");
 	SkinScrollBar *scrollbar = (SkinScrollBar *)skin_builder_get_object(lmplayer->builder, "playlist-scrollbar");
 	
