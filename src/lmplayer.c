@@ -45,6 +45,7 @@
 #include "lmplayer-utils.h"
 #include "lmplayer-debug.h"
 #include "lmplayer-skin.h"
+#include "lmplayer-magnetic.h"
 
 #define REWIND_OR_PREVIOUS 4000
 
@@ -2396,6 +2397,7 @@ main (int argc, char* argv[])
 
 	lmplayer_action_load_default_playlist(lmplayer);
 	lmplayer_equalizer_setup(lmplayer);
+	lmplayer_magnetic_activate(lmplayer);
 
 	gtk_main();
 	return 0;
