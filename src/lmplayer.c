@@ -2318,6 +2318,7 @@ main (int argc, char* argv[])
 		lmplayer_action_exit(NULL);
 	}
 	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(lmplayer->pl_win), TRUE);
+	skin_window_set_resizeable(lmplayer->pl_win, TRUE);
 
 	lmplayer->lyric_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "lyric-window"));
 	if(lmplayer->lyric_win == NULL)
@@ -2325,6 +2326,7 @@ main (int argc, char* argv[])
 		lmplayer_action_exit(NULL);
 	}
 	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(lmplayer->lyric_win), TRUE);
+	skin_window_set_resizeable(lmplayer->lyric_win, TRUE);
 
 	lmplayer->eq_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "equalizer-window"));
 	if(lmplayer->eq_win == NULL)
