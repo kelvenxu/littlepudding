@@ -26,8 +26,8 @@
 
 #include "lmplayer-magnetic.h"
 
-#define MAGNET_POWER 32
-#define BORDER 2
+#define MAGNET_POWER 18
+#define BORDER 0
 
 // 指示窗口是否被吸引
 static gboolean lyric_magnetic;
@@ -130,6 +130,9 @@ main_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 	gint star_x, star_y;
 	gint rx, ry;
 	
+	static gint count = 0;
+	if(++count % 8 != 0) return FALSE;
+
 	gtk_window_get_position(win, &new_x, &new_y);
 
 	rx = new_x - old_x;
@@ -163,9 +166,23 @@ pl_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 	GdkRectangle my;
 	GdkRectangle target;
 	
+	static gint count = 0;
+	if(++count % 8 != 0) return FALSE;
+
 	gtk_window_get_rect(GTK_WINDOW(lmplayer->pl_win), &my);
 	gtk_window_get_rect(GTK_WINDOW(lmplayer->win), &target);
 
+	playlist_magnetic = do_magnetize_to(GTK_WINDOW(lmplayer->pl_win), &my, &target);
+
+	if(playlist_magnetic) return FALSE;
+
+	// 主窗口没有粘上，试试别的
+	gtk_window_get_rect(GTK_WINDOW(lmplayer->lyric_win), &target);
+	playlist_magnetic = do_magnetize_to(GTK_WINDOW(lmplayer->pl_win), &my, &target);
+
+	if(playlist_magnetic) return FALSE;
+
+	gtk_window_get_rect(GTK_WINDOW(lmplayer->eq_win), &target);
 	playlist_magnetic = do_magnetize_to(GTK_WINDOW(lmplayer->pl_win), &my, &target);
 
 	return FALSE;
@@ -176,10 +193,23 @@ lyric_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 {
 	GdkRectangle my;
 	GdkRectangle target;
+
+	static gint count = 0;
+	if(++count % 8 != 0) return FALSE;
 	
 	gtk_window_get_rect(GTK_WINDOW(lmplayer->lyric_win), &my);
-	gtk_window_get_rect(GTK_WINDOW(lmplayer->win), &target);
 
+	gtk_window_get_rect(GTK_WINDOW(lmplayer->win), &target);
+	lyric_magnetic = do_magnetize_to(GTK_WINDOW(lmplayer->lyric_win), &my, &target);
+
+	if(lyric_magnetic) return FALSE;
+
+	gtk_window_get_rect(GTK_WINDOW(lmplayer->pl_win), &target);
+	lyric_magnetic = do_magnetize_to(GTK_WINDOW(lmplayer->lyric_win), &my, &target);
+
+	if(lyric_magnetic) return FALSE;
+
+	gtk_window_get_rect(GTK_WINDOW(lmplayer->eq_win), &target);
 	lyric_magnetic = do_magnetize_to(GTK_WINDOW(lmplayer->lyric_win), &my, &target);
 
 	return FALSE;
@@ -190,10 +220,24 @@ eq_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 {
 	GdkRectangle my;
 	GdkRectangle target;
-	
-	gtk_window_get_rect(GTK_WINDOW(lmplayer->eq_win), &my);
-	gtk_window_get_rect(GTK_WINDOW(lmplayer->win), &target);
 
+	static gint count = 0;
+
+	if(++count % 8 != 0) return FALSE;
+
+	gtk_window_get_rect(GTK_WINDOW(lmplayer->eq_win), &my);
+
+	gtk_window_get_rect(GTK_WINDOW(lmplayer->win), &target);
+	eq_magnetic = do_magnetize_to(GTK_WINDOW(lmplayer->eq_win), &my, &target);
+
+	if(eq_magnetic) return FALSE;
+
+	gtk_window_get_rect(GTK_WINDOW(lmplayer->pl_win), &target);
+	eq_magnetic = do_magnetize_to(GTK_WINDOW(lmplayer->eq_win), &my, &target);
+
+	if(eq_magnetic) return FALSE;
+
+	gtk_window_get_rect(GTK_WINDOW(lmplayer->lyric_win), &target);
 	eq_magnetic = do_magnetize_to(GTK_WINDOW(lmplayer->eq_win), &my, &target);
 
 	return FALSE;
