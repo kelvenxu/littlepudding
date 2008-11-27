@@ -53,9 +53,9 @@ lmplayer_magnetic_activate(LmplayerObject *lmplayer)
 {
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
 
-	lyric_magnetic = FALSE;
-	playlist_magnetic = FALSE;
-	eq_magnetic = FALSE;
+	lyric_magnetic = TRUE;
+	playlist_magnetic = TRUE;
+	eq_magnetic = TRUE;
 
 	gtk_window_get_rect(GTK_WINDOW(lmplayer->win), &win_rect);
 
@@ -120,6 +120,7 @@ do_magnetize_to(GtkWindow *win, GdkRectangle *my, GdkRectangle *target)
 		flag = TRUE;
 	}
 
+	printf("flag = %d\n", flag);
 	return flag;
 }
 
@@ -180,11 +181,19 @@ pl_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 	gtk_window_get_rect(GTK_WINDOW(lmplayer->lyric_win), &target);
 	playlist_magnetic = do_magnetize_to(GTK_WINDOW(lmplayer->pl_win), &my, &target);
 
+	// 如果lyric_win粘上，则我也粘上
+	if(playlist_magnetic)
+		playlist_magnetic = lyric_magnetic;
+
 	if(playlist_magnetic) return FALSE;
 
 	gtk_window_get_rect(GTK_WINDOW(lmplayer->eq_win), &target);
 	playlist_magnetic = do_magnetize_to(GTK_WINDOW(lmplayer->pl_win), &my, &target);
 
+	if(playlist_magnetic)
+		playlist_magnetic = eq_magnetic;
+
+	printf("playlist_magnetic = %d\n", playlist_magnetic);
 	return FALSE;
 }
 
@@ -206,11 +215,15 @@ lyric_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 
 	gtk_window_get_rect(GTK_WINDOW(lmplayer->pl_win), &target);
 	lyric_magnetic = do_magnetize_to(GTK_WINDOW(lmplayer->lyric_win), &my, &target);
+	if(lyric_magnetic)
+		lyric_magnetic = playlist_magnetic;
 
 	if(lyric_magnetic) return FALSE;
 
 	gtk_window_get_rect(GTK_WINDOW(lmplayer->eq_win), &target);
 	lyric_magnetic = do_magnetize_to(GTK_WINDOW(lmplayer->lyric_win), &my, &target);
+	if(lyric_magnetic)
+		lyric_magnetic = eq_magnetic;
 
 	return FALSE;
 }
@@ -234,11 +247,15 @@ eq_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 
 	gtk_window_get_rect(GTK_WINDOW(lmplayer->pl_win), &target);
 	eq_magnetic = do_magnetize_to(GTK_WINDOW(lmplayer->eq_win), &my, &target);
+	if(eq_magnetic)
+		eq_magnetic = playlist_magnetic;
 
 	if(eq_magnetic) return FALSE;
 
 	gtk_window_get_rect(GTK_WINDOW(lmplayer->lyric_win), &target);
 	eq_magnetic = do_magnetize_to(GTK_WINDOW(lmplayer->eq_win), &my, &target);
+	if(eq_magnetic)
+		eq_magnetic = lyric_magnetic;
 
 	return FALSE;
 }
