@@ -589,6 +589,7 @@ AC_OUTPUT([
 Makefile
 src/backend/Makefile
 src/Makefile
+lyric-downloader/Makefile
 data/Makefile
 data/lmplayer.desktop.in
 data/icons/Makefile

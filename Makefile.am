@@ -1,4 +1,4 @@
-SUBDIRS=data po src tests 
+SUBDIRS=data po src lyric-downloader tests 
 
 EXTRA_DIST = \
 			 autogen.sh \
