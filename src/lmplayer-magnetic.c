@@ -120,7 +120,6 @@ do_magnetize_to(GtkWindow *win, GdkRectangle *my, GdkRectangle *target)
 		flag = TRUE;
 	}
 
-	printf("flag = %d\n", flag);
 	return flag;
 }
 
@@ -193,7 +192,6 @@ pl_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 	if(playlist_magnetic)
 		playlist_magnetic = eq_magnetic;
 
-	printf("playlist_magnetic = %d\n", playlist_magnetic);
 	return FALSE;
 }
 

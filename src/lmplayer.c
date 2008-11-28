@@ -251,6 +251,29 @@ lmplayer_statusbar_set_text(LmplayerObject *lmplayer, gchar *text)
 	skin_status_bar_set_text(sb, text);
 }
 
+// 取得string类型的metadata, 并将其转换成utf8编码
+static gchar *
+lmplayer_get_metadata_utf8(LmplayerObject *lmplayer, BaconVideoWidgetMetadataType type)
+{
+	gchar *str = NULL;
+	gchar *str_utf8 = NULL;
+	GValue value = { 0, };
+
+	bacon_video_widget_get_metadata(lmplayer->bvw, type, &value);
+	str = g_value_dup_string (&value);
+	g_value_unset (&value);
+
+	printf("str: %s\n", str);
+
+	if(str)
+	{
+		str_utf8 = lmplayer_encode_convert_to_utf8(str);
+		g_free (str);
+	}
+
+	return str_utf8;
+}
+
 static void 
 lmplayer_info_update(LmplayerObject *lmplayer)
 {
@@ -400,6 +423,7 @@ lmplayer_action_play (LmplayerObject *lmplayer)
 
 	if (retval != FALSE)
 	{
+		printf("start load lyric\n");
 		lmplayer_action_load_lyric(lmplayer);
 		return;
 	}
@@ -711,10 +735,16 @@ lmplayer_action_minimode(LmplayerObject *lmplayer, gboolean minimode)
 	play_pause_set_label(lmplayer, lmplayer->state);
 }
 
+static gboolean
+lmplayer_load_local_lyric(LmplayerObject *lmplayer)
+{
+}
+
 void
 lmplayer_action_load_lyric(LmplayerObject *lmplayer)
 {
-	gchar *fn, *lrc;
+	gchar *fn; 
+	gchar *lrc;
 	GError *error = NULL;
 	gboolean flag = FALSE;
 	gint i;
@@ -730,6 +760,7 @@ lmplayer_action_load_lyric(LmplayerObject *lmplayer)
 		return;
 	}
 
+	printf("fn: %s\n", fn);
 	for(i = strlen(fn) - 1; i >=0; --i)
 	{
 		if(fn[i] == '.')
@@ -748,13 +779,20 @@ lmplayer_action_load_lyric(LmplayerObject *lmplayer)
 	
 	lrc = g_strdup_printf("%s.lrc", fn);
 
-	if(!g_file_test(lrc, G_FILE_TEST_EXISTS))
-	{
-		lmplayer->has_lyric = FALSE;
-		return;
-	}
+	if(g_file_test(lrc, G_FILE_TEST_EXISTS))
+		lmplayer->has_lyric = skin_lyric_add_file(lmplayer->lyricview, lrc);
 
-	lmplayer->has_lyric = skin_lyric_add_file(lmplayer->lyricview, lrc);
+	// 如果没有在本地找到歌词，就试着下载
+	if(lmplayer->has_lyric == FALSE)
+	{
+		gchar *title = lmplayer_get_metadata_utf8(lmplayer, BVW_INFO_TITLE);
+		gchar *artist = lmplayer_get_metadata_utf8(lmplayer, BVW_INFO_ARTIST);
+		gchar *cmd = g_strdup_printf("lyric-downloader --title %s --artist %s --output %s",
+				title, artist, lrc);
+		printf("%s\n", cmd);
+		int re = system(cmd);
+		//g_timeout_add(500, lmplayer_load_local_lyric, lmplayer);
+	}
 
 	g_free(fn);
 	g_free(lrc);
