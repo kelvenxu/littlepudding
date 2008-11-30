@@ -31,42 +31,88 @@
 enum {
 	ID_COL,
 	INFO_COL,
+	DATA_COL,
 	NUM_COLS
 };
 
-void query_callback(GtkButton *button, gpointer user_data);
+typedef struct Options
+{
+	gchar *title;
+	gchar *artist;
+	gchar *output;
+} Options;
+
+static Options opt;
+
+const GOptionEntry options[] = {
+	{"title", 't', 0, G_OPTION_ARG_STRING, &opt.title, N_("Song's title"), NULL},
+	{"artist", 'a', 0, G_OPTION_ARG_STRING, &opt.artist, N_("Song's artist"), NULL},
+	{"output", 'o', 0, G_OPTION_ARG_STRING, &opt.output, N_("Save lyric to this file"), NULL}, 
+};
+
+void row_activated_callback(GtkTreeView *treeview, 
+						GtkTreePath *path, 
+						GtkTreeViewColumn *column, 
+						gpointer user_data);
 void download_callback(GtkButton *button, GtkBuilder *builder);
 void cancel_callback(GtkButton *button, gpointer user_data);
 void about_callback(GtkButton *button, GtkBuilder *builder);
 
+static void _do_download(GtkTreeView *treeview);
 static GtkBuilder* lyric_downloader_ui_builder_new();
 static void lyric_downloader_dialog_show(GtkBuilder *builder);
 static void lyric_downloader_set_lyric_list(GtkBuilder *builder, GSList *list);
 
+
 void
-query_callback(GtkButton *button, gpointer user_data)
+row_activated_callback(GtkTreeView *treeview, 
+						GtkTreePath *path, 
+						GtkTreeViewColumn *column, 
+						gpointer user_data)
 {
-	printf("query\n");
+	_do_download(treeview);
+	gtk_main_quit();
 }
 
 void
 download_callback(GtkButton *button, GtkBuilder *builder)
 {
-	printf("download\n");
-	
+	GtkTreeView *treeview;
+	treeview = (GtkTreeView*)gtk_builder_get_object(builder, "items-list");	
+	_do_download(treeview);
+	gtk_main_quit();
 }
 
 void
 cancel_callback(GtkButton *button, gpointer user_data)
 {
-	printf("cancel_callback\n");
 	gtk_main_quit();
 }
 
 void
 about_callback(GtkButton *button, GtkBuilder *builder)
 {
-	printf("about callback\n");
+	gtk_main_quit();
+}
+
+static void
+_do_download(GtkTreeView *treeview)
+{
+	GtkTreeSelection *selection;
+	GtkTreeModel *model = NULL;
+	GtkTreeIter iter;
+	LyricId *item;
+	selection = gtk_tree_view_get_selection(treeview);
+	g_return_if_fail(GTK_IS_TREE_SELECTION(selection));
+	if(gtk_tree_selection_get_selected(selection, &model, &iter))
+	{
+		gtk_tree_model_get(model, &iter,
+				DATA_COL, &item,
+				-1);
+
+		unsigned int id = atoi(item->id);
+		tt_get_lyrics_content_and_save(id, item->artist, item->title, opt.output);
+	}
 }
 
 static GtkTreeModel* 
@@ -76,7 +122,8 @@ create_and_fill_model()
 
 	store = gtk_list_store_new (NUM_COLS, 
 		  G_TYPE_UINT, 
-		  G_TYPE_STRING);
+		  G_TYPE_STRING,
+		  G_TYPE_POINTER);
 
 	return GTK_TREE_MODEL (store);
 }
@@ -102,6 +149,9 @@ init_items_list(GtkTreeView *lists)
 			"text", INFO_COL,
 			NULL);
 
+	GtkTreeSelection *selection;
+	selection = gtk_tree_view_get_selection(lists);
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_BROWSE);
 }
 
 static GtkBuilder *
@@ -168,25 +218,12 @@ lyric_downloader_set_lyric_list(GtkBuilder *builder, GSList *list)
 		gtk_list_store_set(store, &tree_iter,
 				ID_COL, ++i,
 				INFO_COL, info,
+				DATA_COL, id,
 				-1);
 	}
 }
 
 
-typedef struct Options
-{
-	gchar *title;
-	gchar *artist;
-	gchar *output;
-} Options;
-
-static Options opt;
-
-const GOptionEntry options[] = {
-	{"title", 't', 0, G_OPTION_ARG_STRING, &opt.title, N_("Song's title"), NULL},
-	{"artist", 'a', 0, G_OPTION_ARG_STRING, &opt.artist, N_("Song's artist"), NULL},
-	{"output", 'o', 0, G_OPTION_ARG_STRING, &opt.output, N_("Save lyric to this file"), NULL}, 
-};
 
 int main(int argc, char *argv[])
 {
@@ -216,26 +253,26 @@ int main(int argc, char *argv[])
 	GSList *list = NULL;
 
 	gchar *xml = tt_get_lyrics_list(opt.artist, opt.title);
-	if(xml != NULL)
-	{
-		list = tt_parse_lyricslist(xml);
-		g_free(xml);
-		if(list != NULL)
-		{
-			num = g_slist_length(list);
-			if(num == 1)
-			{
-				LyricId *item = g_slist_nth_data(list, 0);
-				unsigned int id = atoi(item->id);
-				tt_get_lyrics_content_and_save(id, item->artist, item->title, opt.output);
-				g_slist_free(list);
-				return 0;
-			}
-		}
-	}
-
-	if(num == 0)
+	if(xml == NULL)
 		return -1;
+
+	list = tt_parse_lyricslist(xml);
+	g_free(xml);
+	if(list == NULL)
+		return -1;
+
+	num = g_slist_length(list);
+	if(num <= 0)
+		return -1;
+
+	if(num == 1)
+	{
+		LyricId *item = g_slist_nth_data(list, 0);
+		unsigned int id = atoi(item->id);
+		tt_get_lyrics_content_and_save(id, item->artist, item->title, opt.output);
+		g_slist_free(list);
+		return 0;
+	}
 
 	builder = lyric_downloader_ui_builder_new();
 	lyric_downloader_dialog_show(builder);
@@ -243,6 +280,9 @@ int main(int argc, char *argv[])
 	lyric_downloader_set_lyric_list(builder, list);
 
 	gtk_main();
+
+	g_slist_foreach(list, (GFunc)g_free, NULL);
+	g_slist_free(list);
 	return 0;
 }
 
