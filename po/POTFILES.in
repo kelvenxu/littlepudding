@@ -2,6 +2,7 @@
 data/lmplayer.desktop.in
 data/lmplayer.desktop.in.in
 data/uri.ui
+data/lyricselectdlg.ui
 src/backend/bacon-video-widget-gst-0.10.c
 src/backend/bacon-video-widget-xine.c
 src/backend/video-utils.c
@@ -14,4 +15,7 @@ src/lmplayer-playlist.c
 src/lmplayer-statusbar.c
 src/lmplayer-uri.c
 src/lmplayer.c
+lyric-downloader/lyric_downloader.c
+lyric-downloader/main.c
+
 
