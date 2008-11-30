@@ -35,7 +35,7 @@ enum {
 };
 
 void query_callback(GtkButton *button, gpointer user_data);
-void download_callback(GtkButton *button, gpointer user_data);
+void download_callback(GtkButton *button, GtkBuilder *builder);
 void cancel_callback(GtkButton *button, gpointer user_data);
 void about_callback(GtkButton *button, GtkBuilder *builder);
 
@@ -50,9 +50,10 @@ query_callback(GtkButton *button, gpointer user_data)
 }
 
 void
-download_callback(GtkButton *button, gpointer user_data)
+download_callback(GtkButton *button, GtkBuilder *builder)
 {
 	printf("download\n");
+	
 }
 
 void
@@ -66,21 +67,6 @@ void
 about_callback(GtkButton *button, GtkBuilder *builder)
 {
 	printf("about callback\n");
-	GtkWidget *lists = (GtkWidget*)gtk_builder_get_object(builder, "items-list");
-
-	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(lists));
-	GtkListStore *store = GTK_LIST_STORE(model);
-	GtkTreeIter iter;
-	gtk_list_store_append(store, &iter);
-	gtk_list_store_set(store, &iter,
-			ID_COL, 1,
-			INFO_COL, "sdfasdfa",
-			-1);
-	gtk_list_store_append(store, &iter);
-	gtk_list_store_set(store, &iter,
-			ID_COL, 1,
-			INFO_COL, "sdfasdfa",
-			-1);
 }
 
 static GtkTreeModel* 
@@ -171,11 +157,14 @@ lyric_downloader_set_lyric_list(GtkBuilder *builder, GSList *list)
 	model = gtk_tree_view_get_model(view);
 
 	store = GTK_LIST_STORE(model);
+	g_return_if_fail(GTK_IS_LIST_STORE(store));
 
 	for(iter = list; iter; iter = iter->next)
 	{
 		LyricId *id = (LyricId*)iter->data;
 		gchar *info = g_strdup_printf("%s - %s", id->artist, id->title);
+
+		gtk_list_store_append(store, &tree_iter);
 		gtk_list_store_set(store, &tree_iter,
 				ID_COL, ++i,
 				INFO_COL, info,
@@ -250,6 +239,7 @@ int main(int argc, char *argv[])
 
 	builder = lyric_downloader_ui_builder_new();
 	lyric_downloader_dialog_show(builder);
+
 	lyric_downloader_set_lyric_list(builder, list);
 
 	gtk_main();

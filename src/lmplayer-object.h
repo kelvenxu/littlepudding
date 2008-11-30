@@ -87,7 +87,6 @@ struct _LmplayerObject
 	SkinWindow *mini_win;
 
 	SkinLyric *lyricview;
-	gboolean has_lyric;
 
 	LmplayerNotebook *notebook;
 	BaconVideoWidget *bvw;
@@ -128,6 +127,11 @@ struct _LmplayerObject
 	gchar *mrl;
 	gchar *pls; //notebook播放列表的配置文件
 	//LmplayerObjectPrivate *priv;
+	gchar *lyric_filename;
+	gboolean has_lyric;
+	gboolean lyric_downloaded;
+	//gchar *artist;
+	//gchar *title;
 
 	LmplayerStates state;
 	gint64 stream_length;
