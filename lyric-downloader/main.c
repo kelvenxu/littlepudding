@@ -224,6 +224,12 @@ lyric_downloader_set_lyric_list(GtkBuilder *builder, GSList *list)
 }
 
 
+static gboolean
+timeout_quit(void)
+{
+	gtk_main_quit();
+	return FALSE;
+}
 
 int main(int argc, char *argv[])
 {
@@ -251,6 +257,9 @@ int main(int argc, char *argv[])
 
 	guint num = 0;
 	GSList *list = NULL;
+
+	//FIXME:
+	g_timeout_add_seconds(24, timeout_quit, NULL);
 
 	gchar *xml = tt_get_lyrics_list(opt.artist, opt.title);
 	if(xml == NULL)

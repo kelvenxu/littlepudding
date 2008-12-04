@@ -1358,6 +1358,35 @@ treeview_row_changed (GtkTreeView *treeview, GtkTreePath *arg1,
 	}
 }
 
+static gboolean
+playlist_scroll_cb (GtkWidget *widget, GdkEventScroll *event, LmplayerPlaylist *playlist)
+{
+	GtkAdjustment *adj;
+
+	adj = gtk_tree_view_get_vadjustment(GTK_TREE_VIEW(playlist));
+
+	if(event->direction == GDK_SCROLL_UP)
+	{
+		if(adj->value > adj->lower)
+		{
+			adj->value -= 16;
+			gtk_adjustment_set_value(adj, adj->value);
+			gtk_adjustment_value_changed(adj);
+		}
+	}
+	else if(event->direction == GDK_SCROLL_DOWN)
+	{
+		if(adj->value < adj->upper - adj->page_size)
+		{
+			adj->value += 16;
+			gtk_adjustment_set_value(adj, adj->value);
+			gtk_adjustment_value_changed(adj);
+		}
+	}
+
+	return FALSE;
+}
+
 static void
 init_treeview (GtkWidget *treeview, LmplayerPlaylist *playlist)
 {
@@ -1377,6 +1406,9 @@ init_treeview (GtkWidget *treeview, LmplayerPlaylist *playlist)
 			G_CALLBACK (treeview_button_pressed), playlist);
 	g_signal_connect (G_OBJECT (treeview), "popup-menu",
 			G_CALLBACK (playlist_treeview_popup_menu), playlist);
+
+	g_signal_connect (G_OBJECT (treeview), "scroll-event",
+			G_CALLBACK (playlist_scroll_cb), playlist);
 
 	/* Drag'n'Drop */
 	g_signal_connect (G_OBJECT (treeview), "drag_data_received",
