@@ -290,6 +290,7 @@ void shuffle_action_callback(GtkToggleAction *action, LmplayerObject *lmplayer)
 
 void skins_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
+	lmplayer_action_change_skin(lmplayer);
 }
 
 void preferences_action_callback(GtkAction *action, LmplayerObject *lmplayer)
@@ -650,6 +651,66 @@ static const gchar *ui_info =
 "    <separator/>"
 "  </popup>"
 "</ui>";
+
+static GtkWidget *
+create_skins_submenu()
+{
+	GError *err = NULL;
+	gchar *skinpath = g_build_path(G_DIR_SEPARATOR_S, g_getenv("HOME"), ".lmplayer/skins", NULL);
+
+	if(!g_file_test(skinpath, G_FILE_TEST_IS_DIR))
+	{
+		g_free(skinpath);
+		return NULL;
+	}
+
+	GDir *dir = g_dir_open(skinpath, 0, &err);
+	if(err)
+	{
+		g_error(_("Look up skins error: %s\n"), err->message);
+		g_free(skinpath);
+		return NULL;
+	}
+
+	GtkWidget *menu = gtk_menu_new();
+	const gchar *file = g_dir_read_name(dir);
+	while(file != NULL)
+	{
+		gchar *fullname = g_build_filename(skinpath, file, NULL);
+		if(!g_file_test(fullname, G_FILE_TEST_IS_REGULAR))
+		{
+			g_free(fullname);
+			file = g_dir_read_name(dir);
+			continue;
+		}
+
+		printf("%s\n", fullname);
+		if(!g_str_has_suffix(file, ".zip"))
+		{
+			g_free(fullname);
+			file = g_dir_read_name(dir);
+			continue;
+		}
+		
+		g_free(fullname);
+		GtkWidget *item = gtk_menu_item_new_with_label(file);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+
+		g_signal_connect(G_OBJECT(item), "activate", 
+				G_CALLBACK(about_action_callback), NULL);
+
+		file = g_dir_read_name(dir);
+	}
+
+	g_dir_close(dir);
+	g_free(skinpath);
+
+	GtkWidget *item = gtk_menu_item_new_with_label("good");
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+	item = gtk_menu_item_new_with_label("good_bad");
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+	return menu;
+}
 
 void
 lmplayer_setup_toolbar(LmplayerObject *lmplayer)

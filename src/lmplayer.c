@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -833,7 +834,7 @@ lmplayer_load_net_lyric(LmplayerObject *lmplayer)
 {
 	gchar *title;
 	gchar *artist;
-	gchar *cmd;
+	//gchar *cmd;
 
 	printf("download lyric from net\n");
 	if(g_file_test(lmplayer->lyric_filename, G_FILE_TEST_EXISTS))
@@ -1224,6 +1225,57 @@ void
 lmplayer_action_open(LmplayerObject *lmplayer)
 {
 	lmplayer_action_open_dialog(lmplayer, NULL, TRUE);
+}
+
+void
+lmplayer_action_change_skin(LmplayerObject *lmplayer)
+{
+	GtkWidget *fs;
+	int response;
+
+	fs = gtk_file_chooser_dialog_new (_("Select a new skin package"),
+			NULL,
+			GTK_FILE_CHOOSER_ACTION_OPEN,
+			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+			GTK_STOCK_ADD, GTK_RESPONSE_ACCEPT,
+			NULL);
+	GtkFileFilter *filter = gtk_file_filter_new();
+	gtk_file_filter_add_mime_type(filter, "application/zip");
+	gtk_file_filter_set_name(filter, _("Lmplayer Skin Package (*.zip)"));
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (fs), filter);
+
+	gtk_dialog_set_default_response (GTK_DIALOG (fs), GTK_RESPONSE_ACCEPT);
+	gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (fs), FALSE);
+	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (fs), TRUE);
+
+	//set_folder = gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (fs), path);
+
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (fs), g_get_home_dir ());
+	//lmplayer_add_default_dirs (GTK_FILE_CHOOSER (fs));
+
+	response = gtk_dialog_run (GTK_DIALOG (fs));
+
+	if (response != GTK_RESPONSE_ACCEPT) 
+	{
+		gtk_widget_destroy (fs);
+		return;
+	}
+
+	gchar *filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fs));
+	if (filename == NULL) 
+	{
+		gtk_widget_destroy (fs);
+		return;
+	}
+	gtk_widget_destroy (fs);
+
+	// change skin:
+	SkinArchive *ar = skin_archive_new();
+	skin_archive_load(ar, filename);
+	if(lmplayer->ar)
+		g_object_unref(lmplayer->ar);
+	lmplayer->ar = ar;
+	skin_builder_add_from_archive(lmplayer->builder, ar);
 }
 
 static void
