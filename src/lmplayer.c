@@ -1276,6 +1276,14 @@ lmplayer_action_change_skin(LmplayerObject *lmplayer)
 		g_object_unref(lmplayer->ar);
 	lmplayer->ar = ar;
 	skin_builder_add_from_archive(lmplayer->builder, ar);
+
+	gtk_widget_modify_base(GTK_WIDGET(lmplayer->playlist), 
+			GTK_STATE_NORMAL, 
+			&(lmplayer->ar->playlist->attr.color_bg));
+	
+	lmplayer_playlist_set_color(lmplayer->playlist, 
+			&(lmplayer->ar->playlist->attr.color_hilight),
+			&(lmplayer->ar->playlist->attr.color_text));
 }
 
 static void
