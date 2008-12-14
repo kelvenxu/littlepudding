@@ -1248,10 +1248,9 @@ lmplayer_action_change_skin(LmplayerObject *lmplayer)
 	gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (fs), FALSE);
 	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (fs), TRUE);
 
-	//set_folder = gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (fs), path);
-
-	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (fs), g_get_home_dir ());
-	//lmplayer_add_default_dirs (GTK_FILE_CHOOSER (fs));
+	gchar *path = g_build_path(G_DIR_SEPARATOR_S, g_get_home_dir(), ".lmplayer/skins", NULL);
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (fs), path);
+	g_free(path);
 
 	response = gtk_dialog_run (GTK_DIALOG (fs));
 
@@ -1748,6 +1747,7 @@ static void playlist_widget_setup(LmplayerObject *lmplayer)
 
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->playlist));
 
+	lmplayer_action_load_default_playlist(lmplayer);
 	g_signal_connect (G_OBJECT (playlist), "active-name-changed",
 			G_CALLBACK (playlist_active_name_changed_cb), lmplayer);
 	g_signal_connect (G_OBJECT (playlist), "item-activated",
@@ -1777,13 +1777,7 @@ static void lmplayer_action_error_and_exit(const char *title,
 static gboolean 
 main_window_destroy_cb (GtkWidget *widget, GdkEvent *event, LmplayerObject *lmplayer)
 {
-	lmplayer_debug("window destroy");
-	//g_assert(LMPLAYER_IS_OBJECT(lmplayer));
-	
-	lmplayer_debug("window destroy");
 	lmplayer_action_exit (lmplayer);
-	lmplayer_debug("window destroy");
-
 	return FALSE;
 }
 
@@ -2572,7 +2566,7 @@ main (int argc, char* argv[])
 	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-equalizer");
 	skin_check_button_set_active(button, TRUE);
 
-	lmplayer_action_load_default_playlist(lmplayer);
+	//lmplayer_action_load_default_playlist(lmplayer);
 	lmplayer_equalizer_setup(lmplayer);
 	lmplayer_magnetic_activate(lmplayer);
 
