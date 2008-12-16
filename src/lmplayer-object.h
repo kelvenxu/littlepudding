@@ -133,6 +133,8 @@ struct _LmplayerObject
 	//gchar *artist;
 	//gchar *title;
 
+	gchar *skinfile;
+
 	LmplayerStates state;
 	gint64 stream_length;
 

@@ -672,6 +672,15 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	if (lmplayer->conn != NULL)
 		bacon_message_connection_free (lmplayer->conn);
 
+	if(lmplayer->skinfile)
+	{
+		gconf_client_set_string(lmplayer->gc, 
+				GCONF_PREFIX"/skinfile",
+				lmplayer->skinfile, 
+				NULL);
+
+		g_free(lmplayer->skinfile);
+	}
 	//lmplayer_sublang_exit (lmplayer);
 	lmplayer_destroy_file_filters ();
 
@@ -1283,6 +1292,12 @@ lmplayer_action_change_skin(LmplayerObject *lmplayer)
 	lmplayer_playlist_set_color(lmplayer->playlist, 
 			&(lmplayer->ar->playlist->attr.color_hilight),
 			&(lmplayer->ar->playlist->attr.color_text));
+
+	if(lmplayer->skinfile)
+	{
+		g_free(lmplayer->skinfile);
+		lmplayer->skinfile = filename;
+	}
 }
 
 static void
@@ -1747,7 +1762,7 @@ static void playlist_widget_setup(LmplayerObject *lmplayer)
 
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->playlist));
 
-	lmplayer_action_load_default_playlist(lmplayer);
+	//lmplayer_action_load_default_playlist(lmplayer);
 	g_signal_connect (G_OBJECT (playlist), "active-name-changed",
 			G_CALLBACK (playlist_active_name_changed_cb), lmplayer);
 	g_signal_connect (G_OBJECT (playlist), "item-activated",
@@ -2463,15 +2478,24 @@ main (int argc, char* argv[])
 		lmplayer_action_exit(NULL);
 	}
 
-	gchar *filename = lmplayer_skin_get_full_path("tt.zip");
-	lmplayer_debug("skin file: %s", filename);
-	if(filename == NULL)
+	lmplayer->skinfile = gconf_client_get_string(lmplayer->gc, 
+			GCONF_PREFIX"/skinfile", 
+			NULL); 
+
+	if(lmplayer->skinfile == NULL)
+	{
+		//lmplayer->skinfile = g_strdup("tt.zip");
+		lmplayer->skinfile = lmplayer_skin_get_full_path("tt.zip");
+	}
+
+	lmplayer_debug("skin file: %s", lmplayer->skinfile);
+	if(lmplayer->skinfile == NULL)
 	{
 		//FIXME: search other skins
 		lmplayer_action_exit(NULL);
 	}
 
-	skin_archive_load(lmplayer->ar, filename);
+	skin_archive_load(lmplayer->ar, lmplayer->skinfile);
 	lmplayer->builder = skin_builder_new();
 	skin_builder_add_from_archive(lmplayer->builder, lmplayer->ar);
 
@@ -2566,7 +2590,7 @@ main (int argc, char* argv[])
 	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-equalizer");
 	skin_check_button_set_active(button, TRUE);
 
-	//lmplayer_action_load_default_playlist(lmplayer);
+	lmplayer_action_load_default_playlist(lmplayer);
 	lmplayer_equalizer_setup(lmplayer);
 	lmplayer_magnetic_activate(lmplayer);
 
