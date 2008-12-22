@@ -2,7 +2,7 @@
 /*
  * lmplayer-object.h
  *
- * This file is part of ________.
+ * This file is part of lmplayer.
  *
  * Copyright (C) 2008 - kelvenxu <kelvenxu@gmail.com>.
  *
@@ -119,6 +119,7 @@ struct _LmplayerObject
 	gboolean seekable;
 
 	SkinDigitalTime *led;
+	SkinDigitalTime *mini_led;
 
 	gint index;
 	gint seek_to;

@@ -2018,7 +2018,11 @@ update_current_time (BaconVideoWidget *bvw,
 			skin_hscale_set_range_and_value(lmplayer->seek, 0.0, 
 					(gdouble)stream_length / 1000.0,
 					(gdouble)current_time / 1000.0);
-			skin_digital_time_set_value(lmplayer->led, (gdouble)current_time / 1000.0);
+			if(lmplayer->minimode && lmplayer->mini_led)
+				skin_digital_time_set_value(lmplayer->mini_led, (gdouble)current_time / 1000.0);
+			else
+				skin_digital_time_set_value(lmplayer->led, (gdouble)current_time / 1000.0);
+
 			if(lmplayer->has_lyric)
 				skin_lyric_set_current_second(lmplayer->lyricview, current_time / 1000);
 		}
@@ -2553,6 +2557,7 @@ main (int argc, char* argv[])
 	lmplayer->state = STATE_STOPPED;
 	lmplayer->seek = (SkinHScale *)skin_builder_get_object(lmplayer->builder, "player-progressbar");
 	lmplayer->led = (SkinDigitalTime *)skin_builder_get_object(lmplayer->builder, "player-led");
+	lmplayer->mini_led = (SkinDigitalTime *)skin_builder_get_object(lmplayer->builder, "mini-led");
 	lmplayer->volume = (SkinHScale *)skin_builder_get_object(lmplayer->builder, "player-volume");
 	//lmplayer->statusbar = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_statusbar"));
 	lmplayer->seek_lock = FALSE;
