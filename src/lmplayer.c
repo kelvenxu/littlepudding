@@ -2485,13 +2485,16 @@ main (int argc, char* argv[])
 	if(lmplayer->skinfile == NULL)
 	{
 		//lmplayer->skinfile = g_strdup("tt.zip");
-		lmplayer->skinfile = lmplayer_skin_get_full_path("tt.zip");
+		lmplayer->skinfile = lmplayer_skin_get_full_path("default_skin.zip");
 	}
 
 	lmplayer_debug("skin file: %s", lmplayer->skinfile);
 	if(lmplayer->skinfile == NULL)
 	{
 		//FIXME: search other skins
+		lmplayer_action_error(_("Not found skin file"), 
+				_("Hi, the player did not found skin file, please download skins (zips) from http://www.lmplayer.org/, put them in your skins fold $HOME/.lmplayer/skins, then rename one of the zips to default_skin.zip."), 
+				lmplayer);
 		lmplayer_action_exit(NULL);
 	}
 
