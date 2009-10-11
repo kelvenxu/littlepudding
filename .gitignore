@@ -1,3 +1,4 @@
+*.o
 *.lo
 *.la
 ABOUT-NLS
@@ -45,3 +46,4 @@ TAGS
 data/lmplayer.desktop
 data/lmplayer.desktop.in
 data/lmplayer-mime-types.h
+.*.*.swp

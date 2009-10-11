@@ -65,14 +65,14 @@ lmplayer_magnetic_activate(LmplayerObject *lmplayer)
 	g_signal_connect(G_OBJECT(lmplayer->win), "move-event",
 			G_CALLBACK(main_window_move_cb), lmplayer);
 
-	g_signal_connect(G_OBJECT(lmplayer->pl_win), "move-event",
-			G_CALLBACK(pl_window_move_cb), lmplayer);
+	//g_signal_connect(G_OBJECT(lmplayer->pl_win), "move-event",
+	//		G_CALLBACK(pl_window_move_cb), lmplayer);
 
-	g_signal_connect(G_OBJECT(lmplayer->lyric_win), "move-event",
-			G_CALLBACK(lyric_window_move_cb), lmplayer);
+	//g_signal_connect(G_OBJECT(lmplayer->lyric_win), "move-event",
+	//		G_CALLBACK(lyric_window_move_cb), lmplayer);
 
-	g_signal_connect(G_OBJECT(lmplayer->eq_win), "move-event",
-			G_CALLBACK(eq_window_move_cb), lmplayer);
+	//g_signal_connect(G_OBJECT(lmplayer->eq_win), "move-event",
+	//		G_CALLBACK(eq_window_move_cb), lmplayer);
 }
 
 static void 
@@ -140,18 +140,18 @@ main_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 
 	if(playlist_magnetic)
 	{
-		gtk_window_get_position(GTK_WINDOW(lmplayer->pl_win), &star_x, &star_y);
-		gtk_window_move(GTK_WINDOW(lmplayer->pl_win), star_x + rx, star_y + ry);
+		//gtk_window_get_position(GTK_WINDOW(lmplayer->pl_win), &star_x, &star_y);
+		//gtk_window_move(GTK_WINDOW(lmplayer->pl_win), star_x + rx, star_y + ry);
 	}
 	if(lyric_magnetic)
 	{
-		gtk_window_get_position(GTK_WINDOW(lmplayer->lyric_win), &star_x, &star_y);
-		gtk_window_move(GTK_WINDOW(lmplayer->lyric_win), star_x + rx, star_y + ry);
+		//gtk_window_get_position(GTK_WINDOW(lmplayer->lyric_win), &star_x, &star_y);
+		//gtk_window_move(GTK_WINDOW(lmplayer->lyric_win), star_x + rx, star_y + ry);
 	}
 	if(eq_magnetic)
 	{
-		gtk_window_get_position(GTK_WINDOW(lmplayer->eq_win), &star_x, &star_y);
-		gtk_window_move(GTK_WINDOW(lmplayer->eq_win), star_x + rx, star_y + ry);
+		//gtk_window_get_position(GTK_WINDOW(lmplayer->eq_win), &star_x, &star_y);
+		//gtk_window_move(GTK_WINDOW(lmplayer->eq_win), star_x + rx, star_y + ry);
 	}
 
 	old_x = new_x;
@@ -163,6 +163,7 @@ main_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 static gboolean
 pl_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 {
+#if 0
 	GdkRectangle my;
 	GdkRectangle target;
 	
@@ -192,12 +193,14 @@ pl_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 	if(playlist_magnetic)
 		playlist_magnetic = eq_magnetic;
 
+#endif
 	return FALSE;
 }
 
 static gboolean
 lyric_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 {
+#if 0
 	GdkRectangle my;
 	GdkRectangle target;
 
@@ -223,12 +226,14 @@ lyric_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 	if(lyric_magnetic)
 		lyric_magnetic = eq_magnetic;
 
+#endif
 	return FALSE;
 }
 
 static gboolean
 eq_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 {
+#if 0
 	GdkRectangle my;
 	GdkRectangle target;
 
@@ -255,6 +260,7 @@ eq_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 	if(eq_magnetic)
 		eq_magnetic = lyric_magnetic;
 
+#endif
 	return FALSE;
 }
 

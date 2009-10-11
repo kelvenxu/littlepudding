@@ -247,12 +247,14 @@ lmplayer_action_load_media_device (LmplayerObject *lmplayer, const char *device)
 static void 
 lmplayer_statusbar_set_text(LmplayerObject *lmplayer, gchar *text)
 {
+#if 0
 	SkinStatusBar *sb;
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
 
 	sb = (SkinStatusBar*)skin_builder_get_object(lmplayer->builder, "player-statusbar");
 
 	skin_status_bar_set_text(sb, text);
+#endif
 }
 
 // 取得string类型的metadata, 并将其转换成utf8编码
@@ -299,6 +301,7 @@ lmplayer_metadata_get_title(LmplayerObject *lmplayer)
 static void 
 lmplayer_info_update(LmplayerObject *lmplayer)
 {
+#if 0
 	SkinDynamicText *info;
 	gchar *title, *artist, *album, *duration;
 	gchar *title_utf8 = NULL;
@@ -348,6 +351,7 @@ lmplayer_info_update(LmplayerObject *lmplayer)
 
 	duration = g_strdup_printf(_("Length: %02d:%02d"), length / 60, length % 60);
 
+#if 0
 	info = (SkinDynamicText *)skin_builder_get_object(lmplayer->builder, "player-info");
 	g_object_set(G_OBJECT(info), 
 			"title", title,
@@ -363,19 +367,23 @@ lmplayer_info_update(LmplayerObject *lmplayer)
 			"album", album,
 			"format", duration,
 			NULL);
+#endif
 
 	g_free (artist);
 	g_free (title);
 	g_free (album);
 	g_free (duration);
+#endif
 }
 
 static void
 play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 {
-	SkinButton *play, *stop, *pause;
+	//SkinButton *play, *stop, *pause;
+	GtkWidget *play;
 
 	lmplayer_debug(" ");
+#if 0
 	if(lmplayer->minimode)
 	{
 		play = (SkinButton*)skin_builder_get_object(lmplayer->builder, "mini-play");
@@ -383,10 +391,12 @@ play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 		pause = (SkinButton*)skin_builder_get_object(lmplayer->builder, "mini-pause");
 	}
 	else
+#endif
 	{
-		play = (SkinButton*)skin_builder_get_object(lmplayer->builder, "player-play");
-		stop = (SkinButton*)skin_builder_get_object(lmplayer->builder, "player-stop");
-		pause = (SkinButton*)skin_builder_get_object(lmplayer->builder, "player-pause");
+		//play = (SkinButton*)skin_builder_get_object(lmplayer->builder, "player-play");
+		play = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-play");
+		//stop = (SkinButton*)skin_builder_get_object(lmplayer->builder, "player-stop");
+		//pause = (SkinButton*)skin_builder_get_object(lmplayer->builder, "player-pause");
 	}
 
 	//if (state == lmplayer->state)
@@ -398,23 +408,23 @@ play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 		lmplayer_debug("playing");
 		lmplayer_statusbar_set_text(lmplayer, _("Status: Playing"));
 		lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_PLAYING);
-		skin_button_hide(play);
-		skin_button_show(pause);
-		skin_button_set_sensitive(stop, TRUE);
+		//skin_button_hide(play);
+		//skin_button_show(pause);
+		//skin_button_set_sensitive(stop, TRUE);
 		break;
 	case STATE_PAUSED:
 		lmplayer_statusbar_set_text(lmplayer, _("Status: Paused"));
 		lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_PAUSED);
-		skin_button_hide(pause);
-		skin_button_show(play);
-		skin_button_set_sensitive(stop, TRUE);
+		//skin_button_hide(pause);
+		//skin_button_show(play);
+		//skin_button_set_sensitive(stop, TRUE);
 		break;
 	case STATE_STOPPED:
 		lmplayer_statusbar_set_text(lmplayer, _("Status: Stopped"));
 		lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_NONE);
-		skin_button_hide(pause);
-		skin_button_show(play);
-		skin_button_set_sensitive(stop, FALSE);
+		//skin_button_hide(pause);
+		//skin_button_show(play);
+		//skin_button_set_sensitive(stop, FALSE);
 		break;
 	default:
 		g_assert_not_reached();
@@ -448,8 +458,8 @@ lmplayer_action_play (LmplayerObject *lmplayer)
 		lmplayer->has_lyric = FALSE;
 		lmplayer->lyric_downloaded = FALSE;
 		lmplayer_build_lyric_name(lmplayer);
-		printf("lyric: %s\n", lmplayer->lyric_filename);
-		lmplayer_load_local_lyric(lmplayer);
+		lmplayer_debug("lyric: %s\n", lmplayer->lyric_filename);
+		//lmplayer_load_local_lyric(lmplayer);
 		return;
 	}
 
@@ -728,16 +738,17 @@ lmplayer_action_error (const char *title, const char *reason, LmplayerObject *lm
 void 
 lmplayer_action_minimize(LmplayerObject *lmplayer)
 {
-	gtk_window_iconify(GTK_WINDOW(lmplayer->pl_win));
-	gtk_window_iconify(GTK_WINDOW(lmplayer->lyric_win));
-	gtk_window_iconify(GTK_WINDOW(lmplayer->eq_win));
-	gtk_window_iconify(GTK_WINDOW(lmplayer->mini_win));
-	gtk_window_iconify(GTK_WINDOW(lmplayer->win));
+	//gtk_window_iconify(GTK_WINDOW(lmplayer->pl_win));
+	//gtk_window_iconify(GTK_WINDOW(lmplayer->lyric_win));
+	//gtk_window_iconify(GTK_WINDOW(lmplayer->eq_win));
+	//gtk_window_iconify(GTK_WINDOW(lmplayer->mini_win));
+	//gtk_window_iconify(GTK_WINDOW(lmplayer->win));
 }
 
 void 
 lmplayer_action_minimode(LmplayerObject *lmplayer, gboolean minimode)
 {
+#if 0
 	SkinCheckButton *button;
 
 	lmplayer->minimode = minimode;
@@ -770,6 +781,7 @@ lmplayer_action_minimode(LmplayerObject *lmplayer, gboolean minimode)
 
 	lmplayer_debug("play_pause_set_label");
 	play_pause_set_label(lmplayer, lmplayer->state);
+#endif
 }
 
 static gboolean
@@ -821,11 +833,12 @@ lmplayer_build_lyric_name(LmplayerObject *lmplayer)
 static gboolean
 lmplayer_load_local_lyric(LmplayerObject *lmplayer)
 {
+#if 0
 	static gint count = 0;
 
 	if(g_file_test(lmplayer->lyric_filename, G_FILE_TEST_EXISTS))
 	{
-		printf("load lyric: %s successfully\n", lmplayer->lyric_filename);
+		lmplayer_debug("load lyric: %s successfully\n", lmplayer->lyric_filename);
 		skin_lyric_add_file(lmplayer->lyricview, lmplayer->lyric_filename);
 		lmplayer->has_lyric = TRUE;
 	}
@@ -836,11 +849,14 @@ lmplayer_load_local_lyric(LmplayerObject *lmplayer)
 		return FALSE;
 
 	return TRUE;
+#endif
+	return FALSE;
 }
 
 void
 lmplayer_load_net_lyric(LmplayerObject *lmplayer)
 {
+#if 0
 	gchar *title;
 	gchar *artist;
 	//gchar *cmd;
@@ -878,6 +894,7 @@ lmplayer_load_net_lyric(LmplayerObject *lmplayer)
 	g_free(artist);
 	lmplayer->lyric_downloaded = TRUE;
 	g_timeout_add(1000, (GSourceFunc)lmplayer_load_local_lyric, lmplayer);
+#endif
 }
 
 void 
@@ -1239,6 +1256,7 @@ lmplayer_action_open(LmplayerObject *lmplayer)
 void
 lmplayer_action_change_skin(LmplayerObject *lmplayer)
 {
+#if 0
 	GtkWidget *fs;
 	int response;
 
@@ -1298,6 +1316,7 @@ lmplayer_action_change_skin(LmplayerObject *lmplayer)
 		g_free(lmplayer->skinfile);
 		lmplayer->skinfile = filename;
 	}
+#endif
 }
 
 static void
@@ -1360,8 +1379,7 @@ lmplayer_action_open_location(LmplayerObject *lmplayer)
 
 	g_object_add_weak_pointer(G_OBJECT(lmplayer->open_location), (gpointer *)&(lmplayer->open_location));
 
-	gtk_window_set_transient_for(GTK_WINDOW(lmplayer->open_location),
-			GTK_WINDOW(lmplayer->win));
+	gtk_window_set_transient_for(GTK_WINDOW(lmplayer->open_location), GTK_WINDOW(lmplayer->win));
 	gtk_widget_show(GTK_WIDGET(lmplayer->open_location));
 }
 
@@ -1544,7 +1562,8 @@ seek_slider_changed_cb (GtkAdjustment *adj, LmplayerObject *lmplayer)
 			 (int) (pos * time), time);
 	*/
 
-	pos = skin_hscale_get_value(lmplayer->seek);
+	//pos = skin_hscale_get_value(lmplayer->seek);
+	pos = gtk_range_get_value(GTK_RANGE(lmplayer->seek));
 	if(bacon_video_widget_can_direct_seek(lmplayer->bvw) != FALSE)
 		lmplayer_action_seek(lmplayer, pos);
 }
@@ -1562,7 +1581,8 @@ seek_slider_released_cb(GtkWidget *widget, GdkEventButton *event, LmplayerObject
 	/* sync both adjustments */
 	//adj = gtk_range_get_adjustment (GTK_RANGE (widget));
 	//val = gtk_adjustment_get_value (adj);
-	val = skin_hscale_get_value(lmplayer->seek);
+	//val = skin_hscale_get_value(lmplayer->seek);
+	val = gtk_range_get_value(GTK_RANGE(lmplayer->seek));
 
 	if(bacon_video_widget_can_direct_seek(lmplayer->bvw) == FALSE)
 		lmplayer_action_seek(lmplayer, val / 65535.0);
@@ -1720,8 +1740,9 @@ playlist_shuffle_toggled_cb (LmplayerPlaylist *playlist, gboolean shuffle, Lmpla
 
 static void playlist_widget_setup(LmplayerObject *lmplayer)
 {
-	GnomeCanvasItem *item;
-	GtkAdjustment *adj;
+	//GnomeCanvasItem *item;
+	GtkWidget *box;
+	//GtkAdjustment *adj;
 	LmplayerPlaylist *playlist = NULL;
 
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
@@ -1743,22 +1764,22 @@ static void playlist_widget_setup(LmplayerObject *lmplayer)
 			GTK_STATE_SELECTED, 
 			&lmplayer->ar->playlist->attr.color_select);
 	*/
-	gtk_widget_modify_base(GTK_WIDGET(playlist), 
-			GTK_STATE_NORMAL, 
-			&(lmplayer->ar->playlist->attr.color_bg));
+	//gtk_widget_modify_base(GTK_WIDGET(playlist), 
+	//		GTK_STATE_NORMAL, 
+	//		&(lmplayer->ar->playlist->attr.color_bg));
 	
-	lmplayer_playlist_set_color(playlist, 
-			&(lmplayer->ar->playlist->attr.color_hilight),
-			&(lmplayer->ar->playlist->attr.color_text));
-	item = (GnomeCanvasItem*)skin_builder_get_object(lmplayer->builder, "playlist-playlistbox");
-	SkinScrollBar *scrollbar = (SkinScrollBar *)skin_builder_get_object(lmplayer->builder, "playlist-scrollbar");
+	//lmplayer_playlist_set_color(playlist, 
+	//		&(lmplayer->ar->playlist->attr.color_hilight),
+	//		&(lmplayer->ar->playlist->attr.color_text));
+	//item = (GnomeCanvasItem*)skin_builder_get_object(lmplayer->builder, "playlist-playlistbox");
+	box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-playlistbox");
+	//SkinScrollBar *scrollbar = (SkinScrollBar *)skin_builder_get_object(lmplayer->builder, "playlist-scrollbar");
 	
-	gnome_canvas_item_set(item, 
-			"widget", lmplayer->playlist,
-			NULL);
+	//gnome_canvas_item_set(item, "widget", lmplayer->playlist, NULL);
+	gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(lmplayer->playlist));
 
-	adj = gtk_tree_view_get_vadjustment(GTK_TREE_VIEW(lmplayer->playlist));
-	skin_scroll_bar_set_adjustment(scrollbar, adj);
+	//adj = gtk_tree_view_get_vadjustment(GTK_TREE_VIEW(lmplayer->playlist));
+	//skin_scroll_bar_set_adjustment(scrollbar, adj);
 
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->playlist));
 
@@ -1799,6 +1820,7 @@ main_window_destroy_cb (GtkWidget *widget, GdkEvent *event, LmplayerObject *lmpl
 static gboolean 
 main_window_state_changed_cb (GtkWidget *widget, GdkEventWindowState *event, LmplayerObject *lmplayer)
 {
+#if 0
 	switch(event->changed_mask)
 	{
 		case GDK_WINDOW_STATE_WITHDRAWN:
@@ -1840,6 +1862,7 @@ main_window_state_changed_cb (GtkWidget *widget, GdkEventWindowState *event, Lmp
 			break;
 	}
 
+#endif
 	return FALSE;
 }
 
@@ -1863,27 +1886,27 @@ static void lmplayer_callback_connect(LmplayerObject *lmplayer)
 {
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
 
-	g_signal_connect(G_OBJECT(lmplayer->win), "right-button-press", 
-			G_CALLBACK(main_window_right_button_press_cb), lmplayer);
+	//g_signal_connect(G_OBJECT(lmplayer->win), "right-button-press", 
+	//		G_CALLBACK(main_window_right_button_press_cb), lmplayer);
 
-	g_signal_connect(G_OBJECT(lmplayer->mini_win), "right-button-press", 
-			G_CALLBACK(main_window_right_button_press_cb), lmplayer);
+	//g_signal_connect(G_OBJECT(lmplayer->mini_win), "right-button-press", 
+	//		G_CALLBACK(main_window_right_button_press_cb), lmplayer);
 
 	//g_signal_connect(G_OBJECT(lmplayer->win), "destroy", 
 	//		G_CALLBACK(main_window_destroy_cb), lmplayer);
 	
 	//FIXME: 为什么用destroy这个信号LMPLAYER_IS_OBJECT(lmplayer)通不过呢?
-	g_signal_connect(G_OBJECT(lmplayer->win), "delete-event", 
-			G_CALLBACK(main_window_destroy_cb), lmplayer);
+	//g_signal_connect(G_OBJECT(lmplayer->win), "delete-event", 
+	//		G_CALLBACK(main_window_destroy_cb), lmplayer);
 
-	g_signal_connect(G_OBJECT(lmplayer->mini_win), "delete-event", 
-			G_CALLBACK(main_window_destroy_cb), lmplayer);
+	//g_signal_connect(G_OBJECT(lmplayer->mini_win), "delete-event", 
+	//		G_CALLBACK(main_window_destroy_cb), lmplayer);
 
-	g_signal_connect(G_OBJECT(lmplayer->win), "window-state-event",
-			G_CALLBACK(main_window_state_changed_cb), lmplayer);
+	//g_signal_connect(G_OBJECT(lmplayer->win), "window-state-event",
+	//		G_CALLBACK(main_window_state_changed_cb), lmplayer);
 
-	g_signal_connect(G_OBJECT(lmplayer->volume), "value-changed",
-			G_CALLBACK(lmplayer_volume_value_changed_cb), lmplayer);
+	//g_signal_connect(G_OBJECT(lmplayer->volume), "value-changed",
+	//		G_CALLBACK(lmplayer_volume_value_changed_cb), lmplayer);
 
 	g_signal_connect(G_OBJECT(lmplayer->seek), "value-changed",
 			G_CALLBACK(seek_slider_changed_cb), lmplayer);
@@ -2015,16 +2038,19 @@ update_current_time (BaconVideoWidget *bvw,
 			//lmplayer_debug(" ");
 			//skin_hscale_set_range(lmplayer->seek, 0.0, (gdouble)stream_length / 1000.0);
 			//skin_hscale_set_value(lmplayer->seek, (gdouble)current_time / 1000.0);
-			skin_hscale_set_range_and_value(lmplayer->seek, 0.0, 
-					(gdouble)stream_length / 1000.0,
-					(gdouble)current_time / 1000.0);
-			if(lmplayer->minimode && lmplayer->mini_led)
-				skin_digital_time_set_value(lmplayer->mini_led, (gdouble)current_time / 1000.0);
-			else
-				skin_digital_time_set_value(lmplayer->led, (gdouble)current_time / 1000.0);
+			//skin_hscale_set_range_and_value(lmplayer->seek, 0.0, 
+			//		(gdouble)stream_length / 1000.0,
+			//		(gdouble)current_time / 1000.0);
+			gtk_range_set_range(GTK_RANGE(lmplayer->seek), 0, (gdouble)stream_length / 1000.0);
+			gtk_range_set_value(GTK_RANGE(lmplayer->seek), (gdouble)current_time / 1000.0);
 
-			if(lmplayer->has_lyric)
-				skin_lyric_set_current_second(lmplayer->lyricview, current_time / 1000);
+			//if(lmplayer->minimode && lmplayer->mini_led)
+			//	skin_digital_time_set_value(lmplayer->mini_led, (gdouble)current_time / 1000.0);
+			//else
+			//	skin_digital_time_set_value(lmplayer->led, (gdouble)current_time / 1000.0);
+
+			//if(lmplayer->has_lyric)
+			//	skin_lyric_set_current_second(lmplayer->lyricview, current_time / 1000);
 		}
 
 		//totem_time_label_set_time
@@ -2054,20 +2080,20 @@ lmplayer_action_volume_relative (LmplayerObject *lmplayer, double off_pct)
 static void 
 lmplayer_volume_value_changed_cb(SkinHScale *hscale, LmplayerObject *lmplayer)
 {
-	double volume;
-	volume = skin_hscale_get_value(lmplayer->volume);
-	bacon_video_widget_set_volume(lmplayer->bvw, volume / 100.0);
+	//double volume;
+	//volume = skin_hscale_get_value(lmplayer->volume);
+	//bacon_video_widget_set_volume(lmplayer->bvw, volume / 100.0);
 }
 
 
 static void
 update_volume_slider(LmplayerObject *lmplayer)
 {
-	double volume;
+	//double volume;
 
-	volume = bacon_video_widget_get_volume(lmplayer->bvw);
+	//volume = bacon_video_widget_get_volume(lmplayer->bvw);
 
-	skin_hscale_set_value(lmplayer->volume, volume * 100.0);
+	//skin_hscale_set_value(lmplayer->volume, volume * 100.0);
 }
 
 static void
@@ -2084,9 +2110,10 @@ property_notify_cb_volume (BaconVideoWidget *bvw, GParamSpec *spec, LmplayerObje
 static void
 video_widget_create (LmplayerObject *lmplayer) 
 {
-	GnomeCanvasItem *item;
+	//GnomeCanvasItem *item;
 	BaconVideoWidget **bvw;
 	GError *err = NULL;
+	GtkWidget *box;
 
 	/*
 	const GtkTargetEntry source_table[] = {
@@ -2094,11 +2121,11 @@ video_widget_create (LmplayerObject *lmplayer)
 	};
 	*/
 
-	lmplayer->bvw = BACON_VIDEO_WIDGET
-		(bacon_video_widget_new (-1, -1, BVW_USE_TYPE_VIDEO, &err));
+	lmplayer->bvw = BACON_VIDEO_WIDGET(bacon_video_widget_new(32, 32, BVW_USE_TYPE_VIDEO, &err));
 
-	if (lmplayer->bvw == NULL) {
-		lmplayer_action_error_and_exit (_("Lmplayer could not startup."), err != NULL ? err->message : _("No reason."), lmplayer);
+	if (lmplayer->bvw == NULL) 
+	{
+		lmplayer_action_error_and_exit(_("Lmplayer could not startup."), err != NULL ? err->message : _("No reason."), lmplayer);
 		if (err != NULL)
 			g_error_free (err);
 	}
@@ -2136,14 +2163,16 @@ video_widget_create (LmplayerObject *lmplayer)
 			G_CALLBACK (on_error_event),
 			lmplayer);
 
-	item = (GnomeCanvasItem*)skin_builder_get_object(lmplayer->builder, "player-visualbox");
-	gnome_canvas_item_set(item,
-			"widget", lmplayer->bvw,
-			NULL);
+	//item = (GnomeCanvasItem*)skin_builder_get_object(lmplayer->builder, "player-visualbox");
+	//gnome_canvas_item_set(item, "widget", lmplayer->bvw, NULL);
+	
+	box = (GtkWidget*)gtk_builder_get_object(lmplayer->builder, "player-visualbox");
+	gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(lmplayer->bvw));
 
 	bvw = &(lmplayer->bvw);
 	g_object_add_weak_pointer(G_OBJECT(lmplayer->bvw), (gpointer *)bvw);
 
+	lmplayer_debug("realize bvw");
 	gtk_widget_realize(GTK_WIDGET(lmplayer->bvw));
 	gtk_widget_show(GTK_WIDGET(lmplayer->bvw));
 
@@ -2158,9 +2187,10 @@ video_widget_create (LmplayerObject *lmplayer)
 	g_signal_connect (G_OBJECT (lmplayer->bvw), "notify::seekable",
 			G_CALLBACK (property_notify_cb_seekable), lmplayer);
 
-	update_volume_slider (lmplayer); //TODO:
+	//update_volume_slider (lmplayer); //TODO:
 }
 
+#if 0
 static void
 eqfactor_value_changed_cb(SkinVScale *vscale, LmplayerObject *lmplayer)
 {
@@ -2185,10 +2215,12 @@ eqfactor_value_changed_cb(SkinVScale *vscale, LmplayerObject *lmplayer)
 
 	bacon_video_widget_set_equalizer_gain(lmplayer->bvw, gains);
 }
+#endif
 
 static void
 lmplayer_equalizer_setup(LmplayerObject *lmplayer)
 {
+#if 0
 	gchar name[24];
 	gdouble *gains;
 	gdouble value;
@@ -2213,6 +2245,7 @@ lmplayer_equalizer_setup(LmplayerObject *lmplayer)
 		g_signal_connect(G_OBJECT(vscale), "value_changed", 
 				G_CALLBACK(eqfactor_value_changed_cb), lmplayer);
 	}
+#endif
 }
 
 static void
@@ -2475,6 +2508,7 @@ main (int argc, char* argv[])
 		lmplayer_options_process_early (lmplayer, &optionstate);
 	}
 
+#if 0
 	lmplayer->ar = skin_archive_new();
 	if(lmplayer->ar == NULL)
 	{
@@ -2485,6 +2519,7 @@ main (int argc, char* argv[])
 	lmplayer->skinfile = gconf_client_get_string(lmplayer->gc, 
 			GCONF_PREFIX"/skinfile", 
 			NULL); 
+
 
 	if(lmplayer->skinfile == NULL)
 	{
@@ -2501,53 +2536,56 @@ main (int argc, char* argv[])
 				lmplayer);
 		lmplayer_action_exit(NULL);
 	}
+#endif
 
-	skin_archive_load(lmplayer->ar, lmplayer->skinfile);
-	lmplayer->builder = skin_builder_new();
-	skin_builder_add_from_archive(lmplayer->builder, lmplayer->ar);
+	//skin_archive_load(lmplayer->ar, lmplayer->skinfile);
+	//lmplayer->builder = skin_builder_new();
+	//skin_builder_add_from_archive(lmplayer->builder, lmplayer->ar);
 
-	lmplayer->win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "player-window"));
+	lmplayer->builder = lmplayer_interface_load("lmplayer.ui", TRUE, NULL, NULL);
+	//lmplayer->win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "player-window"));
+	lmplayer->win = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-window");
 	if(lmplayer->win == NULL)
 	{
 		lmplayer_action_exit(NULL);
 	}
 
-	lmplayer->pl_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "playlist-window"));
-	if(lmplayer->pl_win == NULL)
-	{
-		lmplayer_action_exit(NULL);
-	}
-	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(lmplayer->pl_win), TRUE);
-	skin_window_set_resizeable(lmplayer->pl_win, TRUE);
+	//lmplayer->pl_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "playlist-window"));
+	//if(lmplayer->pl_win == NULL)
+	//{
+	//	lmplayer_action_exit(NULL);
+	//}
+	//gtk_window_set_skip_taskbar_hint(GTK_WINDOW(lmplayer->pl_win), TRUE);
+	//skin_window_set_resizeable(lmplayer->pl_win, TRUE);
 
-	lmplayer->lyric_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "lyric-window"));
-	if(lmplayer->lyric_win == NULL)
-	{
-		lmplayer_action_exit(NULL);
-	}
-	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(lmplayer->lyric_win), TRUE);
-	skin_window_set_resizeable(lmplayer->lyric_win, TRUE);
+	//lmplayer->lyric_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "lyric-window"));
+	//if(lmplayer->lyric_win == NULL)
+	//{
+	//	lmplayer_action_exit(NULL);
+	//}
+	//gtk_window_set_skip_taskbar_hint(GTK_WINDOW(lmplayer->lyric_win), TRUE);
+	//skin_window_set_resizeable(lmplayer->lyric_win, TRUE);
 
-	lmplayer->eq_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "equalizer-window"));
-	if(lmplayer->eq_win == NULL)
-	{
-		lmplayer_action_exit(NULL);
-	}
-	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(lmplayer->eq_win), TRUE);
+	//lmplayer->eq_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "equalizer-window"));
+	//if(lmplayer->eq_win == NULL)
+	//{
+	//	lmplayer_action_exit(NULL);
+	//}
+	//gtk_window_set_skip_taskbar_hint(GTK_WINDOW(lmplayer->eq_win), TRUE);
 
-	lmplayer->mini_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "mini-window"));
-	if(lmplayer->mini_win == NULL)
-	{
-		g_warning("No mini mode window");
-	}
+	//lmplayer->mini_win = SKIN_WINDOW(skin_builder_get_object(lmplayer->builder, "mini-window"));
+	//if(lmplayer->mini_win == NULL)
+	//{
+	//	g_warning("No mini mode window");
+	//}
 
 	lmplayer->minimode = FALSE;
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->win));
-	gtk_widget_show_all(GTK_WIDGET(lmplayer->pl_win));
-	gtk_widget_show_all(GTK_WIDGET(lmplayer->lyric_win));
-	gtk_widget_show_all(GTK_WIDGET(lmplayer->eq_win));
+	//gtk_widget_show_all(GTK_WIDGET(lmplayer->pl_win));
+	//gtk_widget_show_all(GTK_WIDGET(lmplayer->lyric_win));
+	//gtk_widget_show_all(GTK_WIDGET(lmplayer->eq_win));
 
-	lmplayer->lyricview = SKIN_LYRIC(skin_builder_get_object(lmplayer->builder, "lyric-lyricview"));
+	//lmplayer->lyricview = SKIN_LYRIC(skin_builder_get_object(lmplayer->builder, "lyric-lyricview"));
 
 	lmplayer_ui_manager_setup(lmplayer);
 	playlist_widget_setup(lmplayer);
@@ -2555,10 +2593,11 @@ main (int argc, char* argv[])
 	
 	//TODO: 安装其它如会话管理、cd播放、文件监视等功能
 	lmplayer->state = STATE_STOPPED;
-	lmplayer->seek = (SkinHScale *)skin_builder_get_object(lmplayer->builder, "player-progressbar");
-	lmplayer->led = (SkinDigitalTime *)skin_builder_get_object(lmplayer->builder, "player-led");
-	lmplayer->mini_led = (SkinDigitalTime *)skin_builder_get_object(lmplayer->builder, "mini-led");
-	lmplayer->volume = (SkinHScale *)skin_builder_get_object(lmplayer->builder, "player-volume");
+	//lmplayer->seek = (SkinHScale *)skin_builder_get_object(lmplayer->builder, "player-progressbar");
+	lmplayer->seek = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-progressbar");
+	//lmplayer->led = (SkinDigitalTime *)skin_builder_get_object(lmplayer->builder, "player-led");
+	//lmplayer->mini_led = (SkinDigitalTime *)skin_builder_get_object(lmplayer->builder, "mini-led");
+	//lmplayer->volume = (SkinHScale *)skin_builder_get_object(lmplayer->builder, "player-volume");
 	//lmplayer->statusbar = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_statusbar"));
 	lmplayer->seek_lock = FALSE;
 	lmplayer_setup_file_monitoring(lmplayer);
@@ -2585,22 +2624,22 @@ main (int argc, char* argv[])
 	}
 	
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->win));
-	gtk_widget_show_all(GTK_WIDGET(lmplayer->pl_win));
-	gtk_widget_show_all(GTK_WIDGET(lmplayer->lyric_win));
-	gtk_widget_show_all(GTK_WIDGET(lmplayer->eq_win));
+	//gtk_widget_show_all(GTK_WIDGET(lmplayer->pl_win));
+	//gtk_widget_show_all(GTK_WIDGET(lmplayer->lyric_win));
+	//gtk_widget_show_all(GTK_WIDGET(lmplayer->eq_win));
 	
-	SkinCheckButton *button;
+	//SkinCheckButton *button;
 
-	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-playlist");
-	skin_check_button_set_active(button, TRUE);
-	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-lyric");
-	skin_check_button_set_active(button, TRUE);
-	button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-equalizer");
-	skin_check_button_set_active(button, TRUE);
+	//button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-playlist");
+	//skin_check_button_set_active(button, TRUE);
+	//button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-lyric");
+	//skin_check_button_set_active(button, TRUE);
+	//button = (SkinCheckButton*)skin_builder_get_object(lmplayer->builder, "player-equalizer");
+	//skin_check_button_set_active(button, TRUE);
 
 	lmplayer_action_load_default_playlist(lmplayer);
-	lmplayer_equalizer_setup(lmplayer);
-	lmplayer_magnetic_activate(lmplayer);
+	//lmplayer_equalizer_setup(lmplayer);
+	//lmplayer_magnetic_activate(lmplayer);
 
 	gtk_main();
 	return 0;

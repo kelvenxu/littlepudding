@@ -16,7 +16,8 @@ stuff_DATA=\
 		   lmplayer-24x24.png\
 		   lmplayer-32x32.png\
 		   uri.ui\
-		   lyricselectdlg.ui
+		   lyricselectdlg.ui\
+			 lmplayer.ui
 
 desktopdir=$(datadir)/applications
 desktop_in_files=lmplayer.desktop.in.in
