@@ -1826,7 +1826,7 @@ static gboolean
 on_eos_event (GtkWidget *widget, LmplayerObject *lmplayer)
 {
 	lmplayer_debug(" ");
-	return FALSE; 
+	//return FALSE; 
 
 	if(lmplayer_playlist_has_next_mrl(lmplayer->playlist) == FALSE
 			&& lmplayer_playlist_get_repeat(lmplayer->playlist) == FALSE)
