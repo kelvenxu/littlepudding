@@ -3,6 +3,9 @@
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="player-window">
+    <property name="window_position">center-always</property>
+    <property name="default_width">600</property>
+    <property name="default_height">400</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -12,42 +15,20 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <child>
-              <object class="GtkScrolledWindow" id="scrolledwindow1">
+              <object class="GtkScrolledWindow" id="player-playlistbox">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hscrollbar_policy">automatic</property>
                 <property name="vscrollbar_policy">automatic</property>
                 <child>
-                  <object class="GtkHBox" id="player-playlistbox">
-                    <property name="visible">True</property>
-                    <child>
-                      <placeholder/>
-                    </child>
-                  </object>
+                  <placeholder/>
                 </child>
               </object>
             </child>
             <child type="tab">
-              <object class="GtkHBox" id="hbox4">
+              <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
-                <child>
-                  <object class="GtkImage" id="image9">
-                    <property name="visible">True</property>
-                    <property name="stock">gnome-stock-text-numbered-list</property>
-                  </object>
-                  <packing>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label1">
-                    <property name="visible">True</property>
-                    <property name="label" translatable="yes">Playlist</property>
-                  </object>
-                  <packing>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
+                <property name="label" translatable="yes">Playlist</property>
               </object>
               <packing>
                 <property name="tab_fill">False</property>
@@ -84,26 +65,9 @@
               </packing>
             </child>
             <child type="tab">
-              <object class="GtkHBox" id="hbox5">
+              <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
-                <child>
-                  <object class="GtkImage" id="image10">
-                    <property name="visible">True</property>
-                    <property name="stock">gnome-stock-about</property>
-                  </object>
-                  <packing>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label3">
-                    <property name="visible">True</property>
-                    <property name="label" translatable="yes">About</property>
-                  </object>
-                  <packing>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
+                <property name="label" translatable="yes">About</property>
               </object>
               <packing>
                 <property name="position">2</property>
@@ -162,7 +126,7 @@
                     <property name="receives_default">True</property>
                     <property name="relief">none</property>
                     <child>
-                      <object class="GtkImage" id="image2">
+                      <object class="GtkImage" id="player-play-image">
                         <property name="visible">True</property>
                         <property name="stock">gtk-media-play</property>
                       </object>
@@ -286,12 +250,6 @@
 audio-volume-high
 audio-volume-low
 audio-volume-medium</property>
-                    <child>
-                      <object class="GtkImage" id="image8">
-                        <property name="visible">True</property>
-                        <property name="stock">gnome-stock-volume</property>
-                      </object>
-                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>

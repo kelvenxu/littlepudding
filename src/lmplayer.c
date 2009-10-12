@@ -376,10 +376,36 @@ lmplayer_info_update(LmplayerObject *lmplayer)
 #endif
 }
 
+static void 
+update_buttons(LmplayerObject *lmplayer)
+{
+	GtkImage *play_image;
+
+	g_return_if_fail(lmplayer != NULL);
+
+	play_image = (GtkImage *)gtk_builder_get_object(lmplayer->builder, "player-play-image");
+	g_return_if_fail(play_image != NULL);
+
+	switch(lmplayer->state)
+	{
+	case STATE_PLAYING:
+		gtk_image_set_from_stock(play_image, "gtk-media-pause", GTK_ICON_SIZE_BUTTON);
+		break;
+	case STATE_PAUSED:
+		gtk_image_set_from_stock(play_image, "gtk-media-play", GTK_ICON_SIZE_BUTTON);
+		break;
+	case STATE_STOPPED:
+		gtk_image_set_from_stock(play_image, "gtk-media-play", GTK_ICON_SIZE_BUTTON);
+		break;
+	default:
+		g_assert_not_reached();
+		break;
+	}
+}
+
 static void
 play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 {
-	//SkinButton *play, *stop, *pause;
 	GtkWidget *play;
 
 	lmplayer_debug("state: %d", state);
@@ -395,19 +421,16 @@ play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 		lmplayer_debug("playing");
 		lmplayer_statusbar_set_text(lmplayer, _("Status: Playing"));
 		lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_PLAYING);
-		gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(play), "gtk-media-pause");
 		break;
 	case STATE_PAUSED:
 		lmplayer_debug("paused");
 		lmplayer_statusbar_set_text(lmplayer, _("Status: Paused"));
 		lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_PAUSED);
-		gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(play), "gtk-media-play");
 		break;
 	case STATE_STOPPED:
 		lmplayer_debug("stop");
 		lmplayer_statusbar_set_text(lmplayer, _("Status: Stopped"));
 		lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_NONE);
-		gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(play), "gtk-media-play");
 		break;
 	default:
 		g_assert_not_reached();
@@ -415,6 +438,8 @@ play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 	}
 
 	lmplayer->state = state;
+
+	update_buttons(lmplayer);
 
 	lmplayer_debug(" ");
 	g_object_notify(G_OBJECT(lmplayer), "playing");
@@ -434,7 +459,7 @@ lmplayer_action_play (LmplayerObject *lmplayer)
 		return;
 
 	retval = bacon_video_widget_play (lmplayer->bvw,  &err);
-	//play_pause_set_label(lmplayer, retval ? STATE_PLAYING : STATE_STOPPED);
+	play_pause_set_label(lmplayer, retval ? STATE_PLAYING : STATE_STOPPED);
 
 	lmplayer_debug("retval: %d", retval);
 	if (retval != FALSE)
@@ -1043,7 +1068,7 @@ lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
 			lmplayer_debug(" ");
 		}
 	}
-	//update_buttons (lmplayer);
+	update_buttons (lmplayer);
 	//update_media_menu_items (lmplayer);
 
 	return retval;
@@ -1456,13 +1481,13 @@ void
 seek_slider_changed_cb (GtkAdjustment *adj, LmplayerObject *lmplayer)
 {
 	double pos;
-	//gint time;
+	gint time;
 
-	//if (lmplayer->seek_lock == FALSE)
-	//	return;
+	if (lmplayer->seek_lock == FALSE)
+		return;
 
-	//pos = gtk_adjustment_get_value (adj) / 65535;
-	//time = bacon_video_widget_get_stream_length(lmplayer->bvw);
+	pos = gtk_adjustment_get_value (adj) / 65535;
+	time = bacon_video_widget_get_stream_length(lmplayer->bvw);
 
 	//lmplayer_statusbar_set_time_and_length (LMPLAYER_STATUSBAR(lmplayer->statusbar),
 	//		(int) (pos * time / 1000), time / 1000);
@@ -1588,12 +1613,12 @@ playlist_current_removed_cb (GtkWidget *playlist, LmplayerObject *lmplayer)
 		g_free (subtitle);
 		subtitle = NULL;
 		lmplayer_playlist_set_at_start(lmplayer->playlist);
-		//update_buttons(lmplayer);
+		update_buttons(lmplayer);
 		mrl = lmplayer_playlist_get_current_mrl(lmplayer->playlist, &subtitle);
 	} 
 	else 
 	{
-		//update_buttons(lmplayer);
+		update_buttons(lmplayer);
 	}
 
 	lmplayer_action_set_mrl_and_play(lmplayer, mrl, subtitle);
@@ -1650,9 +1675,7 @@ playlist_shuffle_toggled_cb (LmplayerPlaylist *playlist, gboolean shuffle, Lmpla
 
 static void playlist_widget_setup(LmplayerObject *lmplayer)
 {
-	//GnomeCanvasItem *item;
 	GtkWidget *box;
-	//GtkAdjustment *adj;
 	LmplayerPlaylist *playlist = NULL;
 
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
@@ -1667,6 +1690,7 @@ static void playlist_widget_setup(LmplayerObject *lmplayer)
 	gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(lmplayer->playlist));
 
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->playlist));
+	gtk_widget_show(box);
 
 	g_signal_connect (G_OBJECT (playlist), "active-name-changed",
 			G_CALLBACK (playlist_active_name_changed_cb), lmplayer);
@@ -2176,7 +2200,7 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmpRemoteCommand cmd, const ch
 		{
 			char *mrl, *subtitle;
 			lmplayer_playlist_set_at_start(lmplayer->playlist);
-			//update_buttons(lmplayer);
+			update_buttons(lmplayer);
 			lmplayer_action_stop(lmplayer);
 			mrl = lmplayer_playlist_get_current_mrl(lmplayer->playlist, &subtitle);
 			if(mrl != NULL)
@@ -2397,6 +2421,11 @@ main(int argc, char* argv[])
 
 	lmplayer_debug(" ");
 	lmplayer->builder = lmplayer_interface_load("lmplayer.ui", TRUE, NULL, NULL);
+	if(lmplayer->builder == NULL)
+	{
+		lmplayer_action_exit(NULL);
+	}
+
 	lmplayer->win = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-window");
 	if(lmplayer->win == NULL)
 	{
