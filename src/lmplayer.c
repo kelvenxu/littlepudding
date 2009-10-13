@@ -68,7 +68,7 @@ static gboolean lmplayer_action_open_files_list (LmplayerObject *lmplayer, GSLis
 gboolean seek_slider_pressed_cb (GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer);
 void seek_slider_changed_cb (GtkAdjustment *adj, LmplayerObject *lmplayer);
 gboolean seek_slider_released_cb(GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer);
-//static void lmplayer_volume_value_changed_cb(SkinHScale *hscale, LmplayerObject *lmplayer);
+static void lmplayer_volume_value_changed_cb(GtkScaleButton *hscale, gdouble value, LmplayerObject *lmplayer);
 
 //static gboolean lmplayer_build_lyric_name(LmplayerObject *lmplayer);
 //static gboolean lmplayer_load_local_lyric(LmplayerObject *lmplayer);
@@ -1796,37 +1796,21 @@ static void lmplayer_callback_connect(LmplayerObject *lmplayer)
 {
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
 
-	//g_signal_connect(G_OBJECT(lmplayer->win), "right-button-press", 
-	//		G_CALLBACK(main_window_right_button_press_cb), lmplayer);
+	g_signal_connect(G_OBJECT(lmplayer->volume), "value-changed",
+			G_CALLBACK(lmplayer_volume_value_changed_cb), lmplayer);
 
-	//g_signal_connect(G_OBJECT(lmplayer->mini_win), "right-button-press", 
-	//		G_CALLBACK(main_window_right_button_press_cb), lmplayer);
+	g_signal_connect(G_OBJECT(lmplayer->seek), "value-changed",
+			G_CALLBACK(seek_slider_changed_cb), lmplayer);
 
 	g_signal_connect(G_OBJECT(lmplayer->win), "destroy", 
 			G_CALLBACK(main_window_destroy_cb), lmplayer);
 	
-	//FIXME: 为什么用destroy这个信号LMPLAYER_IS_OBJECT(lmplayer)通不过呢?
-	//g_signal_connect(G_OBJECT(lmplayer->win), "delete-event", 
-	//		G_CALLBACK(main_window_destroy_cb), lmplayer);
-
-	//g_signal_connect(G_OBJECT(lmplayer->mini_win), "delete-event", 
-	//		G_CALLBACK(main_window_destroy_cb), lmplayer);
-
-	//g_signal_connect(G_OBJECT(lmplayer->win), "window-state-event",
-	//		G_CALLBACK(main_window_state_changed_cb), lmplayer);
-
-	//g_signal_connect(G_OBJECT(lmplayer->volume), "value-changed",
-	//		G_CALLBACK(lmplayer_volume_value_changed_cb), lmplayer);
-
-	g_signal_connect(G_OBJECT(lmplayer->seek), "value-changed",
-			G_CALLBACK(seek_slider_changed_cb), lmplayer);
 }
 
 static gboolean
 on_eos_event (GtkWidget *widget, LmplayerObject *lmplayer)
 {
 	lmplayer_debug(" ");
-	//return FALSE; 
 
 	if(lmplayer_playlist_has_next_mrl(lmplayer->playlist) == FALSE
 			&& lmplayer_playlist_get_repeat(lmplayer->playlist) == FALSE)
@@ -1984,6 +1968,9 @@ lmplayer_action_volume_relative (LmplayerObject *lmplayer, double off_pct)
 {
 	double vol;
 
+	lmplayer_debug(" ");
+	g_return_if_fail(lmplayer != NULL);
+
 	if (bacon_video_widget_can_set_volume (lmplayer->bvw) == FALSE)
 		return;
 
@@ -1991,26 +1978,25 @@ lmplayer_action_volume_relative (LmplayerObject *lmplayer, double off_pct)
 	bacon_video_widget_set_volume (lmplayer->bvw, vol + off_pct);
 }
 
-#if 0
 static void 
-lmplayer_volume_value_changed_cb(SkinHScale *hscale, LmplayerObject *lmplayer)
+lmplayer_volume_value_changed_cb(GtkScaleButton *scale, gdouble value, LmplayerObject *lmplayer)
 {
-	//double volume;
-	//volume = skin_hscale_get_value(lmplayer->volume);
-	//bacon_video_widget_set_volume(lmplayer->bvw, volume / 100.0);
+	g_return_if_fail(GTK_IS_SCALE_BUTTON(scale));
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+
+	bacon_video_widget_set_volume(lmplayer->bvw, value);
 }
 
 
 static void
 update_volume_slider(LmplayerObject *lmplayer)
 {
-	//double volume;
+	double volume;
 
-	//volume = bacon_video_widget_get_volume(lmplayer->bvw);
-
-	//skin_hscale_set_value(lmplayer->volume, volume * 100.0);
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+	volume = bacon_video_widget_get_volume(lmplayer->bvw);
+	gtk_scale_button_set_value(GTK_SCALE_BUTTON(lmplayer->volume), volume);
 }
-#endif
 
 static void
 property_notify_cb_seekable (BaconVideoWidget *bvw, GParamSpec *spec, LmplayerObject *lmplayer)
@@ -2020,7 +2006,7 @@ property_notify_cb_seekable (BaconVideoWidget *bvw, GParamSpec *spec, LmplayerOb
 static void
 property_notify_cb_volume (BaconVideoWidget *bvw, GParamSpec *spec, LmplayerObject *lmplayer)
 {
-	//update_volume_slider(lmplayer);
+	update_volume_slider(lmplayer);
 }
 
 static void
@@ -2095,7 +2081,7 @@ video_widget_create (LmplayerObject *lmplayer)
 	g_signal_connect (G_OBJECT (lmplayer->bvw), "notify::seekable",
 			G_CALLBACK (property_notify_cb_seekable), lmplayer);
 
-	//update_volume_slider (lmplayer); //TODO:
+	update_volume_slider(lmplayer); //TODO:
 }
 
 #if 0
@@ -2396,6 +2382,11 @@ main(int argc, char* argv[])
 
 	lmplayer_debug(" ");
 	lmplayer = lmplayer_object_new();
+	if(lmplayer == NULL)
+	{
+		lmplayer_action_exit(NULL);
+	}
+
 	lmplayer->gc = gc;
 	lmplayer->pls = NULL;
 
@@ -2435,6 +2426,13 @@ main(int argc, char* argv[])
 	lmplayer_debug(" ");
 	//lmplayer->lyricview = SKIN_LYRIC(skin_builder_get_object(lmplayer->builder, "lyric-lyricview"));
 
+	lmplayer->seek = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-progressbar");
+	//lmplayer->led = (SkinDigitalTime *)skin_builder_get_object(lmplayer->builder, "player-led");
+	lmplayer->volume = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-volume");
+	//lmplayer->statusbar = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_statusbar"));
+	
+	lmplayer_callback_connect(lmplayer);
+
 	lmplayer_ui_manager_setup(lmplayer);
 	lmplayer_debug(" ");
 	playlist_widget_setup(lmplayer);
@@ -2444,14 +2442,11 @@ main(int argc, char* argv[])
 	
 	//TODO: 安装其它如会话管理、cd播放、文件监视等功能
 	lmplayer->state = STATE_STOPPED;
-	lmplayer->seek = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-progressbar");
-	//lmplayer->led = (SkinDigitalTime *)skin_builder_get_object(lmplayer->builder, "player-led");
-	//lmplayer->volume = (SkinHScale *)skin_builder_get_object(lmplayer->builder, "player-volume");
-	//lmplayer->statusbar = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_statusbar"));
 	lmplayer->seek_lock = FALSE;
+
+
 	lmplayer_setup_file_monitoring(lmplayer);
 	lmplayer_setup_file_filters();
-	lmplayer_callback_connect(lmplayer);
 	lmplayer_setup_toolbar(lmplayer);
 
 	lmplayer_options_process_late(lmplayer, &optionstate);

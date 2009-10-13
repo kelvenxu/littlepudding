@@ -102,7 +102,7 @@ struct _LmplayerObject
 	gboolean minimode;
 
 	/* Volume */
-	//GtkWidget *volume; //FIXME:
+	GtkWidget *volume; //FIXME:
 	//SkinHScale *volume;
 	gboolean volume_sensitive;
 
