@@ -1338,7 +1338,7 @@ playlist_changed_cb (GtkWidget *playlist, LmplayerObject *lmplayer)
 }
 
 static gboolean
-lmplayer_action_open_files_list (LmplayerObject *lmplayer, GSList *list)
+lmplayer_action_open_files_list(LmplayerObject *lmplayer, GSList *list)
 {
 	GSList *l;
 	gboolean changed;
@@ -1440,18 +1440,22 @@ lmplayer_action_open_files_list (LmplayerObject *lmplayer, GSList *list)
 
 	return changed;
 }
+
 static gboolean
 lmplayer_action_open_files (LmplayerObject *lmplayer, char **list)
 {
 	GSList *slist = NULL;
 	int i, retval;
 
-	for (i = 0 ; list[i] != NULL; i++)
-		slist = g_slist_prepend (slist, list[i]);
+	for (i = 0; list[i] != NULL; i++)
+	{
+		lmplayer_debug("file: %s", list[i]);
+		slist = g_slist_prepend(slist, list[i]);
+	}
 
-	slist = g_slist_reverse (slist);
-	retval = lmplayer_action_open_files_list (lmplayer, slist);
-	g_slist_free (slist);
+	slist = g_slist_reverse(slist);
+	retval = lmplayer_action_open_files_list(lmplayer, slist);
+	g_slist_free(slist);
 
 	return retval;
 }
@@ -2367,18 +2371,14 @@ main(int argc, char* argv[])
 	lmplayer->seek = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-progressbar");
 	lmplayer->seekadj = gtk_range_get_adjustment(GTK_RANGE(lmplayer->seek));
 
-	//lmplayer->led = (SkinDigitalTime *)skin_builder_get_object(lmplayer->builder, "player-led");
 	lmplayer->volume = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-volume");
 	//lmplayer->statusbar = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_statusbar"));
 	
 	lmplayer_callback_connect(lmplayer);
 
 	lmplayer_ui_manager_setup(lmplayer);
-	lmplayer_debug(" ");
 	playlist_widget_setup(lmplayer);
-	lmplayer_debug(" ");
 	video_widget_create(lmplayer);
-	lmplayer_debug(" ");
 	
 	//TODO: 安装其它如会话管理、cd播放、文件监视等功能
 	lmplayer->state = STATE_STOPPED;
