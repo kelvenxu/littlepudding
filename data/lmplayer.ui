@@ -82,7 +82,6 @@
         <child>
           <object class="GtkHScale" id="player-progressbar">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
             <property name="draw_value">False</property>
           </object>
           <packing>

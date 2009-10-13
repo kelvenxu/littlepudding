@@ -114,12 +114,13 @@ struct _LmplayerObject
 	gboolean drives_changed;
 
 	/* Seek */
-	//GtkWidget *seek;
-	//GtkAdjustment *seekadj;
-	//SkinHScale *seek;
 	GtkWidget *seek;
+	GtkAdjustment *seekadj;
+	//SkinHScale *seek;
 	gboolean seek_lock;
 	gboolean seekable;
+
+	gint64 stream_length;
 
 	//SkinDigitalTime *led;
 	//SkinDigitalTime *mini_led;
@@ -140,7 +141,6 @@ struct _LmplayerObject
 	gchar *skinfile;
 
 	LmplayerStates state;
-	gint64 stream_length;
 
 	LmplayerOpenLocation *open_location;
 };

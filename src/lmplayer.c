@@ -1470,61 +1470,26 @@ lmplayer_action_open_files (LmplayerObject *lmplayer, char **list)
 gboolean
 seek_slider_pressed_cb (GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer)
 {
+	lmplayer_debug(" ");
 	lmplayer->seek_lock = TRUE;
 	//lmplayer_statusbar_set_seeking (LMPLAYER_STATUSBAR(lmplayer->statusbar), TRUE);
-	//totem_time_label_set_seeking (TOTEM_TIME_LABEL (totem->fs->time_label), TRUE);
 
 	return FALSE;
-}
-
-void
-seek_slider_changed_cb (GtkAdjustment *adj, LmplayerObject *lmplayer)
-{
-	double pos;
-	gint time;
-
-	if (lmplayer->seek_lock == FALSE)
-		return;
-
-	pos = gtk_adjustment_get_value (adj) / 65535;
-	time = bacon_video_widget_get_stream_length(lmplayer->bvw);
-
-	//lmplayer_statusbar_set_time_and_length (LMPLAYER_STATUSBAR(lmplayer->statusbar),
-	//		(int) (pos * time / 1000), time / 1000);
-	/*
-	lmplayer_time_label_set_time
-			(LMPLAYER_TIME_LABEL (totem->fs->time_label),
-			 (int) (pos * time), time);
-	*/
-
-	//pos = skin_hscale_get_value(lmplayer->seek);
-	pos = gtk_range_get_value(GTK_RANGE(lmplayer->seek));
-	if(bacon_video_widget_can_direct_seek(lmplayer->bvw) != FALSE)
-		lmplayer_action_seek(lmplayer, pos);
 }
 
 gboolean
 seek_slider_released_cb(GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer)
 {
-	//GtkAdjustment *adj;
 	gdouble val;
 
-	/* set to FALSE here to avoid triggering a final seek when
-	 * syncing the adjustments while being in direct seek mode */
 	lmplayer->seek_lock = FALSE;
 
-	/* sync both adjustments */
-	//adj = gtk_range_get_adjustment (GTK_RANGE (widget));
-	//val = gtk_adjustment_get_value (adj);
-	//val = skin_hscale_get_value(lmplayer->seek);
 	val = gtk_range_get_value(GTK_RANGE(lmplayer->seek));
 
-	if(bacon_video_widget_can_direct_seek(lmplayer->bvw) == FALSE)
-		lmplayer_action_seek(lmplayer, val / 65535.0);
+	if(lmplayer->stream_length && bacon_video_widget_can_direct_seek(lmplayer->bvw))
+		lmplayer_action_seek(lmplayer, (double)val / lmplayer->stream_length);
 
 	//lmplayer_statusbar_set_seeking(LMPLAYER_STATUSBAR(lmplayer->statusbar), FALSE);
-	//totem_time_label_set_seeking (TOTEM_TIME_LABEL (totem->fs->time_label),
-	//		FALSE);
 	return FALSE;
 }
 
@@ -1796,11 +1761,19 @@ static void lmplayer_callback_connect(LmplayerObject *lmplayer)
 {
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
 
+	gtk_widget_add_events(GTK_WIDGET(lmplayer->seek), GDK_SCROLL_MASK);
+
 	g_signal_connect(G_OBJECT(lmplayer->volume), "value-changed",
 			G_CALLBACK(lmplayer_volume_value_changed_cb), lmplayer);
 
-	g_signal_connect(G_OBJECT(lmplayer->seek), "value-changed",
-			G_CALLBACK(seek_slider_changed_cb), lmplayer);
+	//g_signal_connect(G_OBJECT(lmplayer->seek), "value-changed",
+	//		G_CALLBACK(seek_slider_changed_cb), lmplayer);
+
+	g_signal_connect(G_OBJECT(lmplayer->seek), "button-press-event",
+			G_CALLBACK(seek_slider_pressed_cb), lmplayer);
+
+	g_signal_connect(G_OBJECT(lmplayer->seek), "button-release-event",
+			G_CALLBACK(seek_slider_released_cb), lmplayer);
 
 	g_signal_connect(G_OBJECT(lmplayer->win), "destroy", 
 			G_CALLBACK(main_window_destroy_cb), lmplayer);
@@ -1915,16 +1888,8 @@ update_current_time (BaconVideoWidget *bvw,
 {
 	if(lmplayer->seek_lock == FALSE)
 	{
-		//gtk_adjustment_set_value(lmplayer->seekadj,
-		//		current_position * 65535);
-
-		//skin_hscale_set_value(lmplayer->seek, (gdouble)current_position * 65535.0);
-		//skin_digital_time_set_value(lmplayer->led, (gdouble)current_position * 65535.0);
 		if(stream_length == 0 && lmplayer->mrl != NULL)
 		{
-			//lmplayer_statusbar_set_time_and_length
-			//	(LMPLAYER_STATUSBAR(lmplayer->statusbar),
-			//	(int) (current_time / 1000), -1);
 		} 
 		else 
 		{
@@ -1933,27 +1898,12 @@ update_current_time (BaconVideoWidget *bvw,
 			//	(int) (current_time / 1000),
 			//	(int) (stream_length / 1000));
 
-			//lmplayer_debug(" ");
-			//skin_hscale_set_range(lmplayer->seek, 0.0, (gdouble)stream_length / 1000.0);
-			//skin_hscale_set_value(lmplayer->seek, (gdouble)current_time / 1000.0);
-			//skin_hscale_set_range_and_value(lmplayer->seek, 0.0, 
-			//		(gdouble)stream_length / 1000.0,
-			//		(gdouble)current_time / 1000.0);
-			gtk_range_set_range(GTK_RANGE(lmplayer->seek), 0, (gdouble)stream_length / 1000.0);
-			gtk_range_set_value(GTK_RANGE(lmplayer->seek), (gdouble)current_time / 1000.0);
-
-			//if(lmplayer->minimode && lmplayer->mini_led)
-			//	skin_digital_time_set_value(lmplayer->mini_led, (gdouble)current_time / 1000.0);
-			//else
-			//	skin_digital_time_set_value(lmplayer->led, (gdouble)current_time / 1000.0);
+			gtk_range_set_range(GTK_RANGE(lmplayer->seek), 0.0, (gdouble)stream_length);
+			gtk_range_set_value(GTK_RANGE(lmplayer->seek), (gdouble)current_time);
 
 			//if(lmplayer->has_lyric)
 			//	skin_lyric_set_current_second(lmplayer->lyricview, current_time / 1000);
 		}
-
-		//totem_time_label_set_time
-		//	(TOTEM_TIME_LABEL (totem->fs->time_label),
-		//	 current_time, stream_length);
 	}
 
 	if (lmplayer->stream_length != stream_length) 
@@ -2427,6 +2377,8 @@ main(int argc, char* argv[])
 	//lmplayer->lyricview = SKIN_LYRIC(skin_builder_get_object(lmplayer->builder, "lyric-lyricview"));
 
 	lmplayer->seek = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-progressbar");
+	lmplayer->seekadj = gtk_range_get_adjustment(GTK_RANGE(lmplayer->seek));
+
 	//lmplayer->led = (SkinDigitalTime *)skin_builder_get_object(lmplayer->builder, "player-led");
 	lmplayer->volume = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-volume");
 	//lmplayer->statusbar = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_statusbar"));
