@@ -423,30 +423,28 @@ void toolbar_mode_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 
 void lmplayer_ui_manager_setup (LmplayerObject *lmplayer)
 {
-	//SkinButton *button;
-	//SkinBuilder *builder;
-	GtkWidget *button;
+	GtkButton *button;
 	GtkBuilder *builder;
 
 	builder = lmplayer->builder;
 
-	// player window
-	//button = (SkinButton*)skin_builder_get_object(builder, "player-open");
-	//g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(open_action_callback), lmplayer);
-	
-	//button = (SkinButton*)skin_builder_get_object(builder, "player-play");
-	button = (SkinButton*)gtk_builder_get_object(builder, "player-play");
+	button = (GtkButton *)gtk_builder_get_object(builder, "player-play");
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(play_action_callback), lmplayer);
 
-	//button = (SkinButton*)skin_builder_get_object(builder, "player-pause");
-	//g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(pause_action_callback), lmplayer);
-
-	button = (GtkButton*)gtk_builder_get_object(builder, "player-next");
+	button = (GtkButton *)gtk_builder_get_object(builder, "player-next");
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(next_music_action_callback), lmplayer);
 
-	//button = (SkinButton*)skin_builder_get_object(builder, "player-prev");
-	button = (GtkButton*)gtk_builder_get_object(builder, "player-prev");
+	button = (GtkButton *)gtk_builder_get_object(builder, "player-prev");
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(prev_music_action_callback), lmplayer);
+	
+	button = (GtkButton *)gtk_builder_get_object(builder, "player-add");
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(add_action_callback), lmplayer);
+
+	button = (GtkButton *)gtk_builder_get_object(builder, "player-remove");
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(remove_action_callback), lmplayer);
+
+	button = (GtkButton *)gtk_builder_get_object(builder, "player-save");
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(save_action_callback), lmplayer);
 
 	//button = (SkinButton*)skin_builder_get_object(builder, "player-stop");
 	//g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(stop_action_callback), lmplayer);

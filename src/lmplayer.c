@@ -1487,7 +1487,7 @@ seek_slider_released_cb(GtkWidget *widget, GdkEventButton *event, LmplayerObject
 	val = gtk_range_get_value(GTK_RANGE(lmplayer->seek));
 
 	if(lmplayer->stream_length && bacon_video_widget_can_direct_seek(lmplayer->bvw))
-		lmplayer_action_seek(lmplayer, (double)val / lmplayer->stream_length);
+		lmplayer_action_seek(lmplayer, (double)val / lmplayer->stream_length); // 需要的是一个比例值
 
 	//lmplayer_statusbar_set_seeking(LMPLAYER_STATUSBAR(lmplayer->statusbar), FALSE);
 	return FALSE;
