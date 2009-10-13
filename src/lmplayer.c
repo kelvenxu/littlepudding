@@ -69,6 +69,7 @@ gboolean seek_slider_pressed_cb (GtkWidget *widget, GdkEventButton *event, Lmpla
 void seek_slider_changed_cb (GtkAdjustment *adj, LmplayerObject *lmplayer);
 gboolean seek_slider_released_cb(GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer);
 static void lmplayer_volume_value_changed_cb(GtkScaleButton *hscale, gdouble value, LmplayerObject *lmplayer);
+static gchar * lmplayer_build_default_playlist_filename();
 
 //static gboolean lmplayer_build_lyric_name(LmplayerObject *lmplayer);
 //static gboolean lmplayer_load_local_lyric(LmplayerObject *lmplayer);
@@ -820,13 +821,42 @@ lmplayer_load_net_lyric(LmplayerObject *lmplayer)
 	//g_timeout_add(1000, (GSourceFunc)lmplayer_load_local_lyric, lmplayer);
 }
 
+/**
+ * lmplayer_build_default_playlist_filename:
+ *
+ * Returns: a string. Free when no used.
+ */
+static gchar *
+lmplayer_build_default_playlist_filename()
+{
+	const gchar *home = NULL;
+	gchar *cfg_path = NULL;
+	gchar *fn = NULL;
+
+	home = g_getenv("HOME");
+
+	if(home != NULL)
+		cfg_path = g_build_path(G_DIR_SEPARATOR_S, home, ".lmplayer", NULL);
+
+	if(cfg_path != NULL)
+	{
+		fn = g_build_filename(cfg_path, "default_playlist.pls", NULL);
+		g_free(cfg_path);
+	}
+
+	return fn;
+}
+
 void 
 lmplayer_action_load_default_playlist(LmplayerObject *lmplayer)
 {
-	const gchar *home;
-	gchar *cfg_path;
+	//const gchar *home;
+	//gchar *cfg_path;
 	gchar *uri;
 
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+
+#if 0
 	if(lmplayer->pls == NULL)
 	{
 		home = g_getenv("HOME");
@@ -842,6 +872,12 @@ lmplayer_action_load_default_playlist(LmplayerObject *lmplayer)
 		if(lmplayer->pls == NULL)
 			return;
 	}
+#endif
+
+	if(lmplayer->pls == NULL)
+		lmplayer->pls = lmplayer_build_default_playlist_filename();
+	if(lmplayer->pls == NULL)
+		return;
 
 	uri = g_filename_to_uri(lmplayer->pls, NULL, NULL);
 	if(uri != NULL)
@@ -1380,7 +1416,6 @@ lmplayer_action_open_files_list(LmplayerObject *lmplayer, GSList *list)
 		{
 			if (cleared == FALSE)
 			{
-				lmplayer_debug(" ");
 				/* The function that calls us knows better
 				 * if we should be doing something with the 
 				 * changed playlist ... */
@@ -1388,37 +1423,29 @@ lmplayer_action_open_files_list(LmplayerObject *lmplayer, GSList *list)
 					(G_OBJECT (lmplayer->playlist),
 					 playlist_changed_cb, lmplayer);
 
-				lmplayer_debug(" ");
 				changed = lmplayer_playlist_clear (lmplayer->playlist);
-				lmplayer_debug(" ");
 				bacon_video_widget_close (lmplayer->bvw);
-				lmplayer_debug(" ");
 				lmplayer_file_closed (lmplayer);
-				lmplayer_debug(" ");
 				cleared = TRUE;
 			}
 
 			if (lmplayer_is_block_device (filename) != FALSE) 
 			{
-				lmplayer_debug(" ");
 				lmplayer_action_load_media_device (lmplayer, data);
 				changed = TRUE;
 			} 
 			else if (g_str_has_prefix (filename, "dvb:/") != FALSE) 
 			{
-				lmplayer_debug(" ");
 				lmplayer_playlist_add_mrl (lmplayer->playlist, data, NULL);
 				changed = TRUE;
 			} 
 			else if (g_str_equal (filename, "dvb:") != FALSE) 
 			{
-				lmplayer_debug(" ");
 				lmplayer_action_load_media (lmplayer, MEDIA_TYPE_DVB, "0");
 				changed = TRUE;
 			} 
 			else if (lmplayer_playlist_add_mrl (lmplayer->playlist, filename, NULL) != FALSE) 
 			{
-				lmplayer_debug(" ");
 				//lmplayer_action_add_recent (lmplayer, filename);
 				changed = TRUE;
 			}
@@ -1427,7 +1454,6 @@ lmplayer_action_open_files_list(LmplayerObject *lmplayer, GSList *list)
 		g_free (filename);
 	}
 
-	lmplayer_debug(" ");
 	gdk_window_set_cursor (GTK_WIDGET(lmplayer->win)->window, NULL);
 
 	/* ... and reconnect because we're nice people */
@@ -2289,6 +2315,8 @@ main(int argc, char* argv[])
 	GConfClient *gc;
 	GError* error = NULL;
 
+	gboolean hasfiles = FALSE;
+
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
@@ -2393,6 +2421,7 @@ main(int argc, char* argv[])
 
 	if(optionstate.filenames != NULL && lmplayer_action_open_files(lmplayer, optionstate.filenames))
 	{
+		hasfiles = TRUE;
 		lmplayer_action_play_pause(lmplayer);
 	}
 	else
@@ -2409,8 +2438,16 @@ main(int argc, char* argv[])
 	
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->win));
 
-	lmplayer_debug("load default playlist");
-	lmplayer_action_load_default_playlist(lmplayer);
+	if(hasfiles)
+	{
+		if(lmplayer->pls == NULL)
+			lmplayer->pls = lmplayer_build_default_playlist_filename();
+	}
+	else
+	{
+		lmplayer_debug("load default playlist");
+		lmplayer_action_load_default_playlist(lmplayer);
+	}
 
 	gtk_main();
 	return 0;
