@@ -601,8 +601,6 @@ lmplayer_action_pause(LmplayerObject *lmplayer)
 void
 lmplayer_action_exit(LmplayerObject *lmplayer)
 {
-	lmplayer_debug(" ");
-
 	/* Exit forcefully if we can't do the shutdown in 10 seconds */
 	g_thread_create ((GThreadFunc) lmplayer_action_wait_force_exit,
 			 NULL, FALSE, NULL);
@@ -616,51 +614,42 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	if (lmplayer == NULL)
 		exit (0);
 
-	lmplayer_debug("%s", lmplayer->pls);
-
 	if(lmplayer->playlist && lmplayer->pls)
 	{
 		lmplayer_playlist_save_current_playlist(lmplayer->playlist, lmplayer->pls);
-		g_free(lmplayer->pls); //FIXME:
+		g_free(lmplayer->pls);
+		lmplayer->pls = NULL;
 	}
 
-	lmplayer_debug(" ");
 	if(lmplayer->lyric_filename)
 		g_free(lmplayer->lyric_filename);
 
-	lmplayer_debug(" ");
-	if (lmplayer->bvw) 
+	if(lmplayer->bvw) 
 	{
 		int vol;
-		lmplayer_action_stop (lmplayer);
+		lmplayer_action_stop(lmplayer);
 
-		vol = bacon_video_widget_get_volume (lmplayer->bvw) * 100.0 + 0.5;
+		vol = bacon_video_widget_get_volume(lmplayer->bvw) * 100.0 + 0.5;
 
 		/* FIXME move the volume to the static file? */
-		gconf_client_add_dir (lmplayer->gc, GCONF_PREFIX,
-				GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-		gconf_client_set_int (lmplayer->gc,
-				GCONF_PREFIX"/volume",
-				CLAMP (vol, 0, 100),
-				NULL);
+		gconf_client_add_dir(lmplayer->gc, GCONF_PREFIX, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
+		gconf_client_set_int(lmplayer->gc, GCONF_PREFIX"/volume", CLAMP(vol, 0, 100), NULL);
 	}
 
-	if (lmplayer->conn != NULL)
-		bacon_message_connection_free (lmplayer->conn);
+	if(lmplayer->conn != NULL)
+		bacon_message_connection_free(lmplayer->conn);
 
-	lmplayer_debug(" ");
 	//lmplayer_sublang_exit (lmplayer);
 	lmplayer_destroy_file_filters();
 
-	if (lmplayer->gc)
-		g_object_unref (G_OBJECT (lmplayer->gc));
+	if(lmplayer->gc)
+		g_object_unref(G_OBJECT(lmplayer->gc));
 
-	if (gtk_main_level () > 0)
+	if(gtk_main_level () > 0)
 		gtk_main_quit();
 
-	lmplayer_debug(" ");
-	g_object_unref (lmplayer);
-	exit (0);
+	g_object_unref(lmplayer);
+	exit(0);
 }
 
 void
@@ -850,7 +839,6 @@ lmplayer_action_load_default_playlist(LmplayerObject *lmplayer)
 
 		}
 
-		lmplayer_debug("%s", lmplayer->pls);
 		if(lmplayer->pls == NULL)
 			return;
 	}
@@ -860,6 +848,7 @@ lmplayer_action_load_default_playlist(LmplayerObject *lmplayer)
 	{
 		lmplayer_playlist_add_mrl(lmplayer->playlist, uri, NULL);
 		g_free(uri);
+		uri = NULL;
 	}
 }
 
@@ -1684,7 +1673,7 @@ static void lmplayer_action_error_and_exit(const char *title,
 
 
 static gboolean 
-main_window_destroy_cb (GtkWidget *widget, GdkEvent *event, LmplayerObject *lmplayer)
+main_window_destroy_cb(GtkWidget *widget, LmplayerObject *lmplayer)
 {
 	lmplayer_action_exit (lmplayer);
 	return FALSE;
@@ -2340,7 +2329,6 @@ main(int argc, char* argv[])
 	lmplayer->gc = gc;
 	lmplayer->pls = NULL;
 
-	lmplayer_debug(" ");
 	if(optionstate.notconnectexistingsession == FALSE)
 	{
 		lmplayer->conn = bacon_message_connection_new(GETTEXT_PACKAGE);
