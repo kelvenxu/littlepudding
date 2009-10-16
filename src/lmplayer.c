@@ -1776,6 +1776,31 @@ main_window_right_button_press_cb(SkinWindow *win, LmplayerObject *lmplayer)
 }
 #endif
 
+static void
+lmplayer_action_view_switch(LmplayerObject *lmplayer)
+{
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+
+	if(lmplayer->view_type == LMPLAYER_VIEW_TYPE_PLAYLIST)
+	{
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(lmplayer->view), LMPLAYER_VIEW_TYPE_VISUAL);
+		lmplayer->view_type = LMPLAYER_VIEW_TYPE_VISUAL;
+	}
+	else
+	{
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(lmplayer->view), LMPLAYER_VIEW_TYPE_PLAYLIST);
+		lmplayer->view_type = LMPLAYER_VIEW_TYPE_PLAYLIST;
+	}
+}
+
+static void
+view_switch_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
+{
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+
+	lmplayer_action_view_switch(lmplayer);
+}
+
 static void lmplayer_callback_connect(LmplayerObject *lmplayer)
 {
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
@@ -1793,6 +1818,9 @@ static void lmplayer_callback_connect(LmplayerObject *lmplayer)
 
 	g_signal_connect(G_OBJECT(lmplayer->seek), "button-release-event",
 			G_CALLBACK(seek_slider_released_cb), lmplayer);
+
+	g_signal_connect(G_OBJECT(lmplayer->view_switch), "clicked", 
+				G_CALLBACK(view_switch_clicked_cb), lmplayer);
 
 	g_signal_connect(G_OBJECT(lmplayer->win), "destroy", 
 			G_CALLBACK(main_window_destroy_cb), lmplayer);
@@ -2360,6 +2388,7 @@ main(int argc, char* argv[])
 
 	lmplayer->gc = gc;
 	lmplayer->pls = NULL;
+	lmplayer->view_type = LMPLAYER_VIEW_TYPE_PLAYLIST;
 
 	if(optionstate.notconnectexistingsession == FALSE)
 	{
@@ -2401,6 +2430,8 @@ main(int argc, char* argv[])
 
 	lmplayer->volume = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-volume");
 	//lmplayer->statusbar = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_statusbar"));
+	lmplayer->view = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-view");
+	lmplayer->view_switch = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-view-switch");
 	
 	lmplayer_callback_connect(lmplayer);
 
@@ -2448,6 +2479,8 @@ main(int argc, char* argv[])
 		lmplayer_debug("load default playlist");
 		lmplayer_action_load_default_playlist(lmplayer);
 	}
+
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(lmplayer->view), LMPLAYER_VIEW_TYPE_PLAYLIST);
 
 	gtk_main();
 	return 0;

@@ -69,6 +69,12 @@ typedef enum
 	STATE_STOPPED
 } LmplayerStates;
 
+typedef enum
+{
+	LMPLAYER_VIEW_TYPE_PLAYLIST,
+	LMPLAYER_VIEW_TYPE_VISUAL
+} LmplayerViewType;
+
 struct _LmplayerObject
 {
 	GObject parent;
@@ -82,6 +88,10 @@ struct _LmplayerObject
 	GtkBuilder *builder;
 	//SkinWindow *win;
 	GtkWidget *win;
+
+	GtkWidget *view;
+	LmplayerViewType view_type;
+	GtkWidget *view_switch;
 
 	//SkinWindow *pl_win;
 	//SkinWindow *lyric_win;
