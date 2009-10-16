@@ -2064,10 +2064,10 @@ video_widget_create (LmplayerObject *lmplayer)
 	g_object_add_weak_pointer(G_OBJECT(lmplayer->bvw), (gpointer *)bvw);
 
 	lmplayer_debug("realize bvw");
-	gtk_widget_realize(GTK_WIDGET(lmplayer->bvw));
+	//gtk_widget_realize(GTK_WIDGET(lmplayer->bvw));
 	gtk_widget_show(GTK_WIDGET(lmplayer->bvw));
 
-	bacon_video_widget_set_visuals(lmplayer->bvw, "GOOM:what a GOOM!");
+	//bacon_video_widget_set_visuals(lmplayer->bvw, "GOOM:what a GOOM!");
 
 	bacon_video_widget_set_volume (lmplayer->bvw,
 			((double) gconf_client_get_int (lmplayer->gc,
