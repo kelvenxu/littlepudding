@@ -26,6 +26,7 @@
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
+#include <gdk/gdkkeysyms.h>
 
 #include "lmplayer-menu.h"
 #include "lmplayer.h"
@@ -425,11 +426,15 @@ void lmplayer_ui_manager_setup (LmplayerObject *lmplayer)
 {
 	GtkButton *button;
 	GtkBuilder *builder;
+	GtkAccelGroup *accel_group;
+
+	accel_group = gtk_accel_group_new();
 
 	builder = lmplayer->builder;
 
 	button = (GtkButton *)gtk_builder_get_object(builder, "player-play");
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(play_action_callback), lmplayer);
+	gtk_widget_add_accelerator(GTK_WIDGET(button), "clicked", accel_group, GDK_P, GDK_CONTROL_MASK, 0);
 
 	button = (GtkButton *)gtk_builder_get_object(builder, "player-next");
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(next_music_action_callback), lmplayer);
@@ -529,6 +534,8 @@ void lmplayer_ui_manager_setup (LmplayerObject *lmplayer)
 
 //	tb = (SkinToggleButton*)skin_builder_get_object(builder, "toolbar-mode");
 	//g_signal_connect(G_OBJECT(tb), "clicked", G_CALLBACK(toolbar_mode_action_callback), lmplayer);
+	//
+	gtk_window_add_accel_group(GTK_WINDOW(lmplayer->win), accel_group);
 }
 
 static GtkActionEntry entries[] = {
