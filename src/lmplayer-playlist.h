@@ -109,6 +109,7 @@ gboolean   lmplayer_playlist_set_title (LmplayerPlaylist *playlist,
 				     const char *title,
 				     gboolean force);
 
+gboolean   lmplayer_playlist_set_stream_length(LmplayerPlaylist *playlist, gint64 stream_length);
 #define    lmplayer_playlist_has_direction(playlist, direction) (direction == LMPLAYER_PLAYLIST_DIRECTION_NEXT ? lmplayer_playlist_has_next_mrl (playlist) : lmplayer_playlist_has_previous_mrl (playlist))
 gboolean   lmplayer_playlist_has_previous_mrl (LmplayerPlaylist *playlist);
 gboolean   lmplayer_playlist_has_next_mrl (LmplayerPlaylist *playlist);

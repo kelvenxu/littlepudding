@@ -146,6 +146,7 @@ enum {
 	TITLE_CUSTOM_COL,
 	SUBTITLE_URI_COL,
 	FILE_MONITOR_COL,
+	STREAM_LENGTH_COL,
 	NUM_COLS
 };
 
@@ -1277,7 +1278,8 @@ create_model()
 			G_TYPE_STRING, 
 			G_TYPE_BOOLEAN, 
 			G_TYPE_STRING, 
-			G_TYPE_OBJECT);
+			G_TYPE_OBJECT,
+			G_TYPE_STRING);
 
 	return GTK_TREE_MODEL(store);
 }
@@ -1289,13 +1291,12 @@ init_columns (GtkTreeView *treeview, LmplayerPlaylist *playlist)
 	GtkTreeViewColumn *column;
 
 	/* Playing pix */
-	//renderer = gtk_cell_renderer_pixbuf_new ();
-	renderer = gtk_cell_renderer_text_new ();
+	renderer = gtk_cell_renderer_pixbuf_new ();
 	column = gtk_tree_view_column_new ();
 	gtk_tree_view_column_pack_start (column, renderer, FALSE);
 	gtk_tree_view_column_set_cell_data_func (column, renderer,
-			(GtkTreeCellDataFunc) set_playing_color, playlist, NULL);
-	//g_object_set (renderer, "stock-size", GTK_ICON_SIZE_MENU, NULL);
+			(GtkTreeCellDataFunc) set_playing_icon, playlist, NULL);
+	g_object_set (renderer, "stock-size", GTK_ICON_SIZE_MENU, NULL);
 	gtk_tree_view_append_column (treeview, column);
 
 	/* Labels */
@@ -1303,8 +1304,15 @@ init_columns (GtkTreeView *treeview, LmplayerPlaylist *playlist)
 	gtk_tree_view_column_pack_start (column, renderer, TRUE);
 	gtk_tree_view_column_set_attributes (column, renderer,
 			"text", FILENAME_COL, NULL);
-	gtk_tree_view_column_set_cell_data_func (column, renderer,
-			(GtkTreeCellDataFunc) set_playing_color, playlist, NULL);
+	//gtk_tree_view_column_set_cell_data_func (column, renderer,
+	//		(GtkTreeCellDataFunc) set_playing_color, playlist, NULL);
+	
+	/* Stream length */
+	renderer = gtk_cell_renderer_text_new ();
+	gtk_tree_view_column_pack_start (column, renderer, FALSE);
+	gtk_tree_view_column_set_attributes (column, renderer,
+			"text", STREAM_LENGTH_COL, NULL);
+	g_object_set(renderer, "alignment", PANGO_ALIGN_RIGHT, "align-set", TRUE, NULL);
 }
 
 static void
@@ -2203,6 +2211,40 @@ lmplayer_playlist_set_title (LmplayerPlaylist *playlist, const char *title, gboo
 
 	g_signal_emit (playlist,
 		       lmplayer_playlist_table_signals[ACTIVE_NAME_CHANGED], 0);
+
+	return TRUE;
+}
+
+gboolean
+lmplayer_playlist_set_stream_length(LmplayerPlaylist *playlist, gint64 stream_length)
+{
+	GtkListStore *store;
+	GtkTreeIter iter;
+	gchar *p = NULL;
+	//int sec = stream_length / 1000;
+
+	g_return_val_if_fail (LMPLAYER_IS_PLAYLIST (playlist), FALSE);
+
+	if (update_current_from_playlist (playlist) == FALSE)
+		return FALSE;
+
+	store = GTK_LIST_STORE (playlist->priv->model);
+	gtk_tree_model_get_iter (playlist->priv->model,
+			&iter,
+			playlist->priv->current);
+
+	if (&iter == NULL)
+		return FALSE;
+
+	//p = g_strdup_printf("%02d:%02d", stream_length / 1000 / 60, stream_length / 1000 % 60);
+	p = lmplayer_time_to_string(stream_length);
+	if(p)
+	{
+		gtk_list_store_set(store, &iter,
+				STREAM_LENGTH_COL, p,
+				-1);
+		g_free(p);
+	}
 
 	return TRUE;
 }

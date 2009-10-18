@@ -1676,6 +1676,7 @@ static void playlist_widget_setup(LmplayerObject *lmplayer)
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->playlist));
 	gtk_widget_show(box);
 
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(lmplayer->playlist), TRUE);
 	g_signal_connect (G_OBJECT (playlist), "active-name-changed",
 			G_CALLBACK (playlist_active_name_changed_cb), lmplayer);
 	g_signal_connect (G_OBJECT (playlist), "item-activated",
@@ -1883,6 +1884,7 @@ on_got_metadata_event (BaconVideoWidget *bvw, LmplayerObject *lmplayer)
 		g_free (name);
 	}
 	
+	lmplayer_playlist_set_stream_length(LMPLAYER_PLAYLIST(lmplayer->playlist), lmplayer->stream_length);
 	lmplayer_info_update(lmplayer);
 	playlist_active_name_changed_cb (LMPLAYER_PLAYLIST (lmplayer->playlist), lmplayer);
 
