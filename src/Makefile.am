@@ -114,11 +114,11 @@ lmplayer_LDADD =						\
 	$(XTEST_LIBS)					\
 	$(X_LIBS)
 
-if ENABLE_PYTHON
-lmplayer_LDADD += \
-	$(PYTHON_LIBS)			\
-	$(top_builddir)/bindings/python/lmplayer-python.la
-endif
+#if ENABLE_PYTHON
+#lmplayer_LDADD += \
+#	$(PYTHON_LIBS)			\
+#	$(top_builddir)/bindings/python/lmplayer-python.la
+#endif
 
 CLEANFILES =			\
 	*.bak			\

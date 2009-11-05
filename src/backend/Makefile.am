@@ -37,17 +37,17 @@ libbaconvideowidget_la_SOURCES = \
 	video-utils.c video-utils.h 	\
 	debug.h
 
-if LMPLAYER_GST
+#if LMPLAYER_GST
 libbaconvideowidget_la_SOURCES +=			\
 	bacon-video-widget-gst-0.10.c			\
 	bacon-video-widget-gst-missing-plugins.c	\
 	bacon-video-widget-gst-missing-plugins.h	\
 	gstscreenshot.c					\
 	gstscreenshot.h
-else
-libbaconvideowidget_la_SOURCES += \
-	bacon-video-widget-xine.c
-endif
+#else
+#libbaconvideowidget_la_SOURCES += \
+#	bacon-video-widget-xine.c
+#endif
 
 libbaconvideowidget_la_CPPFLAGS =		\
 										-I$(top_builddir)/liblmplayer_plparse \

@@ -105,6 +105,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="relief">none</property>
+                    <property name="focus_on_click">False</property>
                     <child>
                       <object class="GtkImage" id="image1">
                         <property name="visible">True</property>
@@ -125,6 +126,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="relief">none</property>
+                    <property name="focus_on_click">False</property>
                     <child>
                       <object class="GtkImage" id="player-play-image">
                         <property name="visible">True</property>
@@ -145,6 +147,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="relief">none</property>
+                    <property name="focus_on_click">False</property>
                     <child>
                       <object class="GtkImage" id="image3">
                         <property name="visible">True</property>
@@ -193,6 +196,17 @@
                   </packing>
                 </child>
                 <child>
+                  <object class="GtkHBox" id="player-order-model-box">
+                    <property name="visible">True</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
                   <placeholder/>
                 </child>
               </object>
@@ -210,6 +224,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="relief">none</property>
+                    <property name="focus_on_click">False</property>
                     <child>
                       <object class="GtkImage" id="image4">
                         <property name="visible">True</property>
@@ -228,6 +243,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="relief">none</property>
+                    <property name="focus_on_click">False</property>
                     <child>
                       <object class="GtkImage" id="image5">
                         <property name="visible">True</property>
@@ -246,6 +262,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="relief">none</property>
+                    <property name="focus_on_click">False</property>
                     <child>
                       <object class="GtkImage" id="image6">
                         <property name="visible">True</property>

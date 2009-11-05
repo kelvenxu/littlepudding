@@ -1802,6 +1802,51 @@ view_switch_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 	lmplayer_action_view_switch(lmplayer);
 }
 
+static void
+order_changed_cb(GtkComboBox *combo, LmplayerObject *lmplayer)
+{
+	int order;
+	order = gtk_combo_box_get_active(combo);
+	switch(order)
+	{
+		case LMPLAYER_ORDER_NORMAL:
+			break;
+		case LMPLAYER_ORDER_REPEAT:
+			lmplayer->repeat = TRUE;
+			lmplayer->repeat_one = FALSE;
+			break;
+		case LMPLAYER_ORDER_REPEAT_ONE:
+			lmplayer->repeat_one = TRUE;
+			lmplayer->repeat = FALSE;
+			break;
+	}
+}
+
+static void
+lmplayer_setup_order_model(LmplayerObject *lmplayer)
+{
+	GtkWidget *box;
+
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+
+	box = (GtkWidget*)gtk_builder_get_object(lmplayer->builder, "player-order-model-box");
+
+	lmplayer->order_model = gtk_combo_box_new_text();
+	gtk_combo_box_append_text(GTK_COMBO_BOX(lmplayer->order_model), _("Normal"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(lmplayer->order_model), _("Repeat"));
+	gtk_combo_box_append_text(GTK_COMBO_BOX(lmplayer->order_model), _("Repeat one"));
+
+	g_object_set(G_OBJECT(lmplayer->order_model), 
+			"focus-on-click", FALSE,
+			"has-frame", FALSE,
+			NULL);
+
+	gtk_combo_box_set_active(GTK_COMBO_BOX(lmplayer->order_model), 0);
+	
+	g_signal_connect(G_OBJECT(lmplayer->order_model), "changed", G_CALLBACK(order_changed_cb), lmplayer);
+	gtk_container_add(GTK_CONTAINER(box), lmplayer->order_model);
+}
+
 static void lmplayer_callback_connect(LmplayerObject *lmplayer)
 {
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
@@ -1832,6 +1877,12 @@ static gboolean
 on_eos_event (GtkWidget *widget, LmplayerObject *lmplayer)
 {
 	lmplayer_debug(" ");
+
+	if(lmplayer->repeat_one)
+	{
+		lmplayer_action_previous(lmplayer);
+		return FALSE;
+	}
 
 	if(lmplayer_playlist_has_next_mrl(lmplayer->playlist) == FALSE
 			&& lmplayer_playlist_get_repeat(lmplayer->playlist) == FALSE)
@@ -2434,7 +2485,11 @@ main(int argc, char* argv[])
 	//lmplayer->statusbar = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_statusbar"));
 	lmplayer->view = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-view");
 	lmplayer->view_switch = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-view-switch");
+	lmplayer->order_model = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-order-mode");
 	
+	lmplayer->repeat = FALSE;
+	lmplayer->repeat_one = FALSE;
+	lmplayer_setup_order_model(lmplayer);
 	lmplayer_callback_connect(lmplayer);
 
 	lmplayer_ui_manager_setup(lmplayer);

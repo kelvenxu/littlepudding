@@ -29,7 +29,7 @@
 #include <gio/gio.h>
 #include <gconf/gconf-client.h>
 #include <gtk/gtk.h>
-#include <libskin/skin.h>
+//#include <libskin/skin.h>
 
 #include "bacon-message-connection.h"
 #include <totem-pl-parser.h>
@@ -75,6 +75,13 @@ typedef enum
 	LMPLAYER_VIEW_TYPE_VISUAL
 } LmplayerViewType;
 
+typedef enum
+{
+	LMPLAYER_ORDER_NORMAL,
+	LMPLAYER_ORDER_REPEAT,
+	LMPLAYER_ORDER_REPEAT_ONE
+} LmplayerOrder;
+
 struct _LmplayerObject
 {
 	GObject parent;
@@ -82,7 +89,7 @@ struct _LmplayerObject
 	//gpointer player;
 	//gpointer ui;
 
-	SkinArchive *ar;
+	//SkinArchive *ar;
 	//SkinBuilder *builder;
 
 	GtkBuilder *builder;
@@ -92,6 +99,10 @@ struct _LmplayerObject
 	GtkWidget *view;
 	LmplayerViewType view_type;
 	GtkWidget *view_switch;
+	GtkWidget *order_model;
+
+	gboolean repeat;
+	gboolean repeat_one;
 
 	//SkinWindow *pl_win;
 	//SkinWindow *lyric_win;

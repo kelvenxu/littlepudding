@@ -29,23 +29,18 @@ m4_ifdef([LT_OUTPUT], [LT_OUTPUT])
 
 PKG_PROG_PKG_CONFIG
 
-AC_CHECK_FUNCS(asprintf)
-AC_CONFIG_LIBOBJ_DIR([lib])
-AC_REPLACE_FUNCS([asprintf])
+dnl AC_CHECK_FUNCS(asprintf)
+dnl AC_CONFIG_LIBOBJ_DIR([lib])
+dnl AC_REPLACE_FUNCS([asprintf])
 
-AC_PATH_PROG([GLIB_GENMARSHAL],[glib-genmarshal])
-AC_PATH_PROG([GLIB_MKENUMS],[glib-mkenums])
+dnl AC_PATH_PROG([GLIB_GENMARSHAL],[glib-genmarshal])
+dnl AC_PATH_PROG([GLIB_MKENUMS],[glib-mkenums])
 
 # Requirements
 GLIB_REQS=2.13.4
 GTK_REQS=2.12.0
-GNOMEUI_REQS=2.3.3
-LIBGNOME_REQS=2.14.0
 GNOMEICON_REQS=2.15.90
-DBUS_REQS=0.61
-VALA_REQS=0.1.6
 TOTEM_PLPARSER_REQS=2.23.91
-LIBSKIN_REQS=0.1.0
 
 LMPLAYER_VERSION_MAJOR=lmplayer_version_major
 LMPLAYER_VERSION_MINOR=lmplayer_version_minor
@@ -77,7 +72,7 @@ dnl xine or gst ?
 
 dnl the two versions here implicate the gstreamer core and gst-plugins
 dnl release versions.
-XINE_REQS=1.1.7
+dnl XINE_REQS=1.1.7
 GST_MAJORMINOR=0.10
 GST_REQS=0.10.12
 GSTPLUG_REQS=0.10.12
@@ -108,20 +103,21 @@ dnl PKG_CHECK_MODULES(LMPLAYER_PLPARSER, [glib-2.0 >= $GLIB_REQS gtk+-2.0 libxml
 dnl PKG_CHECK_MODULES([LMPLAYER_PLPARSER_MINI], [gio-2.0])
 
 
-AC_ARG_ENABLE(xine,
-	AC_HELP_STRING([--enable-xine], [use xine instead of GStreamer for the backend]),
-	[case "${enableval}" in
-	yes) ENABLE_XINE=yes ;;
-        no)  ENABLE_XINE=no ;;
-	*) AC_MSG_ERROR([
-             ***** Bad value ${enableval} for --enable-xine
-             ***** Please use one of the following:
-             *****   --enable-xine=yes
-	     *****   --enable-xine=no
-           ]) ;;
-	esac],
-	[ENABLE_XINE=auto]) dnl Default value
+dnl AC_ARG_ENABLE(xine,
+dnl 	AC_HELP_STRING([--enable-xine], [use xine instead of GStreamer for the backend]),
+dnl 	[case "${enableval}" in
+dnl 	yes) ENABLE_XINE=yes ;;
+dnl         no)  ENABLE_XINE=no ;;
+dnl 	*) AC_MSG_ERROR([
+dnl              ***** Bad value ${enableval} for --enable-xine
+dnl              ***** Please use one of the following:
+dnl              *****   --enable-xine=yes
+dnl 	     *****   --enable-xine=no
+dnl            ]) ;;
+dnl 	esac],
+dnl 	[ENABLE_XINE=auto]) dnl Default value
 
+ENABLE_XINE=no
 HAVE_GSTREAMER=no
 if test x$ENABLE_XINE = xno || test x$ENABLE_XINE = xauto; then
 	dnl Check for the required GStreamer versions for missing plugins
@@ -211,21 +207,6 @@ if test x$ENABLE_XINE = xno && test x$HAVE_GSTREAMER = xno; then
 	AC_MSG_ERROR(you need the GStreamer or the xine-lib development packages installed)
 fi
 
-if test x$HAVE_GSTREAMER = xno; then
-	MM="libxine >= $XINE_REQS gconf-2.0"
-	PKG_CHECK_MODULES(XINE, $MM, HAVE_XINE=yes,
-		[
-			AC_MSG_RESULT(no)
-			HAVE_XINE=no
-		])
-	AC_MSG_CHECKING(for backend libraries)
-	if test x$HAVE_XINE = xyes; then
-		AC_MSG_RESULT([xine-lib])
-        else
-		AC_MSG_WARN([No xine-lib found])
-	fi
-fi
-
 if test "$HAVE_GSTREAMER" = "yes"; then
 	AC_DEFINE([HAVE_GSTREAMER],[1],[Define if using gst backend])
 fi
@@ -273,13 +254,11 @@ if test x$ENABLE_GTK = "xno" ; then
 	PKG_CHECK_MODULES(EXTRA_GNOME, 
 					  glib-2.0 >= $GLIB_REQS 
 					  gtk+-2.0 >= $GTK_REQS 
-					  libgnomeui-2.0 >= $GNOMEUI_REQS 
 					  gio-2.0 
-					  libgnome-2.0 >= $LIBGNOME_REQS 
 					  gnome-icon-theme >= $GNOMEICON_REQS 
 					  totem-plparser >= $TOTEM_PLPARSER_REQS
+						gconf-2.0
 					  gmodule-2.0 
-					  libskin >= $LIBSKIN_REQS
 					  $ISO_CODES)
 	HAVE_GNOME=yes
 else
@@ -290,7 +269,6 @@ else
 	HAVE_GNOME=no
 fi
 
-PKG_CHECK_MODULES(MM, $MM)
 
 AM_CONDITIONAL(HAVE_GNOME, test x$HAVE_GNOME = "xyes")
 EXTRA_GNOME_CFLAGS="$EXTRA_GNOME_CFLAGS"
@@ -298,7 +276,7 @@ EXTRA_GNOME_LIBS="$EXTRA_GNOME_LIBS $EXTRA_BACKEND_LIBS"
 AC_SUBST(EXTRA_GNOME_CFLAGS)
 AC_SUBST(EXTRA_GNOME_LIBS)
 
-PKG_CHECK_MODULES(GTK, gtk+-2.0 gthread-2.0)
+PKG_CHECK_MODULES(GTK, gtk+-2.0 gthread-2.0 gconf-2.0)
 AC_SUBST(GTK_CFLAGS)
 GTK_LIBS="$GTK_LIBS $EXTRA_BACKEND_LIBS"
 AC_SUBST(GTK_LIBS)
