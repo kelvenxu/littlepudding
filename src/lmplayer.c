@@ -1810,12 +1810,17 @@ order_changed_cb(GtkComboBox *combo, LmplayerObject *lmplayer)
 	switch(order)
 	{
 		case LMPLAYER_ORDER_NORMAL:
+			lmplayer_playlist_set_repeat(lmplayer->playlist, FALSE);
+			lmplayer->repeat = FALSE;
+			lmplayer->repeat_one = FALSE;
 			break;
 		case LMPLAYER_ORDER_REPEAT:
+			lmplayer_playlist_set_repeat(lmplayer->playlist, TRUE);
 			lmplayer->repeat = TRUE;
 			lmplayer->repeat_one = FALSE;
 			break;
 		case LMPLAYER_ORDER_REPEAT_ONE:
+			lmplayer_playlist_set_repeat(lmplayer->playlist, FALSE);
 			lmplayer->repeat_one = TRUE;
 			lmplayer->repeat = FALSE;
 			break;
@@ -1880,7 +1885,9 @@ on_eos_event (GtkWidget *widget, LmplayerObject *lmplayer)
 
 	if(lmplayer->repeat_one)
 	{
-		lmplayer_action_previous(lmplayer);
+		//lmplayer_action_previous(lmplayer);
+		lmplayer_action_stop(lmplayer);
+		lmplayer_action_play(lmplayer);
 		return FALSE;
 	}
 
@@ -2489,6 +2496,7 @@ main(int argc, char* argv[])
 	
 	lmplayer->repeat = FALSE;
 	lmplayer->repeat_one = FALSE;
+
 	lmplayer_setup_order_model(lmplayer);
 	lmplayer_callback_connect(lmplayer);
 
