@@ -118,7 +118,10 @@ struct _LmplayerObject
 	GConfClient *gc;
 
 	LmplayerPlaylist *playlist;
-	//GtkWidget *
+
+	GtkWidget *search_box_box;
+	GtkWidget *search_box;
+	GtkWidget *search_view;
 	
 	gboolean minimode;
 

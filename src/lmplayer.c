@@ -47,6 +47,7 @@
 #include "lmplayer-debug.h"
 #include "lmplayer-skin.h"
 #include "lmplayer-magnetic.h"
+#include "search-library.h"
 
 #define REWIND_OR_PREVIOUS 4000
 
@@ -1707,6 +1708,7 @@ static gboolean
 main_window_destroy_cb(GtkWidget *widget, LmplayerObject *lmplayer)
 {
 	lmplayer_action_exit (lmplayer);
+	search_library_quit();
 	return FALSE;
 }
 
@@ -2494,6 +2496,11 @@ main(int argc, char* argv[])
 	lmplayer->view_switch = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-view-switch");
 	lmplayer->order_model = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-order-mode");
 	
+	lmplayer->search_box = search_box_create();
+	lmplayer->search_box_box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "search-box-box");
+	gtk_box_pack_start(GTK_BOX(lmplayer->search_box_box), lmplayer->search_box,
+			TRUE, TRUE, 0);
+
 	lmplayer->repeat = FALSE;
 	lmplayer->repeat_one = FALSE;
 
@@ -2547,6 +2554,7 @@ main(int argc, char* argv[])
 
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(lmplayer->view), LMPLAYER_VIEW_TYPE_PLAYLIST);
 
+	search_library_init("/home/kelvenxu/search-library/src/library.db", "/home/kelvenxu/音乐");
 	gtk_main();
 	return 0;
 }
