@@ -516,7 +516,7 @@ lmplayer_action_seek (LmplayerObject *lmplayer, double pos)
 		char *msg, *disp;
 
 		disp = lmplayer_uri_escape_for_display (lmplayer->mrl);
-		msg = g_strdup_printf(_("Linux Music Player could not play '%s'."), disp);
+		msg = g_strdup_printf(_("Player could not play '%s'."), disp);
 		g_free (disp);
 
 		reset_seek_status (lmplayer);
@@ -961,7 +961,7 @@ update_mrl_label (LmplayerObject *lmplayer, const char *name)
 		//totem_fullscreen_set_title (totem->fs, NULL);
 
 		/* Title */
-		gtk_window_set_title(GTK_WINDOW(lmplayer->win), _("Linux Music Player"));
+		gtk_window_set_title(GTK_WINDOW(lmplayer->win), _("Little Pudding Music Player"));
 	}
 }
 
@@ -2539,7 +2539,7 @@ main(int argc, char* argv[])
 		lmplayer_action_exit (NULL);
 	}
 
-	g_set_application_name(_("Linux Music Player"));
+	g_set_application_name(_("Little Pudding Music Player"));
 	gtk_window_set_default_icon_name ("lmplayer");
 
 	gc = gconf_client_get_default ();

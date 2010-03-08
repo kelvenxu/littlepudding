@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lmplayer 0.9.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-08 15:16+0800\n"
+"POT-Creation-Date: 2010-03-08 15:58+0800\n"
 "PO-Revision-Date: 2010-03-03 15:19+8\n"
 "Last-Translator: kelvenxu <kelvenxu@gmail.com>\n"
 "Language-Team: kelvenxu kelvenxu@gmail.com\n"
@@ -466,17 +466,16 @@ msgstr ""
 
 #: ../src/lmplayer-interface.c:115
 msgid "Default browser not configured"
-msgstr ""
+msgstr "默认浏览器没有配置"
 
 #: ../src/lmplayer-interface.c:173 ../src/lmplayer-interface.c:205
 #, c-format
 msgid "Couldn't load the '%s' interface. %s"
-msgstr ""
+msgstr "不能加载'%s'接口. %s"
 
 #: ../src/lmplayer-interface.c:173
-#, fuzzy
 msgid "The file does not exist."
-msgstr "给定的歌词目录不存在"
+msgstr "文件不存在"
 
 #: ../src/lmplayer-interface.c:175 ../src/lmplayer-interface.c:177
 #: ../src/lmplayer-interface.c:207 ../src/lmplayer-interface.c:209
@@ -515,21 +514,21 @@ msgstr ""
 #. This lists the back-end type and version, such as
 #. * Movie Player using GStreamer 0.10.1
 #: ../src/lmplayer-menu.c:333
-#, fuzzy, c-format
+#, c-format
 msgid "Movie Player using %s"
-msgstr "正在播放: %s"
+msgstr "电影播放器使用%s"
 
-#: ../src/lmplayer-menu.c:337
+#: ../src/lmplayer-menu.c:337 ../src/lmplayer.c:1940
 msgid "Copyright © 2007-2010 Kelven Xu"
 msgstr ""
 
-#: ../src/lmplayer-menu.c:342
+#: ../src/lmplayer-menu.c:342 ../src/lmplayer.c:1945
 msgid "translator-credits"
 msgstr ""
 
-#: ../src/lmplayer-menu.c:346
+#: ../src/lmplayer-menu.c:346 ../src/lmplayer.c:1949
 msgid "Lmplayer Website"
-msgstr ""
+msgstr "小布丁音乐播放器网站"
 
 #: ../src/lmplayer-menu.c:695
 #, c-format
@@ -537,32 +536,28 @@ msgid "Look up skins error: %s\n"
 msgstr ""
 
 #: ../src/lmplayer-notebook.c:832
-#, fuzzy
 msgid "Close playlist"
-msgstr "打开播放列表"
+msgstr "关闭播放列表"
 
 #: ../src/lmplayer-open-location.c:162
-#, fuzzy
 msgid "Open Location..."
-msgstr "位置"
+msgstr "打开位置..."
 
 #: ../src/lmplayer-options.c:36
 msgid "Enable debug"
-msgstr ""
+msgstr "开启调试选项"
 
 #: ../src/lmplayer-options.c:37
 msgid "Play/Pause"
-msgstr ""
+msgstr "播放/暂停"
 
 #: ../src/lmplayer-options.c:38
-#, fuzzy
 msgid "Play"
-msgstr "播放模式"
+msgstr "播放"
 
 #: ../src/lmplayer-options.c:39
-#, fuzzy
 msgid "Pause"
-msgstr "暂停: %s"
+msgstr "暂停"
 
 #: ../src/lmplayer-options.c:41
 msgid "Previous"
@@ -609,9 +604,8 @@ msgid "Seek"
 msgstr ""
 
 #: ../src/lmplayer-options.c:52
-#, fuzzy
 msgid "Playlist index"
-msgstr "播放模式"
+msgstr "播放列表索引"
 
 #: ../src/lmplayer-options.c:53
 msgid "Audio file to play"
@@ -620,14 +614,13 @@ msgstr ""
 #. This is "Title 3", where title is a DVD title
 #. * Note: NOT a DVD chapter
 #: ../src/lmplayer-playlist.c:280
-#, fuzzy, c-format
+#, c-format
 msgid "Title %d"
 msgstr "标题: %s"
 
 #: ../src/lmplayer-playlist.c:349 ../src/lmplayer-playlist.c:962
-#, fuzzy
 msgid "Could not save the playlist"
-msgstr "打开播放列表"
+msgstr "不能保存播放列表"
 
 #: ../src/lmplayer-playlist.c:962
 msgid "Unknown file extension."
@@ -642,9 +635,8 @@ msgid "By extension"
 msgstr ""
 
 #: ../src/lmplayer-playlist.c:1010
-#, fuzzy
 msgid "Save Playlist"
-msgstr "打开播放列表"
+msgstr "保存播放列表"
 
 #: ../src/lmplayer-playlist.c:1823
 #, c-format
@@ -696,33 +688,29 @@ msgstr ""
 #: ../src/lmplayer-statusbar.c:282
 #, c-format
 msgid "%s, %s"
-msgstr ""
+msgstr "%s, %s"
 
 #. eg: Buffering, 75 %
 #: ../src/lmplayer-statusbar.c:287
 #, c-format
 msgid "%s, %d %%"
-msgstr ""
+msgstr "%s, %d %%"
 
 #: ../src/lmplayer-uri.c:387
-#, fuzzy
 msgid "All files"
-msgstr "*.* 全部文件"
+msgstr "全部文件"
 
 #: ../src/lmplayer-uri.c:392
-#, fuzzy
 msgid "Supported files"
-msgstr "打开文件"
+msgstr "支持的文件"
 
 #: ../src/lmplayer-uri.c:404
-#, fuzzy
 msgid "Audio files"
-msgstr "*.mp3 Mp3音频文件"
+msgstr "音频文件"
 
 #: ../src/lmplayer-uri.c:412
-#, fuzzy
 msgid "Video files"
-msgstr "打开文件"
+msgstr "视频文件"
 
 #: ../src/lmplayer-uri.c:422
 msgid "Subtitle files"
@@ -821,7 +809,7 @@ msgstr ""
 msgid "Totem was not able to play this disc."
 msgstr ""
 
-#: ../src/lmplayer.c:221 ../src/lmplayer.c:2149
+#: ../src/lmplayer.c:221 ../src/lmplayer.c:2190
 msgid "No reason."
 msgstr ""
 
@@ -839,9 +827,9 @@ msgid "Title: %s"
 msgstr "标题: %s"
 
 #: ../src/lmplayer.c:336
-#, fuzzy, c-format
+#, c-format
 msgid "Artist: %s"
-msgstr "标题: %s"
+msgstr "艺术家: %s"
 
 #: ../src/lmplayer.c:347
 #, c-format
@@ -854,17 +842,14 @@ msgid "Length: %02d:%02d"
 msgstr ""
 
 #: ../src/lmplayer.c:425
-#, fuzzy
 msgid "Status: Playing"
 msgstr "状态: 播放"
 
 #: ../src/lmplayer.c:430
-#, fuzzy
 msgid "Status: Paused"
 msgstr "状态: 暂停"
 
 #: ../src/lmplayer.c:435
-#, fuzzy
 msgid "Status: Stopped"
 msgstr "状态: 停止"
 
@@ -874,9 +859,9 @@ msgid "LmplayerObject could not play '%s'."
 msgstr ""
 
 #: ../src/lmplayer.c:519
-#, fuzzy, c-format
-msgid "Linux Music Player could not play '%s'."
-msgstr "Linux音乐播放器: 停止"
+#, c-format
+msgid "Player could not play '%s'."
+msgstr "播放器不能播放'%s'."
 
 #: ../src/lmplayer.c:735
 #, c-format
@@ -891,9 +876,9 @@ msgstr ""
 #. Update the mrl label
 #. totem_fullscreen_set_title (totem->fs, NULL);
 #. Title
-#: ../src/lmplayer.c:964 ../src/lmplayer.c:2501
-msgid "Linux Music Player"
-msgstr "Linux音乐播放器"
+#: ../src/lmplayer.c:964 ../src/lmplayer.c:2542
+msgid "Little Pudding Music Player"
+msgstr "小布丁音乐播放器"
 
 #: ../src/lmplayer.c:1069
 #, c-format
@@ -926,38 +911,45 @@ msgstr "循环一首"
 msgid "Repeat one"
 msgstr "循环一首"
 
-#: ../src/lmplayer.c:2036 ../src/lmplayer.c:2040
+#. This lists the back-end type and version, such as
+#. * Movie Player using GStreamer 0.10.1
+#: ../src/lmplayer.c:1936
+#, fuzzy, c-format
+msgid "Music Player using %s"
+msgstr "正在播放: %s"
+
+#: ../src/lmplayer.c:2077 ../src/lmplayer.c:2081
 msgid "An error occurred"
 msgstr ""
 
-#: ../src/lmplayer.c:2148
+#: ../src/lmplayer.c:2189
 msgid "Lmplayer could not startup."
 msgstr ""
 
-#: ../src/lmplayer.c:2363 ../src/lmplayer.c:2400 ../src/lmplayer.c:2428
-#: ../src/lmplayer.c:2431 ../src/lmplayer.c:2434 ../src/lmplayer.c:2437
-#: ../src/lmplayer.c:2440 ../src/lmplayer.c:2443 ../src/lmplayer.c:2446
-#: ../src/lmplayer.c:2449 ../src/lmplayer.c:2452 ../src/lmplayer.c:2455
+#: ../src/lmplayer.c:2404 ../src/lmplayer.c:2441 ../src/lmplayer.c:2469
+#: ../src/lmplayer.c:2472 ../src/lmplayer.c:2475 ../src/lmplayer.c:2478
+#: ../src/lmplayer.c:2481 ../src/lmplayer.c:2484 ../src/lmplayer.c:2487
+#: ../src/lmplayer.c:2490 ../src/lmplayer.c:2493 ../src/lmplayer.c:2496
 #, c-format
 msgid "Do nothing!\n"
 msgstr ""
 
-#: ../src/lmplayer.c:2487
+#: ../src/lmplayer.c:2528
 msgid "[FILES] - Play songs"
 msgstr ""
 
-#: ../src/lmplayer.c:2495
+#: ../src/lmplayer.c:2536
 #, c-format
 msgid ""
 "%s\n"
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
 
-#: ../src/lmplayer.c:2507
+#: ../src/lmplayer.c:2548
 msgid "Lmplayer could not initialize the configuration engine."
 msgstr ""
 
-#: ../src/lmplayer.c:2508
+#: ../src/lmplayer.c:2549
 msgid "Make sure that GNOME is properly installed."
 msgstr ""
 

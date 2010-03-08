@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-08 15:16+0800\n"
+"POT-Creation-Date: 2010-03-08 15:58+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -514,15 +514,15 @@ msgstr ""
 msgid "Movie Player using %s"
 msgstr ""
 
-#: ../src/lmplayer-menu.c:337
+#: ../src/lmplayer-menu.c:337 ../src/lmplayer.c:1940
 msgid "Copyright © 2007-2010 Kelven Xu"
 msgstr ""
 
-#: ../src/lmplayer-menu.c:342
+#: ../src/lmplayer-menu.c:342 ../src/lmplayer.c:1945
 msgid "translator-credits"
 msgstr ""
 
-#: ../src/lmplayer-menu.c:346
+#: ../src/lmplayer-menu.c:346 ../src/lmplayer.c:1949
 msgid "Lmplayer Website"
 msgstr ""
 
@@ -805,7 +805,7 @@ msgstr ""
 msgid "Totem was not able to play this disc."
 msgstr ""
 
-#: ../src/lmplayer.c:221 ../src/lmplayer.c:2149
+#: ../src/lmplayer.c:221 ../src/lmplayer.c:2190
 msgid "No reason."
 msgstr ""
 
@@ -856,7 +856,7 @@ msgstr ""
 
 #: ../src/lmplayer.c:519
 #, c-format
-msgid "Linux Music Player could not play '%s'."
+msgid "Player could not play '%s'."
 msgstr ""
 
 #: ../src/lmplayer.c:735
@@ -872,8 +872,8 @@ msgstr ""
 #. Update the mrl label
 #. totem_fullscreen_set_title (totem->fs, NULL);
 #. Title
-#: ../src/lmplayer.c:964 ../src/lmplayer.c:2501
-msgid "Linux Music Player"
+#: ../src/lmplayer.c:964 ../src/lmplayer.c:2542
+msgid "Little Pudding Music Player"
 msgstr ""
 
 #: ../src/lmplayer.c:1069
@@ -905,38 +905,45 @@ msgstr ""
 msgid "Repeat one"
 msgstr ""
 
-#: ../src/lmplayer.c:2036 ../src/lmplayer.c:2040
+#. This lists the back-end type and version, such as
+#. * Movie Player using GStreamer 0.10.1
+#: ../src/lmplayer.c:1936
+#, c-format
+msgid "Music Player using %s"
+msgstr ""
+
+#: ../src/lmplayer.c:2077 ../src/lmplayer.c:2081
 msgid "An error occurred"
 msgstr ""
 
-#: ../src/lmplayer.c:2148
+#: ../src/lmplayer.c:2189
 msgid "Lmplayer could not startup."
 msgstr ""
 
-#: ../src/lmplayer.c:2363 ../src/lmplayer.c:2400 ../src/lmplayer.c:2428
-#: ../src/lmplayer.c:2431 ../src/lmplayer.c:2434 ../src/lmplayer.c:2437
-#: ../src/lmplayer.c:2440 ../src/lmplayer.c:2443 ../src/lmplayer.c:2446
-#: ../src/lmplayer.c:2449 ../src/lmplayer.c:2452 ../src/lmplayer.c:2455
+#: ../src/lmplayer.c:2404 ../src/lmplayer.c:2441 ../src/lmplayer.c:2469
+#: ../src/lmplayer.c:2472 ../src/lmplayer.c:2475 ../src/lmplayer.c:2478
+#: ../src/lmplayer.c:2481 ../src/lmplayer.c:2484 ../src/lmplayer.c:2487
+#: ../src/lmplayer.c:2490 ../src/lmplayer.c:2493 ../src/lmplayer.c:2496
 #, c-format
 msgid "Do nothing!\n"
 msgstr ""
 
-#: ../src/lmplayer.c:2487
+#: ../src/lmplayer.c:2528
 msgid "[FILES] - Play songs"
 msgstr ""
 
-#: ../src/lmplayer.c:2495
+#: ../src/lmplayer.c:2536
 #, c-format
 msgid ""
 "%s\n"
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
 
-#: ../src/lmplayer.c:2507
+#: ../src/lmplayer.c:2548
 msgid "Lmplayer could not initialize the configuration engine."
 msgstr ""
 
-#: ../src/lmplayer.c:2508
+#: ../src/lmplayer.c:2549
 msgid "Make sure that GNOME is properly installed."
 msgstr ""
 
