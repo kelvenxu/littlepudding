@@ -1,29 +1,29 @@
-# lmplayer chinese translate file.
-# Copyright (C) 2008-2010 
-# This file is distributed under the same license as the lmplayer package.
-# kelvenxu <kelvenxu@gmail.com>, 2008.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: lmplayer 0.9.0\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-03-08 15:16+0800\n"
-"PO-Revision-Date: 2010-03-03 15:19+8\n"
-"Last-Translator: kelvenxu <kelvenxu@gmail.com>\n"
-"Language-Team: kelvenxu kelvenxu@gmail.com\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: ../data/uri.ui.h:1
 msgid "Enter the _address of the file you would like to open:"
 msgstr ""
 
 #: ../data/lyricselectdlg.ui.h:1
-#, fuzzy
 msgid "Lyric Query"
-msgstr "选择歌词目录"
+msgstr ""
 
 #: ../data/lyricselectdlg.ui.h:2
 msgid "Please select item below for download:"
@@ -43,11 +43,11 @@ msgstr ""
 
 #: ../data/lmplayer.ui.h:1
 msgid "About"
-msgstr "关于"
+msgstr ""
 
 #: ../data/lmplayer.ui.h:2
 msgid "About lmplayer"
-msgstr "关于小布丁播放器"
+msgstr ""
 
 #: ../data/lmplayer.ui.h:3
 msgid "Add media file"
@@ -55,53 +55,49 @@ msgstr ""
 
 #: ../data/lmplayer.ui.h:4 ../src/lmplayer-options.c:40
 msgid "Next"
-msgstr "下一首"
+msgstr ""
 
 #: ../data/lmplayer.ui.h:5
 msgid "Play / pause"
-msgstr "播放/暂停"
+msgstr ""
 
 #: ../data/lmplayer.ui.h:6
 msgid "Playing order switch"
-msgstr "切换播放顺序"
+msgstr ""
 
 #. translators: Playlist is the default saved playlist filename,
 #. * without the suffix
 #: ../data/lmplayer.ui.h:7 ../src/lmplayer-playlist.c:1021
-#, fuzzy
 msgid "Playlist"
-msgstr "打开播放列表"
+msgstr ""
 
 #: ../data/lmplayer.ui.h:8
-#, fuzzy
 msgid "Pop preferencess dialog"
-msgstr "首选项"
+msgstr ""
 
 #: ../data/lmplayer.ui.h:9
 msgid "Previous "
-msgstr "上一首"
+msgstr ""
 
 #: ../data/lmplayer.ui.h:10
-#, fuzzy
 msgid "Remove file"
-msgstr "全部移除"
+msgstr ""
 
 #: ../data/lmplayer.ui.h:11
-#, fuzzy
 msgid "Save current playlist to disk"
-msgstr "打开播放列表"
+msgstr ""
 
 #: ../data/lmplayer.ui.h:12
 msgid "Search "
-msgstr "搜索"
+msgstr ""
 
 #: ../data/lmplayer.ui.h:13
 msgid "Switch to playlist view"
-msgstr "切换到播放列表视图"
+msgstr ""
 
 #: ../data/lmplayer.ui.h:14
 msgid "Switch to search view"
-msgstr "切换到搜索视图"
+msgstr ""
 
 #: ../data/lmplayer.ui.h:15
 msgid "Visual Effect"
@@ -474,9 +470,8 @@ msgid "Couldn't load the '%s' interface. %s"
 msgstr ""
 
 #: ../src/lmplayer-interface.c:173
-#, fuzzy
 msgid "The file does not exist."
-msgstr "给定的歌词目录不存在"
+msgstr ""
 
 #: ../src/lmplayer-interface.c:175 ../src/lmplayer-interface.c:177
 #: ../src/lmplayer-interface.c:207 ../src/lmplayer-interface.c:209
@@ -515,9 +510,9 @@ msgstr ""
 #. This lists the back-end type and version, such as
 #. * Movie Player using GStreamer 0.10.1
 #: ../src/lmplayer-menu.c:333
-#, fuzzy, c-format
+#, c-format
 msgid "Movie Player using %s"
-msgstr "正在播放: %s"
+msgstr ""
 
 #: ../src/lmplayer-menu.c:337
 msgid "Copyright © 2007-2010 Kelven Xu"
@@ -537,14 +532,12 @@ msgid "Look up skins error: %s\n"
 msgstr ""
 
 #: ../src/lmplayer-notebook.c:832
-#, fuzzy
 msgid "Close playlist"
-msgstr "打开播放列表"
+msgstr ""
 
 #: ../src/lmplayer-open-location.c:162
-#, fuzzy
 msgid "Open Location..."
-msgstr "位置"
+msgstr ""
 
 #: ../src/lmplayer-options.c:36
 msgid "Enable debug"
@@ -555,14 +548,12 @@ msgid "Play/Pause"
 msgstr ""
 
 #: ../src/lmplayer-options.c:38
-#, fuzzy
 msgid "Play"
-msgstr "播放模式"
+msgstr ""
 
 #: ../src/lmplayer-options.c:39
-#, fuzzy
 msgid "Pause"
-msgstr "暂停: %s"
+msgstr ""
 
 #: ../src/lmplayer-options.c:41
 msgid "Previous"
@@ -586,7 +577,7 @@ msgstr ""
 
 #: ../src/lmplayer-options.c:46
 msgid "Quit"
-msgstr "退出"
+msgstr ""
 
 #: ../src/lmplayer-options.c:47
 msgid "Enqueue"
@@ -609,9 +600,8 @@ msgid "Seek"
 msgstr ""
 
 #: ../src/lmplayer-options.c:52
-#, fuzzy
 msgid "Playlist index"
-msgstr "播放模式"
+msgstr ""
 
 #: ../src/lmplayer-options.c:53
 msgid "Audio file to play"
@@ -620,14 +610,13 @@ msgstr ""
 #. This is "Title 3", where title is a DVD title
 #. * Note: NOT a DVD chapter
 #: ../src/lmplayer-playlist.c:280
-#, fuzzy, c-format
+#, c-format
 msgid "Title %d"
-msgstr "标题: %s"
+msgstr ""
 
 #: ../src/lmplayer-playlist.c:349 ../src/lmplayer-playlist.c:962
-#, fuzzy
 msgid "Could not save the playlist"
-msgstr "打开播放列表"
+msgstr ""
 
 #: ../src/lmplayer-playlist.c:962
 msgid "Unknown file extension."
@@ -642,9 +631,8 @@ msgid "By extension"
 msgstr ""
 
 #: ../src/lmplayer-playlist.c:1010
-#, fuzzy
 msgid "Save Playlist"
-msgstr "打开播放列表"
+msgstr ""
 
 #: ../src/lmplayer-playlist.c:1823
 #, c-format
@@ -705,24 +693,20 @@ msgid "%s, %d %%"
 msgstr ""
 
 #: ../src/lmplayer-uri.c:387
-#, fuzzy
 msgid "All files"
-msgstr "*.* 全部文件"
+msgstr ""
 
 #: ../src/lmplayer-uri.c:392
-#, fuzzy
 msgid "Supported files"
-msgstr "打开文件"
+msgstr ""
 
 #: ../src/lmplayer-uri.c:404
-#, fuzzy
 msgid "Audio files"
-msgstr "*.mp3 Mp3音频文件"
+msgstr ""
 
 #: ../src/lmplayer-uri.c:412
-#, fuzzy
 msgid "Video files"
-msgstr "打开文件"
+msgstr ""
 
 #: ../src/lmplayer-uri.c:422
 msgid "Subtitle files"
@@ -836,12 +820,12 @@ msgstr ""
 #: ../src/lmplayer.c:324
 #, c-format
 msgid "Title: %s"
-msgstr "标题: %s"
+msgstr ""
 
 #: ../src/lmplayer.c:336
-#, fuzzy, c-format
+#, c-format
 msgid "Artist: %s"
-msgstr "标题: %s"
+msgstr ""
 
 #: ../src/lmplayer.c:347
 #, c-format
@@ -854,19 +838,16 @@ msgid "Length: %02d:%02d"
 msgstr ""
 
 #: ../src/lmplayer.c:425
-#, fuzzy
 msgid "Status: Playing"
-msgstr "状态: 播放"
+msgstr ""
 
 #: ../src/lmplayer.c:430
-#, fuzzy
 msgid "Status: Paused"
-msgstr "状态: 暂停"
+msgstr ""
 
 #: ../src/lmplayer.c:435
-#, fuzzy
 msgid "Status: Stopped"
-msgstr "状态: 停止"
+msgstr ""
 
 #: ../src/lmplayer.c:479
 #, c-format
@@ -874,9 +855,9 @@ msgid "LmplayerObject could not play '%s'."
 msgstr ""
 
 #: ../src/lmplayer.c:519
-#, fuzzy, c-format
+#, c-format
 msgid "Linux Music Player could not play '%s'."
-msgstr "Linux音乐播放器: 停止"
+msgstr ""
 
 #: ../src/lmplayer.c:735
 #, c-format
@@ -893,7 +874,7 @@ msgstr ""
 #. Title
 #: ../src/lmplayer.c:964 ../src/lmplayer.c:2501
 msgid "Linux Music Player"
-msgstr "Linux音乐播放器"
+msgstr ""
 
 #: ../src/lmplayer.c:1069
 #, c-format
@@ -917,14 +898,12 @@ msgid "Normal"
 msgstr ""
 
 #: ../src/lmplayer.c:1905
-#, fuzzy
 msgid "Repeat"
-msgstr "循环一首"
+msgstr ""
 
 #: ../src/lmplayer.c:1906
-#, fuzzy
 msgid "Repeat one"
-msgstr "循环一首"
+msgstr ""
 
 #: ../src/lmplayer.c:2036 ../src/lmplayer.c:2040
 msgid "An error occurred"
@@ -964,12 +943,12 @@ msgstr ""
 #: ../lyric-downloader/lyric_downloader.c:260
 #, c-format
 msgid "no path or filename given.\n"
-msgstr "没有给出目录或文件名。\n"
+msgstr ""
 
 #: ../lyric-downloader/lyric_downloader.c:266
 #, c-format
 msgid "no artist or title given.\n"
-msgstr "没有给出演唱者或标题。\n"
+msgstr ""
 
 #: ../lyric-downloader/main.c:48
 msgid "Song's title"
@@ -995,102 +974,3 @@ msgstr ""
 #, c-format
 msgid "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
-
-#~ msgid "Locations"
-#~ msgstr "位置"
-
-#~ msgid "*.wma Wma audio files"
-#~ msgstr "*.wma Wma音频文件"
-
-#~ msgid "lyric not found, try to load againg later."
-#~ msgstr "歌词没有找到，稍后再试"
-
-#~ msgid "Open Files"
-#~ msgstr "打开文件"
-
-#~ msgid "Remove"
-#~ msgstr "移除"
-
-#~ msgid "Property..."
-#~ msgstr "信息"
-
-#~ msgid "FILE"
-#~ msgstr "文件"
-
-#~ msgid "Play Control"
-#~ msgstr "播放控制"
-
-#~ msgid "Skins"
-#~ msgstr "皮肤"
-
-#~ msgid "Click to hide or show the main window"
-#~ msgstr "点击图标打开或隐藏主窗口"
-
-#~ msgid "Help"
-#~ msgstr "帮助"
-
-#~ msgid "_Quit"
-#~ msgstr "退出(Q)"
-
-#~ msgid ""
-#~ "You have selected different skin. \n"
-#~ "Lmplayer need restart!"
-#~ msgstr ""
-#~ "你选择了不同结构的皮肤. \n"
-#~ "Linux音乐播放器需要重启!"
-
-#~ msgid "Mode Setting"
-#~ msgstr "设置播放模式"
-
-#~ msgid "Default"
-#~ msgstr "默认"
-
-#~ msgid "Loop"
-#~ msgstr "循环"
-
-#~ msgid "Random"
-#~ msgstr "随机播放"
-
-#~ msgid "Status: play"
-#~ msgstr "状态: 播放"
-
-#~ msgid "Status: pause"
-#~ msgstr "状态: 暂停"
-
-#~ msgid "Status: stop"
-#~ msgstr "状态: 停止"
-
-#~ msgid "Choose Lyric Folder"
-#~ msgstr "选择歌词目录"
-
-#~ msgid "Lyrics and audio files in response to the same directory"
-#~ msgstr "歌词和音频文件在同一目录中"
-
-#~ msgid "Lyrics stored in a separate directory"
-#~ msgstr "歌词保存于单独的目录中"
-
-#~ msgid "Media Libaray Path"
-#~ msgstr "媒体库目录"
-
-#~ msgid "Save to or load lyric from:"
-#~ msgstr "歌词目录设置"
-
-#~ msgid "Setting Dialog"
-#~ msgstr "设置"
-
-#~ msgid "*.plt Lmplayer playlist file"
-#~ msgstr "*.plt Lmplayer播放列表文件"
-
-#~ msgid "Unable to parse file: %s\n"
-#~ msgstr "不能解析文件: %s\n"
-
-#~ msgid "GNU General Public License Version 3"
-#~ msgstr "GNU通用公共许可证第三版"
-
-#~ msgid ""
-#~ "Concern entertainment experience on Linux, Create entertainment platform "
-#~ "under Linux!"
-#~ msgstr "关注Linux娱乐体验，打造Linux娱乐平台！"
-
-#~ msgid "Welcome to Project Home Page"
-#~ msgstr "欢迎访问项目主页"
