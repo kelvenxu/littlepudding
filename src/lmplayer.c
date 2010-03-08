@@ -48,6 +48,7 @@
 #include "lmplayer-skin.h"
 #include "lmplayer-magnetic.h"
 #include "search-library.h"
+#include "lmplayer-search.h"
 
 #define REWIND_OR_PREVIOUS 4000
 
@@ -1797,11 +1798,35 @@ lmplayer_action_view_switch(LmplayerObject *lmplayer)
 }
 
 static void
-view_switch_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
+lmplayer_action_playlist_view(LmplayerObject *lmplayer)
 {
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
 
-	lmplayer_action_view_switch(lmplayer);
+	if(lmplayer->view_type != LMPLAYER_VIEW_TYPE_PLAYLIST)
+	{
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(lmplayer->view), LMPLAYER_VIEW_TYPE_PLAYLIST);
+		lmplayer->view_type = LMPLAYER_VIEW_TYPE_PLAYLIST;
+	}
+}
+
+static void
+lmplayer_action_visual_view(LmplayerObject *lmplayer)
+{
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+
+	if(lmplayer->view_type != LMPLAYER_VIEW_TYPE_VISUAL)
+	{
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(lmplayer->view), LMPLAYER_VIEW_TYPE_VISUAL);
+		lmplayer->view_type = LMPLAYER_VIEW_TYPE_VISUAL;
+	}
+}
+
+static void
+playlist_view_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
+{
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+
+	lmplayer_action_playlist_view(lmplayer);
 }
 
 static void
@@ -1872,8 +1897,8 @@ static void lmplayer_callback_connect(LmplayerObject *lmplayer)
 	g_signal_connect(G_OBJECT(lmplayer->seek), "button-release-event",
 			G_CALLBACK(seek_slider_released_cb), lmplayer);
 
-	g_signal_connect(G_OBJECT(lmplayer->view_switch), "clicked", 
-				G_CALLBACK(view_switch_clicked_cb), lmplayer);
+	g_signal_connect(G_OBJECT(lmplayer->playlist_view_button), "clicked", 
+				G_CALLBACK(playlist_view_button_clicked_cb), lmplayer);
 
 	g_signal_connect(G_OBJECT(lmplayer->win), "destroy", 
 			G_CALLBACK(main_window_destroy_cb), lmplayer);
@@ -2226,6 +2251,7 @@ lmplayer_message_connection_receive_cb (const char *msg, LmplayerObject *lmp)
 	g_free (url);
 }
 
+
 static void
 lmplayer_action_remote (LmplayerObject *lmplayer, LmpRemoteCommand cmd, const char *url)
 {
@@ -2493,13 +2519,10 @@ main(int argc, char* argv[])
 	lmplayer->volume = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-volume");
 	//lmplayer->statusbar = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_statusbar"));
 	lmplayer->view = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-view");
-	lmplayer->view_switch = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-view-switch");
+	lmplayer->playlist_view_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-playlist-view-button");
 	lmplayer->order_model = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-order-mode");
 	
-	lmplayer->search_box = search_box_create();
-	lmplayer->search_box_box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "search-box-box");
-	gtk_box_pack_start(GTK_BOX(lmplayer->search_box_box), lmplayer->search_box,
-			TRUE, TRUE, 0);
+	lmplayer_search_view_setup(lmplayer);
 
 	lmplayer->repeat = FALSE;
 	lmplayer->repeat_one = FALSE;
@@ -2554,7 +2577,7 @@ main(int argc, char* argv[])
 
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(lmplayer->view), LMPLAYER_VIEW_TYPE_PLAYLIST);
 
-	search_library_init("/home/kelvenxu/search-library/src/library.db", "/home/kelvenxu/音乐");
+	search_library_init("/home/kelvenxu/projs/search-library/src/library.db", "/home/kelvenxu/音乐");
 	gtk_main();
 	return 0;
 }

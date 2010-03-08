@@ -72,7 +72,8 @@ typedef enum
 typedef enum
 {
 	LMPLAYER_VIEW_TYPE_PLAYLIST,
-	LMPLAYER_VIEW_TYPE_VISUAL
+	LMPLAYER_VIEW_TYPE_VISUAL,
+	LMPLAYER_VIEW_TYPE_SEARCH
 } LmplayerViewType;
 
 typedef enum
@@ -118,10 +119,12 @@ struct _LmplayerObject
 	GConfClient *gc;
 
 	LmplayerPlaylist *playlist;
+	GtkWidget *playlist_view_button;
 
 	GtkWidget *search_box_box;
 	GtkWidget *search_box;
 	GtkWidget *search_view;
+	GtkWidget *search_view_button;
 	
 	gboolean minimode;
 

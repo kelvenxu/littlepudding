@@ -84,7 +84,8 @@ lmplayer_SOURCES = 					\
 	lmplayer-utils.c lmplayer-utils.h \
 	lmplayer-uri.c lmplayer-uri.h\
 	lmplayer-skin.c lmplayer-skin.h\
-	lmplayer-magnetic.c lmplayer-magnetic.h
+	lmplayer-magnetic.c lmplayer-magnetic.h\
+	lmplayer-search.c lmplayer-search.h
 
 lmplayer_CPPFLAGS = \
 	-I$(top_srcdir)/		\
