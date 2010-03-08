@@ -1865,6 +1865,7 @@ order_switch_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 	}
 }
 
+#if 0
 static void
 order_changed_cb(GtkComboBox *combo, LmplayerObject *lmplayer)
 {
@@ -1890,7 +1891,6 @@ order_changed_cb(GtkComboBox *combo, LmplayerObject *lmplayer)
 	}
 }
 
-#if 0
 static void
 lmplayer_setup_order_model(LmplayerObject *lmplayer)
 {
@@ -1917,6 +1917,44 @@ lmplayer_setup_order_model(LmplayerObject *lmplayer)
 }
 #endif
 
+void about_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
+{
+	char *backend_version, *description;
+
+	const char *authors[] =
+	{
+		"Kelven Xu <kelvenxu@gmail.com>",
+		NULL
+	};
+	const char *artists[] = { "Kelven Xu <kelvenxu@gmail.com>", NULL };
+	const char *documenters[] = { "Kelven Xu <kelvenxu@gmail.com>", NULL };
+	char *license = lmplayer_interface_get_license ();
+
+	backend_version = bacon_video_widget_get_backend_name (lmplayer->bvw);
+	/* This lists the back-end type and version, such as
+	 * Movie Player using GStreamer 0.10.1 */
+	description = g_strdup_printf (_("Music Player using %s"), backend_version);
+
+	gtk_show_about_dialog (GTK_WINDOW (lmplayer->win),
+				     "version", VERSION,
+				     "copyright", _("Copyright \xc2\xa9 2007-2010 Kelven Xu"),
+				     "comments", description,
+				     "authors", authors,
+				     "documenters", documenters,
+				     "artists", artists,
+				     "translator-credits", _("translator-credits"),
+				     "logo-icon-name", "lmplayer",
+				     "license", license,
+				     "wrap-license", TRUE,
+				     "website-label", _("Lmplayer Website"),
+				     "website", "http://linuxmediaplay.sf.net/",
+				     NULL);
+
+	g_free (backend_version);
+	g_free (description);
+	g_free (license);
+}
+
 static void lmplayer_callback_connect(LmplayerObject *lmplayer)
 {
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
@@ -1940,6 +1978,9 @@ static void lmplayer_callback_connect(LmplayerObject *lmplayer)
 
 	g_signal_connect(G_OBJECT(lmplayer->order_switch_button), "clicked", 
 				G_CALLBACK(order_switch_button_clicked_cb), lmplayer);
+
+	g_signal_connect(G_OBJECT(lmplayer->about_button), "clicked", 
+				G_CALLBACK(about_button_clicked_cb), lmplayer);
 
 	g_signal_connect(G_OBJECT(lmplayer->win), "destroy", 
 			G_CALLBACK(main_window_destroy_cb), lmplayer);
@@ -2563,6 +2604,7 @@ main(int argc, char* argv[])
 	lmplayer->playlist_view_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-playlist-view-button");
 	//lmplayer->order_model = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-order-mode");
 	lmplayer->order_switch_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-order-switch-button");
+	lmplayer->about_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-about-button");
 	
 	lmplayer_search_view_setup(lmplayer);
 

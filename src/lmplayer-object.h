@@ -104,6 +104,8 @@ struct _LmplayerObject
 	//GtkWidget *order_model;
 	GtkWidget *order_switch_button;
 
+	GtkWidget *about_button;
+
 	gboolean repeat;
 	gboolean repeat_one;
 
