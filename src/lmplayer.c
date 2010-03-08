@@ -1830,6 +1830,42 @@ playlist_view_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 }
 
 static void
+order_switch_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
+{
+	static int click_counter = 0;
+
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+
+	click_counter++;
+
+	GtkWidget *image = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-order-switch-image");
+	switch(click_counter % LMPLAYER_ORDER_NUMBER)
+	{
+		case LMPLAYER_ORDER_NORMAL:
+			lmplayer_playlist_set_repeat(lmplayer->playlist, FALSE);
+			lmplayer->repeat = FALSE;
+			lmplayer->repeat_one = FALSE;
+			printf("normal order\n");
+			gtk_image_set_from_file(GTK_IMAGE(image), DATADIR"/lmplayer/order.png");
+			break;
+		case LMPLAYER_ORDER_REPEAT:
+			lmplayer_playlist_set_repeat(lmplayer->playlist, TRUE);
+			lmplayer->repeat = TRUE;
+			lmplayer->repeat_one = FALSE;
+			gtk_image_set_from_file(GTK_IMAGE(image), DATADIR"/lmplayer/repeat.png");
+			printf("repeat order\n");
+			break;
+		case LMPLAYER_ORDER_REPEAT_ONE:
+			lmplayer_playlist_set_repeat(lmplayer->playlist, FALSE);
+			lmplayer->repeat_one = TRUE;
+			lmplayer->repeat = FALSE;
+			gtk_image_set_from_file(GTK_IMAGE(image), DATADIR"/lmplayer/repeat-one.png");
+			printf("repeat_one\n");
+			break;
+	}
+}
+
+static void
 order_changed_cb(GtkComboBox *combo, LmplayerObject *lmplayer)
 {
 	int order;
@@ -1854,6 +1890,7 @@ order_changed_cb(GtkComboBox *combo, LmplayerObject *lmplayer)
 	}
 }
 
+#if 0
 static void
 lmplayer_setup_order_model(LmplayerObject *lmplayer)
 {
@@ -1878,6 +1915,7 @@ lmplayer_setup_order_model(LmplayerObject *lmplayer)
 	g_signal_connect(G_OBJECT(lmplayer->order_model), "changed", G_CALLBACK(order_changed_cb), lmplayer);
 	gtk_container_add(GTK_CONTAINER(box), lmplayer->order_model);
 }
+#endif
 
 static void lmplayer_callback_connect(LmplayerObject *lmplayer)
 {
@@ -1899,6 +1937,9 @@ static void lmplayer_callback_connect(LmplayerObject *lmplayer)
 
 	g_signal_connect(G_OBJECT(lmplayer->playlist_view_button), "clicked", 
 				G_CALLBACK(playlist_view_button_clicked_cb), lmplayer);
+
+	g_signal_connect(G_OBJECT(lmplayer->order_switch_button), "clicked", 
+				G_CALLBACK(order_switch_button_clicked_cb), lmplayer);
 
 	g_signal_connect(G_OBJECT(lmplayer->win), "destroy", 
 			G_CALLBACK(main_window_destroy_cb), lmplayer);
@@ -2520,14 +2561,15 @@ main(int argc, char* argv[])
 	//lmplayer->statusbar = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_statusbar"));
 	lmplayer->view = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-view");
 	lmplayer->playlist_view_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-playlist-view-button");
-	lmplayer->order_model = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-order-mode");
+	//lmplayer->order_model = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-order-mode");
+	lmplayer->order_switch_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-order-switch-button");
 	
 	lmplayer_search_view_setup(lmplayer);
 
 	lmplayer->repeat = FALSE;
 	lmplayer->repeat_one = FALSE;
 
-	lmplayer_setup_order_model(lmplayer);
+	//lmplayer_setup_order_model(lmplayer);
 	lmplayer_callback_connect(lmplayer);
 
 	lmplayer_ui_manager_setup(lmplayer);

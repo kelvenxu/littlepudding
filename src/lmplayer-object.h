@@ -80,7 +80,8 @@ typedef enum
 {
 	LMPLAYER_ORDER_NORMAL,
 	LMPLAYER_ORDER_REPEAT,
-	LMPLAYER_ORDER_REPEAT_ONE
+	LMPLAYER_ORDER_REPEAT_ONE,
+	LMPLAYER_ORDER_NUMBER
 } LmplayerOrder;
 
 struct _LmplayerObject
@@ -100,7 +101,8 @@ struct _LmplayerObject
 	GtkWidget *view;
 	LmplayerViewType view_type;
 	GtkWidget *view_switch;
-	GtkWidget *order_model;
+	//GtkWidget *order_model;
+	GtkWidget *order_switch_button;
 
 	gboolean repeat;
 	gboolean repeat_one;

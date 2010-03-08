@@ -4,8 +4,8 @@
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="player-window">
     <property name="window_position">center-always</property>
-    <property name="default_width">600</property>
-    <property name="default_height">400</property>
+    <property name="default_width">860</property>
+    <property name="default_height">640</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -53,15 +53,17 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkButton" id="player-playlist-view-button">
+                    <property name="width_request">30</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Switch to playlist view</property>
                     <property name="relief">none</property>
                     <property name="focus_on_click">False</property>
                     <child>
                       <object class="GtkImage" id="image8">
                         <property name="visible">True</property>
-                        <property name="stock">gtk-file</property>
+                        <property name="pixbuf">playlist-view.png</property>
                       </object>
                     </child>
                   </object>
@@ -73,15 +75,17 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="player-search-view-button">
+                    <property name="width_request">30</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Switch to search view</property>
                     <property name="relief">none</property>
                     <property name="focus_on_click">False</property>
                     <child>
                       <object class="GtkImage" id="image9">
                         <property name="visible">True</property>
-                        <property name="stock">gtk-index</property>
+                        <property name="pixbuf">search-view.png</property>
                       </object>
                     </child>
                   </object>
@@ -92,11 +96,10 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button1">
+                  <object class="GtkButton" id="player-preference-button">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_markup">Preferences</property>
                     <property name="tooltip_text" translatable="yes">Pop preferencess dialog</property>
                     <property name="relief">none</property>
                     <property name="focus_on_click">False</property>
@@ -114,23 +117,26 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button4">
+                  <object class="GtkButton" id="player-about-button">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">About lmplayer</property>
                     <property name="relief">none</property>
                     <property name="focus_on_click">False</property>
                     <child>
-                      <object class="GtkArrow" id="arrow1">
+                      <object class="GtkImage" id="image2">
                         <property name="visible">True</property>
+                        <property name="stock">gtk-about</property>
                       </object>
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
                     <property name="position">3</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -242,6 +248,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Previous </property>
                     <property name="relief">none</property>
                     <property name="focus_on_click">False</property>
                     <child>
@@ -263,6 +270,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Play / pause</property>
                     <property name="relief">none</property>
                     <property name="focus_on_click">False</property>
                     <child>
@@ -284,6 +292,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Next</property>
                     <property name="relief">none</property>
                     <property name="focus_on_click">False</property>
                     <child>
@@ -307,7 +316,24 @@
               <object class="GtkHBox" id="hbox4">
                 <property name="visible">True</property>
                 <child>
-                  <placeholder/>
+                  <object class="GtkButton" id="player-order-switch-button">
+                    <property name="width_request">30</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Playing order switch</property>
+                    <property name="relief">none</property>
+                    <property name="focus_on_click">False</property>
+                    <child>
+                      <object class="GtkImage" id="player-order-switch-image">
+                        <property name="visible">True</property>
+                        <property name="pixbuf">order.png</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
                 </child>
                 <child>
                   <object class="GtkVSeparator" id="vseparator2">
@@ -320,15 +346,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkHBox" id="player-order-model-box">
-                    <property name="visible">True</property>
-                    <child>
-                      <placeholder/>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="position">2</property>
-                  </packing>
+                  <placeholder/>
                 </child>
                 <child>
                   <placeholder/>
@@ -347,6 +365,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Add media file</property>
                     <property name="relief">none</property>
                     <property name="focus_on_click">False</property>
                     <child>
@@ -366,6 +385,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Remove file</property>
                     <property name="relief">none</property>
                     <property name="focus_on_click">False</property>
                     <child>
@@ -385,6 +405,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Save current playlist to disk</property>
                     <property name="relief">none</property>
                     <property name="focus_on_click">False</property>
                     <child>

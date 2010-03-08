@@ -10,14 +10,24 @@ other_data=\
 		   mime-functions.sh
 
 stuff_DATA=\
-		   lmplayer.cfg.example\
-		   lmplayer.png\
-		   lmplayer-16x16.png\
-		   lmplayer-24x24.png\
-		   lmplayer-32x32.png\
-		   uri.ui\
-		   lyricselectdlg.ui\
-			 lmplayer.ui
+	lmplayer.cfg.example\
+	lmplayer.png\
+	lmplayer-16x16.png\
+	lmplayer-24x24.png\
+	lmplayer-32x32.png\
+	uri.ui\
+	lyricselectdlg.ui\
+	lmplayer.ui\
+	order.png\
+	order.svg\
+	playlist-view.png\
+	playlist-view.svg\
+	repeat-one.png\
+	repeat-one.svg\
+	repeat.png\
+	repeat.svg\
+	search-view.png\
+	search-view.svg
 
 desktopdir=$(datadir)/applications
 desktop_in_files=lmplayer.desktop.in.in
