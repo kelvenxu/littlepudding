@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lmplayer 0.9.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-08 15:58+0800\n"
-"PO-Revision-Date: 2010-03-03 15:19+8\n"
+"POT-Creation-Date: 2010-03-11 16:18+0800\n"
+"PO-Revision-Date: 2010-03-11 16:29+8\n"
 "Last-Translator: kelvenxu <kelvenxu@gmail.com>\n"
 "Language-Team: kelvenxu kelvenxu@gmail.com\n"
 "MIME-Version: 1.0\n"
@@ -18,16 +18,15 @@ msgstr ""
 
 #: ../data/uri.ui.h:1
 msgid "Enter the _address of the file you would like to open:"
-msgstr ""
+msgstr "输入你想要打开的文件的地址(_a):"
 
 #: ../data/lyricselectdlg.ui.h:1
-#, fuzzy
 msgid "Lyric Query"
-msgstr "选择歌词目录"
+msgstr "歌词查询"
 
 #: ../data/lyricselectdlg.ui.h:2
 msgid "Please select item below for download:"
-msgstr ""
+msgstr "请选择下面的条目来下载:"
 
 #: ../data/lyricselectdlg.ui.h:3
 msgid "gtk-about"
@@ -51,7 +50,7 @@ msgstr "关于小布丁播放器"
 
 #: ../data/lmplayer.ui.h:3
 msgid "Add media file"
-msgstr ""
+msgstr "添加媒体文件"
 
 #: ../data/lmplayer.ui.h:4 ../src/lmplayer-options.c:40
 msgid "Next"
@@ -68,28 +67,24 @@ msgstr "切换播放顺序"
 #. translators: Playlist is the default saved playlist filename,
 #. * without the suffix
 #: ../data/lmplayer.ui.h:7 ../src/lmplayer-playlist.c:1021
-#, fuzzy
 msgid "Playlist"
-msgstr "打开播放列表"
+msgstr "播放列表"
 
 #: ../data/lmplayer.ui.h:8
-#, fuzzy
 msgid "Pop preferencess dialog"
-msgstr "首选项"
+msgstr "打开首选项对话框"
 
 #: ../data/lmplayer.ui.h:9
 msgid "Previous "
 msgstr "上一首"
 
 #: ../data/lmplayer.ui.h:10
-#, fuzzy
 msgid "Remove file"
-msgstr "全部移除"
+msgstr "移除文件"
 
 #: ../data/lmplayer.ui.h:11
-#, fuzzy
 msgid "Save current playlist to disk"
-msgstr "打开播放列表"
+msgstr "保存当前播放列表到磁盘"
 
 #: ../data/lmplayer.ui.h:12
 msgid "Search "
@@ -105,7 +100,7 @@ msgstr "切换到搜索视图"
 
 #: ../data/lmplayer.ui.h:15
 msgid "Visual Effect"
-msgstr ""
+msgstr "视觉效果"
 
 #: ../src/backend/bacon-video-widget-gst-0.10.c:2474
 msgid ""
@@ -115,7 +110,7 @@ msgstr ""
 
 #: ../src/backend/bacon-video-widget-gst-0.10.c:2479
 msgid "Location not found."
-msgstr ""
+msgstr "没有找到所给的位置."
 
 #: ../src/backend/bacon-video-widget-gst-0.10.c:2483
 msgid ""
@@ -561,23 +556,23 @@ msgstr "暂停"
 
 #: ../src/lmplayer-options.c:41
 msgid "Previous"
-msgstr ""
+msgstr "上一曲"
 
 #: ../src/lmplayer-options.c:42
 msgid "Seek Forwards"
-msgstr ""
+msgstr "向前搜寻"
 
 #: ../src/lmplayer-options.c:43
 msgid "Seek Backwards"
-msgstr ""
+msgstr "向后搜寻"
 
 #: ../src/lmplayer-options.c:44
 msgid "Volume Up"
-msgstr ""
+msgstr "增大音量"
 
 #: ../src/lmplayer-options.c:45
 msgid "Volume Down"
-msgstr ""
+msgstr "减小音量"
 
 #: ../src/lmplayer-options.c:46
 msgid "Quit"
@@ -585,23 +580,23 @@ msgstr "退出"
 
 #: ../src/lmplayer-options.c:47
 msgid "Enqueue"
-msgstr ""
+msgstr "排队"
 
 #: ../src/lmplayer-options.c:48
 msgid "Replace"
-msgstr ""
+msgstr "替换"
 
 #: ../src/lmplayer-options.c:49
 msgid "Don't connect to an already running instance"
-msgstr ""
+msgstr "不要连接已运行的实例"
 
 #: ../src/lmplayer-options.c:50
 msgid "Print playing audio"
-msgstr ""
+msgstr "打印当前正在播放音频"
 
 #: ../src/lmplayer-options.c:51
 msgid "Seek"
-msgstr ""
+msgstr "搜寻"
 
 #: ../src/lmplayer-options.c:52
 msgid "Playlist index"
@@ -609,7 +604,7 @@ msgstr "播放列表索引"
 
 #: ../src/lmplayer-options.c:53
 msgid "Audio file to play"
-msgstr ""
+msgstr "要播放的声音文件"
 
 #. This is "Title 3", where title is a DVD title
 #. * Note: NOT a DVD chapter
@@ -624,15 +619,15 @@ msgstr "不能保存播放列表"
 
 #: ../src/lmplayer-playlist.c:962
 msgid "Unknown file extension."
-msgstr ""
+msgstr "未知的文件扩展名."
 
 #: ../src/lmplayer-playlist.c:975
 msgid "Select playlist format:"
-msgstr ""
+msgstr "选择播放列表格式:"
 
 #: ../src/lmplayer-playlist.c:980
 msgid "By extension"
-msgstr ""
+msgstr "依据扩展名"
 
 #: ../src/lmplayer-playlist.c:1010
 msgid "Save Playlist"
@@ -641,11 +636,11 @@ msgstr "保存播放列表"
 #: ../src/lmplayer-playlist.c:1823
 #, c-format
 msgid "The playlist '%s' could not be parsed, it might be damaged."
-msgstr ""
+msgstr "播放列表'%s'不能被解析，它可能已经被损坏."
 
 #: ../src/lmplayer-playlist.c:1824
 msgid "Playlist error"
-msgstr ""
+msgstr "播放列表错误"
 
 #: ../src/lmplayer-statusbar.c:97
 msgid "0:00 / 0:00"
@@ -655,12 +650,12 @@ msgstr ""
 #. (lmplayer->statusbar), 0, 0);
 #: ../src/lmplayer-statusbar.c:102 ../src/lmplayer.c:956
 msgid "Stopped"
-msgstr ""
+msgstr "已停止"
 
 #: ../src/lmplayer-statusbar.c:119
 #, c-format
 msgid "%s (Streaming)"
-msgstr ""
+msgstr "%s(流)"
 
 #. Elapsed / Total Length
 #: ../src/lmplayer-statusbar.c:126
@@ -672,11 +667,11 @@ msgstr ""
 #: ../src/lmplayer-statusbar.c:129
 #, c-format
 msgid "Seek to %s / %s"
-msgstr ""
+msgstr "搜寻到%s/%s"
 
 #: ../src/lmplayer-statusbar.c:201
 msgid "Buffering"
-msgstr ""
+msgstr "缓冲中"
 
 #. eg: 75 %
 #: ../src/lmplayer-statusbar.c:212
@@ -902,25 +897,23 @@ msgid "Normal"
 msgstr ""
 
 #: ../src/lmplayer.c:1905
-#, fuzzy
 msgid "Repeat"
-msgstr "循环一首"
+msgstr "循环"
 
 #: ../src/lmplayer.c:1906
-#, fuzzy
 msgid "Repeat one"
 msgstr "循环一首"
 
 #. This lists the back-end type and version, such as
 #. * Movie Player using GStreamer 0.10.1
 #: ../src/lmplayer.c:1936
-#, fuzzy, c-format
+#, c-format
 msgid "Music Player using %s"
-msgstr "正在播放: %s"
+msgstr "音乐播放器使用%s"
 
 #: ../src/lmplayer.c:2077 ../src/lmplayer.c:2081
 msgid "An error occurred"
-msgstr ""
+msgstr "发生了一个错误"
 
 #: ../src/lmplayer.c:2189
 msgid "Lmplayer could not startup."
@@ -936,14 +929,14 @@ msgstr ""
 
 #: ../src/lmplayer.c:2528
 msgid "[FILES] - Play songs"
-msgstr ""
+msgstr "[文件] - 播放音乐"
 
 #: ../src/lmplayer.c:2536
 #, c-format
 msgid ""
 "%s\n"
 "Run '%s --help' to see a full list of available command line options.\n"
-msgstr ""
+msgstr "运行'%s --help'去查看完整的命令行选择列表.\n"
 
 #: ../src/lmplayer.c:2548
 msgid "Lmplayer could not initialize the configuration engine."
