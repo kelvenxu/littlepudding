@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lmplayer 0.9.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-11 16:18+0800\n"
+"POT-Creation-Date: 2010-03-11 16:55+0800\n"
 "PO-Revision-Date: 2010-03-11 16:29+8\n"
 "Last-Translator: kelvenxu <kelvenxu@gmail.com>\n"
 "Language-Team: kelvenxu kelvenxu@gmail.com\n"
@@ -101,6 +101,14 @@ msgstr "切换到搜索视图"
 #: ../data/lmplayer.ui.h:15
 msgid "Visual Effect"
 msgstr "视觉效果"
+
+#: ../data/lmplayer.desktop.in.h:1 ../data/lmplayer.desktop.in.in.h:1
+msgid "Little Pudding Player"
+msgstr "小布丁音乐播放器"
+
+#: ../data/lmplayer.desktop.in.h:2 ../data/lmplayer.desktop.in.in.h:2
+msgid "Play songs"
+msgstr "播放音乐"
 
 #: ../src/backend/bacon-video-widget-gst-0.10.c:2474
 msgid ""

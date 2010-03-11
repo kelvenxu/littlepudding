@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-11 16:18+0800\n"
+"POT-Creation-Date: 2010-03-11 16:55+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -101,6 +101,14 @@ msgstr ""
 
 #: ../data/lmplayer.ui.h:15
 msgid "Visual Effect"
+msgstr ""
+
+#: ../data/lmplayer.desktop.in.h:1 ../data/lmplayer.desktop.in.in.h:1
+msgid "Little Pudding Player"
+msgstr ""
+
+#: ../data/lmplayer.desktop.in.h:2 ../data/lmplayer.desktop.in.in.h:2
+msgid "Play songs"
 msgstr ""
 
 #: ../src/backend/bacon-video-widget-gst-0.10.c:2474
