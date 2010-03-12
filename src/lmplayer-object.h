@@ -174,6 +174,9 @@ struct _LmplayerObject
 	LmplayerStates state;
 
 	LmplayerOpenLocation *open_location;
+
+	gchar *database;
+	gchar *monitor_path;
 };
 
 struct _LmplayerObjectClass

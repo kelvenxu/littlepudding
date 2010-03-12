@@ -49,6 +49,7 @@
 #include "lmplayer-magnetic.h"
 #include "search-library.h"
 #include "lmplayer-search.h"
+#include "lmplayer-config.h"
 
 #define REWIND_OR_PREVIOUS 4000
 
@@ -1917,7 +1918,8 @@ lmplayer_setup_order_model(LmplayerObject *lmplayer)
 }
 #endif
 
-void about_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
+static void 
+about_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 {
 	char *backend_version, *description;
 
@@ -1955,7 +1957,8 @@ void about_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 	g_free (license);
 }
 
-static void lmplayer_callback_connect(LmplayerObject *lmplayer)
+static void 
+lmplayer_callback_connect(LmplayerObject *lmplayer)
 {
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
 
@@ -2579,6 +2582,8 @@ main(int argc, char* argv[])
 		lmplayer_options_process_early (lmplayer, &optionstate);
 	}
 
+	lmplayer_load_config(lmplayer);
+
 	lmplayer_debug(" ");
 	lmplayer->builder = lmplayer_interface_load("lmplayer.ui", TRUE, NULL, NULL);
 	if(lmplayer->builder == NULL)
@@ -2611,7 +2616,6 @@ main(int argc, char* argv[])
 	lmplayer->repeat = FALSE;
 	lmplayer->repeat_one = FALSE;
 
-	//lmplayer_setup_order_model(lmplayer);
 	lmplayer_callback_connect(lmplayer);
 
 	lmplayer_ui_manager_setup(lmplayer);
@@ -2621,7 +2625,6 @@ main(int argc, char* argv[])
 	//TODO: 安装其它如会话管理、cd播放、文件监视等功能
 	lmplayer->state = STATE_STOPPED;
 	lmplayer->seek_lock = FALSE;
-
 
 	lmplayer_setup_file_monitoring(lmplayer);
 	lmplayer_setup_file_filters();
@@ -2661,7 +2664,7 @@ main(int argc, char* argv[])
 
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(lmplayer->view), LMPLAYER_VIEW_TYPE_PLAYLIST);
 
-	search_library_init("/home/kelvenxu/projs/search-library/src/library.db", "/home/kelvenxu/音乐");
+	search_library_init(lmplayer->database, lmplayer->monitor_path);
 	gtk_main();
 	return 0;
 }
