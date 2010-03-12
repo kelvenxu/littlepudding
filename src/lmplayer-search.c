@@ -24,6 +24,24 @@
 
 #include "lmplayer-search.h"
 #include "search-library.h"
+static void 
+search_view_row_activated_cb(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, LmplayerObject *lmplayer)
+{
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+
+	model = gtk_tree_view_get_model(treeview);
+	if(gtk_tree_model_get_iter(model, &iter, path))
+	{
+		gchar *filename;
+		gtk_tree_model_get(model, &iter, 0, &filename, -1);
+		gchar *uri = g_filename_to_uri(filename, NULL, NULL);
+		g_free(filename);
+		lmplayer_playlist_add_mrl(lmplayer->playlist, uri, NULL);
+		g_print("select uri %s\n", uri);
+		g_free(uri);
+	}
+}
 
 static void
 lmplayer_action_search_view(LmplayerObject *lmplayer)
@@ -69,5 +87,8 @@ lmplayer_search_view_setup(LmplayerObject *lmplayer)
 	lmplayer->search_view_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-search-view-button");
 
 	g_signal_connect(G_OBJECT(lmplayer->search_view_button), "clicked", G_CALLBACK(search_view_button_clicked_cb), lmplayer);
+
+	g_signal_connect(lmplayer->search_view, "row-activated", (GCallback)search_view_row_activated_cb, lmplayer);
+
 }
 

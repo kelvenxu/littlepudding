@@ -760,8 +760,7 @@ lmplayer_playlist_add_files (LmplayerPlaylist *playlist)
 {
 	GSList *filenames, *l;
 
-	filenames = lmplayer_add_files (lmplayer_playlist_get_toplevel (playlist),
-			NULL);
+	filenames = lmplayer_add_files (lmplayer_playlist_get_toplevel (playlist), NULL);
 	if (filenames == NULL)
 		return;
 
