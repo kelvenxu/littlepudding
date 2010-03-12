@@ -18,6 +18,7 @@ stuff_DATA=\
 	uri.ui\
 	lyricselectdlg.ui\
 	lmplayer.ui\
+	lmplayer-library-prefs.ui\
 	order.png\
 	order.svg\
 	playlist-view.png\

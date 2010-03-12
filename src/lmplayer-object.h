@@ -169,6 +169,8 @@ struct _LmplayerObject
 	//gchar *artist;
 	//gchar *title;
 
+	GtkWidget *prefs_button;
+	GtkWidget *prefs;
 	gchar *skinfile;
 
 	LmplayerStates state;

@@ -50,6 +50,7 @@
 #include "search-library.h"
 #include "lmplayer-search.h"
 #include "lmplayer-config.h"
+#include "lmplayer-prefs.h"
 
 #define REWIND_OR_PREVIOUS 4000
 
@@ -1921,6 +1922,12 @@ lmplayer_setup_order_model(LmplayerObject *lmplayer)
 #endif
 
 static void 
+prefs_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
+{
+	lmplayer_prefs_show(lmplayer);
+}
+
+static void 
 about_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 {
 	char *backend_version, *description;
@@ -1984,11 +1991,9 @@ lmplayer_callback_connect(LmplayerObject *lmplayer)
 	g_signal_connect(G_OBJECT(lmplayer->order_switch_button), "clicked", 
 				G_CALLBACK(order_switch_button_clicked_cb), lmplayer);
 
-	g_signal_connect(G_OBJECT(lmplayer->about_button), "clicked", 
-				G_CALLBACK(about_button_clicked_cb), lmplayer);
-
-	g_signal_connect(G_OBJECT(lmplayer->win), "destroy", 
-			G_CALLBACK(main_window_destroy_cb), lmplayer);
+	g_signal_connect(G_OBJECT(lmplayer->about_button), "clicked", G_CALLBACK(about_button_clicked_cb), lmplayer);
+	g_signal_connect(G_OBJECT(lmplayer->prefs_button), "clicked", G_CALLBACK(prefs_button_clicked_cb), lmplayer);
+	g_signal_connect(G_OBJECT(lmplayer->win), "destroy", G_CALLBACK(main_window_destroy_cb), lmplayer);
 	
 }
 
@@ -2612,6 +2617,7 @@ main(int argc, char* argv[])
 	//lmplayer->order_model = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-order-mode");
 	lmplayer->order_switch_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-order-switch-button");
 	lmplayer->about_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-about-button");
+	lmplayer->prefs_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-preference-button");
 	
 	lmplayer_search_view_setup(lmplayer);
 
