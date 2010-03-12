@@ -1781,6 +1781,7 @@ main_window_right_button_press_cb(SkinWindow *win, LmplayerObject *lmplayer)
 }
 #endif
 
+#if 0
 static void
 lmplayer_action_view_switch(LmplayerObject *lmplayer)
 {
@@ -1797,6 +1798,7 @@ lmplayer_action_view_switch(LmplayerObject *lmplayer)
 		lmplayer->view_type = LMPLAYER_VIEW_TYPE_PLAYLIST;
 	}
 }
+#endif
 
 static void
 lmplayer_action_playlist_view(LmplayerObject *lmplayer)

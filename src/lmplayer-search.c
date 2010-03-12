@@ -34,7 +34,7 @@ search_view_row_activated_cb(GtkTreeView *treeview, GtkTreePath *path, GtkTreeVi
 	if(gtk_tree_model_get_iter(model, &iter, path))
 	{
 		gchar *filename;
-		gtk_tree_model_get(model, &iter, 0, &filename, -1);
+		gtk_tree_model_get(model, &iter, 1, &filename, -1);
 		gchar *uri = g_filename_to_uri(filename, NULL, NULL);
 		g_free(filename);
 		lmplayer_playlist_add_mrl(lmplayer->playlist, uri, NULL);
