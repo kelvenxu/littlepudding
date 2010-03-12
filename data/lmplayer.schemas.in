@@ -1,0 +1,116 @@
+<gconfschemafile>
+	<schemalist>
+
+		<schema>
+			<key>/schemas/apps/totem/play_order</key>
+			<applyto>/apps/totem/play_order</applyto>
+			<owner>totem</owner>
+			<type>bool</type>
+			<default>true</default>
+			<locale name="C">
+				<short>Allow the screensaver to activate when playing audio</short>
+				<long>
+					Allow the screensaver to activate when playing audio.
+					Disable if you have monitor-powered speakers.
+				</long>
+			</locale>
+		</schema>
+
+		<schema>
+			<key>/schemas/apps/lmplayer/play_order</key>
+			<applyto>/apps/lmplayer/play_order</applyto>
+			<owner>lmplayer</owner>
+			<type>int</type>
+			<default>0</default>
+			<locale name="C">
+				<short>Play order</short>
+				<long>
+					Play order:
+					"0" for sequence,
+					"1" for repeat, 
+					"2" for repeat one.
+				</long>
+			</locale>
+		</schema>
+
+		<schema>
+			<key>/schemas/apps/lmplayer/volume</key>
+			<applyto>/apps/lmplayer/volume</applyto>
+			<owner>lmplayer</owner>
+			<type>int</type>
+			<default>50</default>
+			<locale name="C">
+				<short>Sound volume</short>
+				<long>Sound volume, in percent, between 0 and 100</long>
+			</locale>
+		</schema>
+
+		<schema>
+			<key>/schemas/apps/lmplayer/open_path</key>
+			<applyto>/apps/lmplayer/open_path</applyto>
+			<owner>lmplayer</owner>
+			<type>string</type>
+			<default></default>
+			<locale name="C">
+				<short>Default location for the "Open..." dialogs</short>
+				<long>Default location for the "Open..." dialogs, default is the current directory</long>
+			</locale>
+		</schema>
+
+		<schema>
+			<key>/schemas/apps/lmplayer/remember_position</key>
+			<applyto>/apps/lmplayer/remember_position</applyto>
+			<owner>lmplayer</owner>
+			<type>bool</type>
+			<default>false</default>
+			<locale name="C">
+				<short>Whether to remember the position of played audio/video files when pausing or closing them.</short>
+			</locale>
+		</schema>
+
+		<schema>
+			<key>/schemas/apps/lmplayer/remember_last_file</key>
+			<applyto>/apps/lmplayer/remember_last_file</applyto>
+			<owner>lmplayer</owner>
+			<type>bool</type>
+			<default>false</default>
+			<locale name="C">
+				<short>Whether to remember the last playing audio/video file when pausing or closing them.</short>
+			</locale>
+		</schema>
+
+		<schema>
+			<key>/schemas/apps/lmplayer/library_path</key>
+			<applyto>/apps/lmplayer/library_path</applyto>
+			<owner>lmplayer</owner>
+			<type>string</type>
+			<default></default>
+			<locale name="C">
+				<short>Media library path.</short>
+			</locale>
+		</schema>
+
+		<schema>
+			<key>/schemas/apps/lmplayer/library_database</key>
+			<applyto>/apps/lmplayer/library_database</applyto>
+			<owner>lmplayer</owner>
+			<type>string</type>
+			<default></default>
+			<locale name="C">
+				<short>Database of Media library.</short>
+			</locale>
+		</schema>
+
+		<schema>
+			<key>/schemas/apps/lmplayer/monitor_library</key>
+			<applyto>/apps/lmplayer/database</applyto>
+			<owner>lmplayer</owner>
+			<type>boolean</type>
+			<default>true</default>
+			<locale name="C">
+				<short>Database of Media library.</short>
+			</locale>
+		</schema>
+
+	</schemalist>
+</gconfschemafile>

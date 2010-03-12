@@ -35,6 +35,20 @@ desktop_in_files=lmplayer.desktop.in.in
 desktop_DATA = $(desktop_in_files:.desktop.in.in=.desktop)
 @INTLTOOL_DESKTOP_RULE@
 
+schema_in_files = lmplayer.schemas.in
+schemadir = $(GCONF_SCHEMA_FILE_DIR)
+schema_DATA = $(schema_in_files:.schemas.in=.schemas)
+@INTLTOOL_SCHEMAS_RULE@
+
+install-data-local: $(schema_DATA)
+if GCONF_SCHEMAS_INSTALL
+	if test -z "$(DESTDIR)" ; then \
+	for p in $^ ; do \
+		GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $$p 2>&1 > /dev/null; \
+	done \
+	fi
+endif
+
 nodist_noinst_HEADERS = lmplayer-mime-types.h
 lmplayer-mime-types.h: mime-type-include.sh mime-type-list.txt mime-functions.sh
 	$(srcdir)/mime-type-include.sh $(srcdir)/mime-type-list.txt	\
