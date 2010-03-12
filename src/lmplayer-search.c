@@ -56,6 +56,14 @@ lmplayer_action_search_view(LmplayerObject *lmplayer)
 }
 
 static void
+search_box_activated_cb(LmplayerSearchBox *box, LmplayerObject *lmplayer)
+{
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+
+	lmplayer_action_search_view(lmplayer);
+}
+
+static void
 search_view_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 {
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
@@ -70,7 +78,7 @@ lmplayer_search_view_setup(LmplayerObject *lmplayer)
 
 	// search view setup
 	lmplayer->search_view = search_view_create();
-	lmplayer->search_box = search_box_create();
+	lmplayer->search_box = lmplayer_search_box_new();
 
 	gtk_widget_set_size_request(lmplayer->search_box, 256, -1);
 
@@ -86,9 +94,8 @@ lmplayer_search_view_setup(LmplayerObject *lmplayer)
 
 	lmplayer->search_view_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-search-view-button");
 
+	g_signal_connect(lmplayer->search_box, "activated", (GCallback)search_box_activated_cb, lmplayer);
 	g_signal_connect(G_OBJECT(lmplayer->search_view_button), "clicked", G_CALLBACK(search_view_button_clicked_cb), lmplayer);
-
 	g_signal_connect(lmplayer->search_view, "row-activated", (GCallback)search_view_row_activated_cb, lmplayer);
-
 }
 
