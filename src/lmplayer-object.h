@@ -177,8 +177,8 @@ struct _LmplayerObject
 
 	LmplayerOpenLocation *open_location;
 
-	gchar *database;
-	gchar *monitor_path;
+	//gchar *database;
+	//gchar *monitor_path;
 };
 
 struct _LmplayerObjectClass

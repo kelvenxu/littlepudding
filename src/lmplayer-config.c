@@ -26,6 +26,7 @@
 #include <glib.h>
 #include <stdlib.h>
 
+#if 0
 int
 lmplayer_load_config(LmplayerObject *lmplayer)
 {
@@ -66,4 +67,4 @@ lmplayer_load_config(LmplayerObject *lmplayer)
 
 	return 0;
 }
-
+#endif

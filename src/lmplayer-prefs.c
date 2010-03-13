@@ -1,6 +1,7 @@
 
 #include "lmplayer-prefs.h"
 #include "lmplayer-interface.h"
+#include <stdlib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
@@ -219,6 +220,22 @@ setup_logo_page(LmplayerObject *lmplayer)
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), logo, NULL);
 }
 
+static void
+library_path_set_cb(GtkFileChooserButton *file_chooser, LmplayerObject *lmplayer)
+{
+	gchar *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_chooser));
+	gconf_client_set_string(lmplayer->gc, GCONF_PREFIX"/library_path", path, NULL);
+	g_free(path);
+}
+
+static void
+monitor_library_toggled_cb(GtkToggleButton *button, LmplayerObject *lmplayer)
+{
+	gconf_client_set_bool(lmplayer->gc, GCONF_PREFIX"/monitor_library", 
+			gtk_toggle_button_get_active(button),
+			NULL);
+}
+
 static void 
 setup_media_library_page(LmplayerObject *lmplayer)
 {
@@ -237,6 +254,29 @@ setup_media_library_page(LmplayerObject *lmplayer)
 
 	//FIXME:
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), container, NULL);
+
+	GtkWidget *file_chooser = (GtkWidget*)gtk_builder_get_object(builder, "library-path-chooser");
+	gchar *path = gconf_client_get_string(lmplayer->gc, GCONF_PREFIX"/library_path", NULL);
+	if(path && g_file_test(path, G_FILE_TEST_IS_DIR))
+	{
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(file_chooser), path);
+	}
+	else
+	{
+		path = g_build_path(getenv("HOME"), _("Music"), NULL);
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(file_chooser), path);
+		gconf_client_set_string(lmplayer->gc, GCONF_PREFIX"/library_path", path, NULL);
+	}
+
+	g_signal_connect(file_chooser, "file-set", G_CALLBACK(library_path_set_cb), lmplayer);
+
+	GtkWidget *monitor_library = (GtkWidget*)gtk_builder_get_object(builder, "monitor-library-check");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(monitor_library), 
+			gconf_client_get_bool(lmplayer->gc, GCONF_PREFIX"/monitor_library", NULL));
+
+	g_signal_connect(monitor_library, "toggled", G_CALLBACK(monitor_library_toggled_cb), lmplayer);
+
+	g_free(path);
 }
 
 static GtkWidget *

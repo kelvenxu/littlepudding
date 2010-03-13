@@ -2,7 +2,7 @@
 /*
  * lmplayer-search.c
  *
- * This file is part of ________.
+ * This file is part of lmplayer.
  *
  * Copyright (C) 2010 - kelvenxu <kelvenxu@gmail.com>.
  *
@@ -97,5 +97,19 @@ lmplayer_search_view_setup(LmplayerObject *lmplayer)
 	g_signal_connect(lmplayer->search_box, "activated", (GCallback)search_box_activated_cb, lmplayer);
 	g_signal_connect(G_OBJECT(lmplayer->search_view_button), "clicked", G_CALLBACK(search_view_button_clicked_cb), lmplayer);
 	g_signal_connect(lmplayer->search_view, "row-activated", (GCallback)search_view_row_activated_cb, lmplayer);
+}
+
+void
+lmplayer_search_init(LmplayerObject *lmplayer)
+{
+	gchar *database;
+	gchar *path;
+
+	database = gconf_client_get_string(lmplayer->gc, GCONF_PREFIX"/library_database", NULL);
+	path = gconf_client_get_string(lmplayer->gc, GCONF_PREFIX"/library_path", NULL);
+	search_library_init(database, path);
+
+	g_free(database);
+	g_free(path);
 }
 

@@ -2,21 +2,6 @@
 	<schemalist>
 
 		<schema>
-			<key>/schemas/apps/totem/play_order</key>
-			<applyto>/apps/totem/play_order</applyto>
-			<owner>totem</owner>
-			<type>bool</type>
-			<default>true</default>
-			<locale name="C">
-				<short>Allow the screensaver to activate when playing audio</short>
-				<long>
-					Allow the screensaver to activate when playing audio.
-					Disable if you have monitor-powered speakers.
-				</long>
-			</locale>
-		</schema>
-
-		<schema>
 			<key>/schemas/apps/lmplayer/play_order</key>
 			<applyto>/apps/lmplayer/play_order</applyto>
 			<owner>lmplayer</owner>
@@ -103,12 +88,12 @@
 
 		<schema>
 			<key>/schemas/apps/lmplayer/monitor_library</key>
-			<applyto>/apps/lmplayer/database</applyto>
+			<applyto>/apps/lmplayer/monitor_library</applyto>
 			<owner>lmplayer</owner>
-			<type>boolean</type>
+			<type>bool</type>
 			<default>true</default>
 			<locale name="C">
-				<short>Database of Media library.</short>
+				<short>Monitor Media library.</short>
 			</locale>
 		</schema>
 

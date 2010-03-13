@@ -2589,7 +2589,7 @@ main(int argc, char* argv[])
 		lmplayer_options_process_early (lmplayer, &optionstate);
 	}
 
-	lmplayer_load_config(lmplayer);
+	//lmplayer_load_config(lmplayer);
 
 	lmplayer_debug(" ");
 	lmplayer->builder = lmplayer_interface_load("lmplayer.ui", TRUE, NULL, NULL);
@@ -2672,7 +2672,7 @@ main(int argc, char* argv[])
 
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(lmplayer->view), LMPLAYER_VIEW_TYPE_PLAYLIST);
 
-	search_library_init(lmplayer->database, lmplayer->monitor_path);
+	lmplayer_search_init(lmplayer);
 	gtk_main();
 	return 0;
 }

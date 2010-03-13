@@ -27,6 +27,6 @@
 
 #include "lmplayer-object.h"
 
-int lmplayer_load_config(LmplayerObject *lmplayer);
+//int lmplayer_load_config(LmplayerObject *lmplayer);
 
 #endif /*__LMPLAYER_CONFIG_H__ */

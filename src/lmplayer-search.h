@@ -2,7 +2,7 @@
 /*
  * lmplayer-search.h
  *
- * This file is part of ________.
+ * This file is part of lmplayer.
  *
  * Copyright (C) 2010 - kelvenxu <kelvenxu@gmail.com>.
  *
@@ -28,5 +28,6 @@
 #include "lmplayer-object.h"
 
 void lmplayer_search_view_setup(LmplayerObject *lmplayer);
+void lmplayer_search_init(LmplayerObject *lmplayer);
 
 #endif /*__LMPLAYER_SEARCH_H__ */
