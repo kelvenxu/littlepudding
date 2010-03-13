@@ -1,6 +1,7 @@
 
 #include "lmplayer-prefs.h"
 #include "lmplayer-interface.h"
+#include "search-library.h"
 #include <stdlib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -236,6 +237,15 @@ monitor_library_toggled_cb(GtkToggleButton *button, LmplayerObject *lmplayer)
 			NULL);
 }
 
+static void
+index_library_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
+{
+	gchar *path = gconf_client_get_string(lmplayer->gc, GCONF_PREFIX"/library_path", NULL);
+	g_print("path = %s\n", path);
+	lmplayer_search_index(path);
+	//g_free(path);
+}
+
 static void 
 setup_media_library_page(LmplayerObject *lmplayer)
 {
@@ -275,6 +285,9 @@ setup_media_library_page(LmplayerObject *lmplayer)
 			gconf_client_get_bool(lmplayer->gc, GCONF_PREFIX"/monitor_library", NULL));
 
 	g_signal_connect(monitor_library, "toggled", G_CALLBACK(monitor_library_toggled_cb), lmplayer);
+
+	GtkWidget *index_button = (GtkWidget*)gtk_builder_get_object(builder, "library-index-button");
+	g_signal_connect(index_button, "clicked", G_CALLBACK(index_library_clicked_cb), lmplayer);
 
 	g_free(path);
 }
