@@ -43,39 +43,10 @@
               </packing>
             </child>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <object class="GtkHBox" id="hbox6">
+              <object class="GtkHBox" id="hbox7">
                 <property name="visible">True</property>
                 <child>
-                  <object class="GtkButton" id="player-playlist-view-button">
-                    <property name="width_request">30</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Switch to playlist view</property>
-                    <property name="relief">none</property>
-                    <property name="focus_on_click">False</property>
-                    <child>
-                      <object class="GtkImage" id="image8">
-                        <property name="visible">True</property>
-                        <property name="pixbuf">playlist-view.png</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkButton" id="player-search-view-button">
-                    <property name="width_request">30</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -92,8 +63,48 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="player-playlist-view-button">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Switch to playlist view</property>
+                    <property name="relief">none</property>
+                    <property name="focus_on_click">False</property>
+                    <child>
+                      <object class="GtkImage" id="image8">
+                        <property name="visible">True</property>
+                        <property name="pixbuf">playlist-view.png</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
                     <property name="position">1</property>
                   </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox6">
+                <property name="visible">True</property>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
                 <child>
                   <object class="GtkButton" id="player-preference-button">
