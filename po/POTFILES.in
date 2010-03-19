@@ -1,10 +1,13 @@
 [encoding: UTF-8]
 [type: gettext/glade]data/uri.ui
 [type: gettext/glade]data/lyricselectdlg.ui
-[type: gettext/glade]data/lmplayer.ui
+[type: gettext/glade]data/lmplayer-default.ui
+[type: gettext/glade]data/lmplayer-classic.ui
+[type: gettext/glade]data/lmplayer-library-prefs.ui
 
 data/lmplayer.desktop.in
 data/lmplayer.desktop.in.in
+data/lmplayer.schemas.in
 
 src/backend/bacon-video-widget-gst-0.10.c
 src/backend/bacon-video-widget-xine.c
@@ -18,6 +21,9 @@ src/lmplayer-playlist.c
 src/lmplayer-statusbar.c
 src/lmplayer-uri.c
 src/lmplayer.c
+src/lmplayer-prefs.c
+src/lmplayer-search.c
+
 
 lyric-downloader/lyric_downloader.c
 lyric-downloader/main.c

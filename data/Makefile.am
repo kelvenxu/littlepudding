@@ -17,7 +17,8 @@ stuff_DATA=\
 	lmplayer-32x32.png\
 	uri.ui\
 	lyricselectdlg.ui\
-	lmplayer.ui\
+	lmplayer-default.ui\
+	lmplayer-classic.ui\
 	lmplayer-library-prefs.ui\
 	order.png\
 	order.svg\
