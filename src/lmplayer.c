@@ -2592,7 +2592,7 @@ main(int argc, char* argv[])
 	//lmplayer_load_config(lmplayer);
 
 	lmplayer_debug(" ");
-	lmplayer->builder = lmplayer_interface_load("lmplayer.ui", TRUE, NULL, NULL);
+	lmplayer->builder = lmplayer_interface_load("lmplayer-default.ui", TRUE, NULL, NULL);
 	if(lmplayer->builder == NULL)
 	{
 		lmplayer_action_exit(NULL);

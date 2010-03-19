@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-11 16:55+0800\n"
+"POT-Creation-Date: 2010-03-19 11:57+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,66 +41,86 @@ msgstr ""
 msgid "gtk-ok"
 msgstr ""
 
-#: ../data/lmplayer.ui.h:1
+#: ../data/lmplayer-default.ui.h:1
 msgid "About"
 msgstr ""
 
-#: ../data/lmplayer.ui.h:2
+#: ../data/lmplayer-default.ui.h:2
 msgid "About lmplayer"
 msgstr ""
 
-#: ../data/lmplayer.ui.h:3
+#: ../data/lmplayer-default.ui.h:3
 msgid "Add media file"
 msgstr ""
 
-#: ../data/lmplayer.ui.h:4 ../src/lmplayer-options.c:40
+#: ../data/lmplayer-default.ui.h:4 ../src/lmplayer-options.c:40
 msgid "Next"
 msgstr ""
 
-#: ../data/lmplayer.ui.h:5
+#: ../data/lmplayer-default.ui.h:5
 msgid "Play / pause"
 msgstr ""
 
-#: ../data/lmplayer.ui.h:6
+#: ../data/lmplayer-default.ui.h:6
 msgid "Playing order switch"
 msgstr ""
 
 #. translators: Playlist is the default saved playlist filename,
 #. * without the suffix
-#: ../data/lmplayer.ui.h:7 ../src/lmplayer-playlist.c:1021
+#: ../data/lmplayer-default.ui.h:7 ../src/lmplayer-playlist.c:1020
 msgid "Playlist"
 msgstr ""
 
-#: ../data/lmplayer.ui.h:8
+#: ../data/lmplayer-default.ui.h:8
 msgid "Pop preferencess dialog"
 msgstr ""
 
-#: ../data/lmplayer.ui.h:9
+#: ../data/lmplayer-default.ui.h:9
 msgid "Previous "
 msgstr ""
 
-#: ../data/lmplayer.ui.h:10
+#: ../data/lmplayer-default.ui.h:10
 msgid "Remove file"
 msgstr ""
 
-#: ../data/lmplayer.ui.h:11
+#: ../data/lmplayer-default.ui.h:11
 msgid "Save current playlist to disk"
 msgstr ""
 
-#: ../data/lmplayer.ui.h:12
+#: ../data/lmplayer-default.ui.h:12
 msgid "Search "
 msgstr ""
 
-#: ../data/lmplayer.ui.h:13
+#: ../data/lmplayer-default.ui.h:13
 msgid "Switch to playlist view"
 msgstr ""
 
-#: ../data/lmplayer.ui.h:14
+#: ../data/lmplayer-default.ui.h:14
 msgid "Switch to search view"
 msgstr ""
 
-#: ../data/lmplayer.ui.h:15
+#: ../data/lmplayer-default.ui.h:15
 msgid "Visual Effect"
+msgstr ""
+
+#: ../data/lmplayer-classic.ui.h:1
+msgid "Search"
+msgstr ""
+
+#: ../data/lmplayer-classic.ui.h:2
+msgid "label"
+msgstr ""
+
+#: ../data/lmplayer-classic.ui.h:3
+msgid "page 1"
+msgstr ""
+
+#: ../data/lmplayer-classic.ui.h:4
+msgid "page 2"
+msgstr ""
+
+#: ../data/lmplayer-classic.ui.h:5
+msgid "page 3"
 msgstr ""
 
 #: ../data/lmplayer.desktop.in.h:1 ../data/lmplayer.desktop.in.in.h:1
@@ -522,15 +542,15 @@ msgstr ""
 msgid "Movie Player using %s"
 msgstr ""
 
-#: ../src/lmplayer-menu.c:337 ../src/lmplayer.c:1940
+#: ../src/lmplayer-menu.c:337 ../src/lmplayer.c:1951
 msgid "Copyright © 2007-2010 Kelven Xu"
 msgstr ""
 
-#: ../src/lmplayer-menu.c:342 ../src/lmplayer.c:1945
+#: ../src/lmplayer-menu.c:342 ../src/lmplayer.c:1956
 msgid "translator-credits"
 msgstr ""
 
-#: ../src/lmplayer-menu.c:346 ../src/lmplayer.c:1949
+#: ../src/lmplayer-menu.c:346 ../src/lmplayer.c:1960
 msgid "Lmplayer Website"
 msgstr ""
 
@@ -622,32 +642,32 @@ msgstr ""
 msgid "Title %d"
 msgstr ""
 
-#: ../src/lmplayer-playlist.c:349 ../src/lmplayer-playlist.c:962
+#: ../src/lmplayer-playlist.c:349 ../src/lmplayer-playlist.c:961
 msgid "Could not save the playlist"
 msgstr ""
 
-#: ../src/lmplayer-playlist.c:962
+#: ../src/lmplayer-playlist.c:961
 msgid "Unknown file extension."
 msgstr ""
 
-#: ../src/lmplayer-playlist.c:975
+#: ../src/lmplayer-playlist.c:974
 msgid "Select playlist format:"
 msgstr ""
 
-#: ../src/lmplayer-playlist.c:980
+#: ../src/lmplayer-playlist.c:979
 msgid "By extension"
 msgstr ""
 
-#: ../src/lmplayer-playlist.c:1010
+#: ../src/lmplayer-playlist.c:1009
 msgid "Save Playlist"
 msgstr ""
 
-#: ../src/lmplayer-playlist.c:1823
+#: ../src/lmplayer-playlist.c:1822
 #, c-format
 msgid "The playlist '%s' could not be parsed, it might be damaged."
 msgstr ""
 
-#: ../src/lmplayer-playlist.c:1824
+#: ../src/lmplayer-playlist.c:1823
 msgid "Playlist error"
 msgstr ""
 
@@ -657,7 +677,7 @@ msgstr ""
 
 #. lmplayer_statusbar_set_time_and_length(LMPLAYER_STATUSBAR
 #. (lmplayer->statusbar), 0, 0);
-#: ../src/lmplayer-statusbar.c:102 ../src/lmplayer.c:956
+#: ../src/lmplayer-statusbar.c:102 ../src/lmplayer.c:958
 msgid "Stopped"
 msgstr ""
 
@@ -728,151 +748,151 @@ msgstr ""
 msgid "Select Movies or Playlists"
 msgstr ""
 
-#: ../src/lmplayer.c:146
+#: ../src/lmplayer.c:148
 #, c-format
 msgid ""
 "Lmplayer could not play this media (%s) although a plugin is present to "
 "handle it."
 msgstr ""
 
-#: ../src/lmplayer.c:147
+#: ../src/lmplayer.c:149
 msgid ""
 "You might want to check that a disc is present in the drive and that it is "
 "correctly configured."
 msgstr ""
 
-#: ../src/lmplayer.c:154
+#: ../src/lmplayer.c:156
 msgid "More information about media plugins"
 msgstr ""
 
-#: ../src/lmplayer.c:155
+#: ../src/lmplayer.c:157
 msgid ""
 "Please install the necessary plugins and restart Lmplayer to be able to play "
 "this media."
 msgstr ""
 
-#: ../src/lmplayer.c:157
+#: ../src/lmplayer.c:159
 #, c-format
 msgid ""
 "Lmplayer cannot play this type of media (%s) because it does not have the "
 "appropriate plugins to be able to read from the disc."
 msgstr ""
 
-#: ../src/lmplayer.c:159
+#: ../src/lmplayer.c:161
 #, c-format
 msgid ""
 "Lmplayer cannot play this type of media (%s) because you do not have the "
 "appropriate plugins to handle it."
 msgstr ""
 
-#: ../src/lmplayer.c:163
+#: ../src/lmplayer.c:165
 msgid ""
 "Lmplayer cannot play TV, because no TV adapters are present or they are not "
 "supported."
 msgstr ""
 
-#: ../src/lmplayer.c:164
+#: ../src/lmplayer.c:166
 msgid "Please insert a supported TV adapter."
 msgstr ""
 
-#: ../src/lmplayer.c:174
+#: ../src/lmplayer.c:176
 msgid "More information about watching TV"
 msgstr ""
 
-#: ../src/lmplayer.c:175
+#: ../src/lmplayer.c:177
 msgid "Lmplayer is missing a channels listing to be able to tune the receiver."
 msgstr ""
 
-#: ../src/lmplayer.c:176
+#: ../src/lmplayer.c:178
 msgid ""
 "Please follow the instructions provided in the link to create a channels "
 "listing."
 msgstr ""
 
-#: ../src/lmplayer.c:179
+#: ../src/lmplayer.c:181
 #, c-format
 msgid ""
 "Lmplayer cannot play this type of media (%s) because the TV device is busy."
 msgstr ""
 
-#: ../src/lmplayer.c:180
+#: ../src/lmplayer.c:182
 msgid "Please try again later."
 msgstr ""
 
-#: ../src/lmplayer.c:185
+#: ../src/lmplayer.c:187
 #, c-format
 msgid ""
 "Lmplayer cannot play this type of media (%s) because it is not supported."
 msgstr ""
 
-#: ../src/lmplayer.c:186
+#: ../src/lmplayer.c:188
 msgid "Please insert another disc to play back."
 msgstr ""
 
-#: ../src/lmplayer.c:220
+#: ../src/lmplayer.c:222
 msgid "Totem was not able to play this disc."
 msgstr ""
 
-#: ../src/lmplayer.c:221 ../src/lmplayer.c:2190
+#: ../src/lmplayer.c:223 ../src/lmplayer.c:2200
 msgid "No reason."
 msgstr ""
 
-#: ../src/lmplayer.c:235
+#: ../src/lmplayer.c:237
 msgid "Lmplayer does not support playback of Audio CDs"
 msgstr ""
 
-#: ../src/lmplayer.c:236
+#: ../src/lmplayer.c:238
 msgid "Please consider using a music player or a CD extractor to play this CD"
 msgstr ""
 
-#: ../src/lmplayer.c:324
+#: ../src/lmplayer.c:326
 #, c-format
 msgid "Title: %s"
 msgstr ""
 
-#: ../src/lmplayer.c:336
+#: ../src/lmplayer.c:338
 #, c-format
 msgid "Artist: %s"
 msgstr ""
 
-#: ../src/lmplayer.c:347
+#: ../src/lmplayer.c:349
 #, c-format
 msgid "Album: %s"
 msgstr ""
 
-#: ../src/lmplayer.c:355
+#: ../src/lmplayer.c:357
 #, c-format
 msgid "Length: %02d:%02d"
 msgstr ""
 
-#: ../src/lmplayer.c:425
+#: ../src/lmplayer.c:427
 msgid "Status: Playing"
 msgstr ""
 
-#: ../src/lmplayer.c:430
+#: ../src/lmplayer.c:432
 msgid "Status: Paused"
 msgstr ""
 
-#: ../src/lmplayer.c:435
+#: ../src/lmplayer.c:437
 msgid "Status: Stopped"
 msgstr ""
 
-#: ../src/lmplayer.c:479
+#: ../src/lmplayer.c:481
 #, c-format
 msgid "LmplayerObject could not play '%s'."
 msgstr ""
 
-#: ../src/lmplayer.c:519
+#: ../src/lmplayer.c:521
 #, c-format
 msgid "Player could not play '%s'."
 msgstr ""
 
-#: ../src/lmplayer.c:735
+#: ../src/lmplayer.c:737
 #, c-format
 msgid "Not found lyric file: %s\n"
 msgstr ""
 
-#: ../src/lmplayer.c:925
+#: ../src/lmplayer.c:927
 #, c-format
 msgid "Totem could not play '%s'."
 msgstr ""
@@ -880,78 +900,78 @@ msgstr ""
 #. Update the mrl label
 #. totem_fullscreen_set_title (totem->fs, NULL);
 #. Title
-#: ../src/lmplayer.c:964 ../src/lmplayer.c:2542
+#: ../src/lmplayer.c:966 ../src/lmplayer.c:2552
 msgid "Little Pudding Music Player"
 msgstr ""
 
-#: ../src/lmplayer.c:1069
+#: ../src/lmplayer.c:1071
 #, c-format
 msgid "Lmplayer could not play '%s'."
 msgstr ""
 
-#: ../src/lmplayer.c:1077
+#: ../src/lmplayer.c:1079
 msgid "No error message"
 msgstr ""
 
-#: ../src/lmplayer.c:1225
+#: ../src/lmplayer.c:1227
 msgid "Select a new skin package"
 msgstr ""
 
-#: ../src/lmplayer.c:1233
+#: ../src/lmplayer.c:1235
 msgid "Lmplayer Skin Package (*.zip)"
 msgstr ""
 
-#: ../src/lmplayer.c:1904
+#: ../src/lmplayer.c:1908
 msgid "Normal"
 msgstr ""
 
-#: ../src/lmplayer.c:1905
+#: ../src/lmplayer.c:1909
 msgid "Repeat"
 msgstr ""
 
-#: ../src/lmplayer.c:1906
+#: ../src/lmplayer.c:1910
 msgid "Repeat one"
 msgstr ""
 
 #. This lists the back-end type and version, such as
 #. * Movie Player using GStreamer 0.10.1
-#: ../src/lmplayer.c:1936
+#: ../src/lmplayer.c:1947
 #, c-format
 msgid "Music Player using %s"
 msgstr ""
 
-#: ../src/lmplayer.c:2077 ../src/lmplayer.c:2081
+#: ../src/lmplayer.c:2087 ../src/lmplayer.c:2091
 msgid "An error occurred"
 msgstr ""
 
-#: ../src/lmplayer.c:2189
+#: ../src/lmplayer.c:2199
 msgid "Lmplayer could not startup."
 msgstr ""
 
-#: ../src/lmplayer.c:2404 ../src/lmplayer.c:2441 ../src/lmplayer.c:2469
-#: ../src/lmplayer.c:2472 ../src/lmplayer.c:2475 ../src/lmplayer.c:2478
-#: ../src/lmplayer.c:2481 ../src/lmplayer.c:2484 ../src/lmplayer.c:2487
-#: ../src/lmplayer.c:2490 ../src/lmplayer.c:2493 ../src/lmplayer.c:2496
+#: ../src/lmplayer.c:2414 ../src/lmplayer.c:2451 ../src/lmplayer.c:2479
+#: ../src/lmplayer.c:2482 ../src/lmplayer.c:2485 ../src/lmplayer.c:2488
+#: ../src/lmplayer.c:2491 ../src/lmplayer.c:2494 ../src/lmplayer.c:2497
+#: ../src/lmplayer.c:2500 ../src/lmplayer.c:2503 ../src/lmplayer.c:2506
 #, c-format
 msgid "Do nothing!\n"
 msgstr ""
 
-#: ../src/lmplayer.c:2528
+#: ../src/lmplayer.c:2538
 msgid "[FILES] - Play songs"
 msgstr ""
 
-#: ../src/lmplayer.c:2536
+#: ../src/lmplayer.c:2546
 #, c-format
 msgid ""
 "%s\n"
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
 
-#: ../src/lmplayer.c:2548
+#: ../src/lmplayer.c:2558
 msgid "Lmplayer could not initialize the configuration engine."
 msgstr ""
 
-#: ../src/lmplayer.c:2549
+#: ../src/lmplayer.c:2559
 msgid "Make sure that GNOME is properly installed."
 msgstr ""
 
