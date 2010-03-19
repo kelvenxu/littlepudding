@@ -241,9 +241,8 @@ static void
 index_library_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 {
 	gchar *path = gconf_client_get_string(lmplayer->gc, GCONF_PREFIX"/library_path", NULL);
-	g_print("path = %s\n", path);
 	lmplayer_search_index(path);
-	//g_free(path);
+	//g_free(path); //FIXME:
 }
 
 static void 

@@ -24,6 +24,9 @@
 
 #include "lmplayer-search.h"
 #include "search-library.h"
+#include <stdlib.h>
+#include <glib/gi18n.h>
+
 static void 
 search_view_row_activated_cb(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, LmplayerObject *lmplayer)
 {
@@ -106,7 +109,21 @@ lmplayer_search_init(LmplayerObject *lmplayer)
 	gchar *path;
 
 	database = gconf_client_get_string(lmplayer->gc, GCONF_PREFIX"/library_database", NULL);
+
+	if(!database || strlen(database) < 1)
+	{
+		database = g_build_filename((const char*)getenv("HOME"), ".lmplayer/media.database", NULL);
+	  gconf_client_set_string(lmplayer->gc, GCONF_PREFIX"/library_database", (const gchar*)database, NULL);
+	}
+
 	path = gconf_client_get_string(lmplayer->gc, GCONF_PREFIX"/library_path", NULL);
+
+	if(!path)
+	{
+		path = g_build_filename((const char*)getenv("HOME"), _("Music"), NULL);
+		gconf_client_set_string(lmplayer->gc, GCONF_PREFIX"/library_path", (const gchar*)path, NULL);
+	}
+
 	search_library_init(database, path);
 
 	g_free(database);
