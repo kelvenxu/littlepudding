@@ -1,0 +1,14 @@
+git tag v0.10.0
+
+make dist
+
+mkdir /tmp/l
+cp *.tar.bz2 /tmp/l
+cd /tmp/l
+tar xvf *.tar.bz2
+cd **
+dh_make -e kelvenxu@gmail.com -f ../lmplayer-0.10.0.tar.bz2 
+
+vi debian/control
+
+dpkg-buildpackage -rfakeroot

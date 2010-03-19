@@ -1,0 +1,162 @@
+commit 2c0035e35e9f3da2064b0c0694766c4619ac79fd
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Fri Mar 19 12:05:15 2010 +0800
+
+    翻译中文条目，修正了lmplayer.ui变为lmplayer-default.ui时代码中没有同步更新的问题
+
+commit 3b642ae6e9eb99568a001da0e0ddea9401dac95e
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Fri Mar 19 11:59:28 2010 +0800
+
+    将界面lmplayer.ui改为lmplayer-default.ui
+
+commit e4f17ea04adf72499f7962a95b73b35db48a99e1
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Fri Mar 19 11:50:52 2010 +0800
+
+    closes #21: 将设置界面改回notebook形式
+
+commit 02b57c629a173c070e53327561809c8f97e4ac7c
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Fri Mar 19 11:29:43 2010 +0800
+
+    fixes #17: 在搜索框中输入字符串时不能展开搜索，只有点击了index now之后，才能搜索
+
+commit 564cd5928e2885238512c9db6717d59ff3972e7e
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Fri Mar 19 10:55:11 2010 +0800
+
+    fixes #18: 调整界面上视图切换按钮的位置
+
+commit ae14b5686f35229738919ac3510aadbc35c1db86
+Author: kelvenxu <kelvenxu@gmail.com>
+Date:   Sun Mar 14 13:37:55 2010 +0800
+
+    增加了主界面文件: lmplayer-classis.ui
+
+commit 8abb2c6ead36459c1b7363dd41bb00eb2bc02b67
+Author: kelvenxu <kelvenxu@gmail.com>
+Date:   Sat Mar 13 21:06:52 2010 +0800
+
+    增加了“立即索引”的功能
+
+commit 3e3c1ae4c7952ec881c514b3ab3033dff9f82405
+Author: kelvenxu <kelvenxu@gmail.com>
+Date:   Sat Mar 13 16:40:30 2010 +0800
+
+    去掉cfg文件，使用gconf来保存设置, closes #10: 使用gconf来保存设置.
+
+commit c75bf9a69366ecf824f5f34cffd46472e93a42a9
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Fri Mar 12 16:48:01 2010 +0800
+
+    增加了lmplayer.schemas.in（gconf模式文件）
+
+commit efd2981382d83f2b708beb77f9157f540f47d725
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Fri Mar 12 16:01:41 2010 +0800
+
+    closes #7: 增加软件设置对话框
+
+commit b7d342aea2dedd9a05caf82698af57d4aa83df91
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Fri Mar 12 11:42:05 2010 +0800
+
+    closes #4: 当进行搜索时，自动转到搜索视图上
+
+commit e0f1757c40116d64732f57a982613dc6c66db724
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Fri Mar 12 10:05:49 2010 +0800
+
+    closes #5: 双击搜索视图时将选中条目加入播放列表
+
+commit a59ff604111eb190f35c8b7b992c0e0ff413402a
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Fri Mar 12 09:43:50 2010 +0800
+
+    为search-view的行的双击关联信息处理函数，将其加入到播放列表中
+
+commit 3d4982bf600083a1f081f35c8677aefa1b94960b
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Fri Mar 12 09:02:17 2010 +0800
+
+    使用配置文件来配置媒体数据库和要监视的目录
+
+commit be75655b47850fe7d2bb07e5a838c66c926ab687
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Thu Mar 11 16:56:11 2010 +0800
+
+    修正了lmplayer.desktop中的中文翻译问题
+
+commit f57745da8899152974e0c02588eaa8956a0752ba
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Thu Mar 11 16:29:49 2010 +0800
+
+    更新了中文翻译
+
+commit aff201c201ae0a6b3dc60edbbb4ce04dcffcf686
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Mon Mar 8 16:07:39 2010 +0800
+
+    更新了部分中文翻译。version_0.10.0
+
+commit 1a11e9fa00970a5ff6f771a08c4810be413b14d8
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Mon Mar 8 15:50:30 2010 +0800
+
+    增加了关于对话框: closes #6
+
+commit 8a5bbf3f2c47540f645d0c3ea2757d40c959dbfb
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Mon Mar 8 15:30:09 2010 +0800
+
+    更新了部分中文翻译
+
+commit eadba0607afe7fa62257d04f6c3a41b7d47c1150
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Mon Mar 8 14:26:16 2010 +0800
+
+    调整了界面，closes #1 : 播放顺序的控制改为三态按钮
+
+commit a4229f236258d02b2ac72d42f5372930b04896f0
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Mon Mar 8 10:58:59 2010 +0800
+
+    add missing files: src/lmplayer-search.c|h
+
+commit 44f82b0e14ccf79d0835e5cfaac377166e9b3463
+Author: xfxu <xuxiaofeng@oasvr.sc>
+Date:   Mon Mar 8 10:57:54 2010 +0800
+
+    closes #2: 加入本地媒体库搜索功能。实现了视图的切换。
+
+commit 680b205645e6ce4926f1f3a27664be945abdf531
+Author: kelvenxu <kelvenxu@gmail.com>
+Date:   Sun Mar 7 20:48:49 2010 +0800
+
+    调整界面，加入搜索功能
+
+commit b42e16799c420e8a84c394e1609edc59dcad32ff
+Author: kelvenxu <kelvenxu@gmail.com>
+Date:   Sat Mar 6 16:36:27 2010 +0800
+
+    在界面上添加了控制播放顺序的选择控制
+
+commit 7b23cddfcfb98368b5927451da986002cb71f120
+Author: kelvenxu <kelvenxu@gmail.com>
+Date:   Thu Nov 5 22:31:36 2009 +0800
+
+    增加了循环和单曲循环的选项，并初步试验成功。
+
+commit 33bdcc6bd4f02deb6a21be7368c42d25b765847f
+Author: kelvenxu <kelvenxu@gmail.com>
+Date:   Sun Oct 18 15:43:00 2009 +0800
+
+    增加了快捷键，现在有
+    ctrl-p(play/pause),
+    ctrl-n(next),
+    ctrl-v(prev),
+    ctrl-s(save),
+    ctrl-o(open),
+    ctrl-a(add)
+    等快捷键可用。

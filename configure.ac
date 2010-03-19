@@ -259,7 +259,7 @@ if test x$ENABLE_GTK = "xno" ; then
 					  totem-plparser >= $TOTEM_PLPARSER_REQS
 						gconf-2.0
 					  gmodule-2.0 
-						libsearchlibrary >= 1.0
+						liblmplayer-search >= 0.10.0
 					  $ISO_CODES)
 	HAVE_GNOME=yes
 else

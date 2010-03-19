@@ -55,7 +55,7 @@ lmplayer-mime-types.h: mime-type-include.sh mime-type-list.txt mime-functions.sh
 	$(srcdir)/mime-type-include.sh $(srcdir)/mime-type-list.txt	\
 	> $@
 
-EXTRA_DIST=$(stuff_DATA) $(desktop_in_files) $(other_data)
+EXTRA_DIST=$(stuff_DATA) $(desktop_in_files) $(other_data) $(schema_in_files)
 
 CLEANFILES = \
 	*.bak *.uip core* *.orig *~ 	\
