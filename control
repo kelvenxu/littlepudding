@@ -7,11 +7,11 @@ Standards-Version: 3.7.2
 
 Package: lmplayer
 Architecture: i386
-Depends: libgtk2.0-0 (>= 2.10.0), libglib2.0-0 (>= 2.12.0), libgconf2-4 (>= 2.23.2) totem-plparser12 (>= 2.27.2), gmodule-2.0, liblmplayer-search (>= 0.10.0)
+Depends: libgtk2.0-0 (>= 2.10.0), libglib2.0-0 (>= 2.12.0), libgconf2-4 (>= 2.23.2), liblmplayer-search (>= 0.10.0), libtotem-plparser12 (>= 2.27.2)
 Description: lmplayer
-	Little pudding music player (lmplayer) is desktop music player for gnome or kde. It support many audio formats such as mp3, wma, ogg etc. It is  powerful but easy to use.
+	Little pudding music player (lmplayer) is desktop music player for gnome or kde. It support many audio formats such as mp3, wma, ogg etc. It is powerful but easy to use.
 	.
 	Author: kelvenxu <kelvenxu@gmail.com>
 	.
-	Homepage: http://www.lmplayer.org/
+	Homepage: http://www.lmplayer.com/
 
