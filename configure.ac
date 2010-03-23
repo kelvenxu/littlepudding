@@ -562,6 +562,8 @@ data/icons/hicolor/scalable/Makefile
 data/icons/hicolor/scalable/apps/Makefile
 plugins/Makefile
 plugins/rereading/Makefile
+bindings/Makefile
+bindings/python/Makefile
 tests/Makefile
 po/Makefile.in
 ])

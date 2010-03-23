@@ -1,4 +1,4 @@
-SUBDIRS=data po liblmplayer-plugin src plugins lyric-downloader tests 
+SUBDIRS=data po bindings liblmplayer-plugin src plugins lyric-downloader tests 
 
 EXTRA_DIST = \
 			 autogen.sh \
