@@ -60,4 +60,7 @@ void lmplayer_action_seek_relative(LmplayerObject *lmplayer, gint64 offset);
 void lmplayer_load_net_lyric(LmplayerObject *lmplayer);
 
 void lmplayer_action_change_skin(LmplayerObject *lmplayer);
+
+void lmplayer_object_plugins_init(LmplayerObject *lmplayer);
+void lmplayer_object_plugins_shutdown (void);
 #endif /*__LMPLAYER_H__ */

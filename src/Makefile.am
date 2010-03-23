@@ -91,6 +91,7 @@ lmplayer_SOURCES = 					\
 
 lmplayer_CPPFLAGS = \
 	-I$(top_srcdir)/		\
+	-I$(top_srcdir)/liblmplayer-plugin	\
 	-I$(srcdir)/backend		\
 	-I$(top_builddir)/data		\
 	$(common_defines)		\
@@ -110,6 +111,7 @@ lmplayer_LDFLAGS = \
 lmplayer_LDADD =						\
 	backend/libbaconvideowidget.la			\
 	libbaconmessageconnection.la			\
+	$(top_srcdir)/liblmplayer-plugin/liblmplayermodule.la \
 	$(EXTRA_GNOME_LIBS)				\
 	$(XVIDMODE_LIBS)				\
 	$(NVTV_LIBS)					\

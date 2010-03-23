@@ -25,6 +25,7 @@
 #include "lmplayer-object.h"
 #include "lmplayerobject-marshal.h"
 #include "lmplayer-debug.h"
+#include "lmplayer-plugins-engine.h"
 
 enum {
 	PROP_0,
@@ -197,6 +198,31 @@ lmplayer_object_class_init (LmplayerObjectClass *self_class)
 				NULL, NULL,
 				lmplayerobject_marshal_VOID__STRING_STRING_STRING,
 				G_TYPE_NONE, 3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+}
+
+/**
+ * lmplayer_object_plugins_init:
+ * @lmplayer: a #LmplayerObject
+ *
+ * Initialises the plugin engine and activates all the
+ * enabled plugins.
+ **/
+void
+lmplayer_object_plugins_init(LmplayerObject *lmplayer)
+{
+	lmplayer_plugins_engine_init(lmplayer);
+}
+
+/**
+ * lmplayer_object_plugins_shutdown:
+ *
+ * Shuts down the plugin engine and deactivates all the
+ * plugins.
+ **/
+void
+lmplayer_object_plugins_shutdown(void)
+{
+	lmplayer_plugins_engine_shutdown ();
 }
 
 LmplayerObject* lmplayer_object_new()

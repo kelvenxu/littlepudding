@@ -647,6 +647,8 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	//lmplayer_sublang_exit (lmplayer);
 	lmplayer_destroy_file_filters();
 
+	lmplayer_object_plugins_shutdown();
+
 	if(lmplayer->gc)
 		g_object_unref(G_OBJECT(lmplayer->gc));
 

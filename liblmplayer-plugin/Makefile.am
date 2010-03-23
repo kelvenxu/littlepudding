@@ -36,20 +36,20 @@ liblmplayermodule_la_CFLAGS = \
 liblmplayermodule_la_LDFLAGS = \
 	$(AM_LDFLAGS)			
 
-liblmplayermodule_la_LIBADD = \
-	$(DEPENDENCY_LIBS)	\
-	$(PYTHON_LIBS)		\
-	$(PYTHON_EXTRA_LIBS)	\
-	$(PYGTK_LIBS)
+#liblmplayermodule_la_LIBADD = \
+#	$(DEPENDENCY_LIBS)	\
+#	$(PYTHON_LIBS)		\
+#	$(PYTHON_EXTRA_LIBS)	\
+#	$(PYGTK_LIBS)
 
-liblmplayermodule_la_SOURCES += \
-	lmplayer-python-module.c		\
-	lmplayer-python-module.h		\
-	lmplayer-python-plugin.c		\
-	lmplayer-python-plugin.h
+#liblmplayermodule_la_SOURCES += \
+#	lmplayer-python-module.c		\
+#	lmplayer-python-module.h		\
+#	lmplayer-python-plugin.c		\
+#	lmplayer-python-plugin.h
 
-liblmplayermodule_la_CFLAGS += \
-	$(NO_STRICT_ALIASING_CFLAGS)\
-	$(PYGTK_CFLAGS)			\
-	$(PYTHON_CFLAGS)
+#liblmplayermodule_la_CFLAGS += \
+#	$(NO_STRICT_ALIASING_CFLAGS)\
+#	$(PYGTK_CFLAGS)			\
+#	$(PYTHON_CFLAGS)
 
