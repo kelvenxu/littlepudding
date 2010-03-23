@@ -1,6 +1,7 @@
 /* lmplayer-uri.c
 
    Copyright (C) 2004 Bastien Nocera
+   Copyright (C) 2010 kelvenxu
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -18,6 +19,7 @@
    Boston, MA 02111-1307, USA.
 
    Author: Bastien Nocera <hadess@hadess.net>
+   Author: kelvenxu <kelvenxu@gmail.com>
  */
 
 #include "config.h"
@@ -51,6 +53,15 @@ lmplayer_playing_dvd (const char *uri)
 }
 
 static void
+lmplayer_ensure_dir (const char *path)
+{
+	if (g_file_test (path, G_FILE_TEST_IS_DIR) != FALSE)
+		return;
+
+	g_mkdir_with_parents (path, 0700);
+}
+
+static void
 lmplayer_ensure_dot_dir (const char *path)
 {
 	if (g_file_test (path, G_FILE_TEST_IS_DIR) != FALSE)
@@ -74,6 +85,25 @@ lmplayer_dot_dir (void)
 				      NULL);
 
 	lmplayer_ensure_dot_dir (lmplayer_dir);
+
+	return (const char *)lmplayer_dir;
+}
+
+const char *
+lmplayer_data_dot_dir (void)
+{
+	static char *lmplayer_dir = NULL;
+
+	if (lmplayer_dir != NULL) {
+		lmplayer_ensure_dir (lmplayer_dir);
+		return lmplayer_dir;
+	}
+
+	lmplayer_dir = g_build_filename (g_get_user_data_dir (),
+				      "lmplayer",
+				      NULL);
+
+	lmplayer_ensure_dir (lmplayer_dir);
 
 	return (const char *)lmplayer_dir;
 }

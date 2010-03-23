@@ -1,0 +1,9 @@
+[Lmplayer Plugin]
+	Module=plugin-name
+	IAge=plugin interface age (starting at 1)
+	Builtin=true or false
+	Name=Human-Readable Plugin Name
+	Description=Simple sentence describing the plugin's functionality.
+	Authors=Plugin Author Name
+	Copyright=Copyright © year Copyright Holder
+	Website=http://plugin/website/

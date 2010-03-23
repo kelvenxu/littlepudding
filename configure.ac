@@ -237,50 +237,24 @@ else
 	ISO_CODES=""
 fi
 
-dnl Check for GTK+ only build
-AC_ARG_ENABLE(gtk,
-	AC_HELP_STRING([--enable-gtk],[compile a gtk+ only version]),
-	[case "${enableval}" in
-	yes) ENABLE_GTK=yes ;;
-	no) ENABLE_GTK=no ;;
-	*) AC_MSG_ERROR(bad value ${enableval} for --disable-gtk) ;;
-	esac],
-	[ENABLE_GTK=no]) dnl Default value
-
 dnl Seems that the order matters because libtool blows
 dnl Also check if we're going to be using GTK+ only
-if test x$ENABLE_GTK = "xno" ; then
-# FIXME: use gmodule-no-export instead!
-	PKG_CHECK_MODULES(EXTRA_GNOME, 
-					  glib-2.0 >= $GLIB_REQS 
-					  gtk+-2.0 >= $GTK_REQS 
-					  gio-2.0 
-					  gnome-icon-theme >= $GNOMEICON_REQS 
-					  totem-plparser >= $TOTEM_PLPARSER_REQS
-						gconf-2.0
-					  gmodule-2.0 
-						liblmplayer-search >= 0.10.0
-					  $ISO_CODES)
-	HAVE_GNOME=yes
-else
-# FIXME: use gmodule-no-export instead!
-	PKG_CHECK_MODULES(EXTRA_GNOME, glib-2.0 >= $GLIB_REQS gtk+-2.0 >= $GTK_REQS gio-2.0 gnome-icon-theme >= $GNOMEICON_REQS gmodule-2.0 gconf-2.0 $ISO_CODES)
-	AC_DEFINE(USE_STABLE_LIBGNOMEUI, 1, [defined if we don't have GNOME])
-	AC_DEFINE(HAVE_GTK_ONLY, 1, [defined if GNOME isn't used])
-	HAVE_GNOME=no
-fi
 
+PKG_CHECK_MODULES(EXTRA_GNOME, 
+									glib-2.0 >= $GLIB_REQS 
+									gtk+-2.0 >= $GTK_REQS 
+									gio-2.0 
+									gnome-icon-theme >= $GNOMEICON_REQS 
+									totem-plparser >= $TOTEM_PLPARSER_REQS
+									gconf-2.0
+									gmodule-2.0 
+									liblmplayer-search >= 0.10.0
+									$ISO_CODES)
 
-AM_CONDITIONAL(HAVE_GNOME, test x$HAVE_GNOME = "xyes")
 EXTRA_GNOME_CFLAGS="$EXTRA_GNOME_CFLAGS"
 EXTRA_GNOME_LIBS="$EXTRA_GNOME_LIBS $EXTRA_BACKEND_LIBS"
 AC_SUBST(EXTRA_GNOME_CFLAGS)
 AC_SUBST(EXTRA_GNOME_LIBS)
-
-PKG_CHECK_MODULES(GTK, gtk+-2.0 gthread-2.0 gconf-2.0)
-AC_SUBST(GTK_CFLAGS)
-GTK_LIBS="$GTK_LIBS $EXTRA_BACKEND_LIBS"
-AC_SUBST(GTK_LIBS)
 
 dnl *************************
 dnl X11 related functionality
@@ -568,6 +542,7 @@ AC_OUTPUT([
 Makefile
 src/backend/Makefile
 src/Makefile
+liblmplayer-plugin/Makefile
 lyric-downloader/Makefile
 data/Makefile
 data/lmplayer.desktop.in
@@ -585,6 +560,8 @@ data/icons/hicolor/48x48/Makefile
 data/icons/hicolor/48x48/apps/Makefile
 data/icons/hicolor/scalable/Makefile
 data/icons/hicolor/scalable/apps/Makefile
+plugins/Makefile
+plugins/rereading/Makefile
 tests/Makefile
 po/Makefile.in
 ])

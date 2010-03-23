@@ -28,6 +28,7 @@
 G_BEGIN_DECLS
 
 const char *	lmplayer_dot_dir			(void);
+const char *	lmplayer_data_dot_dir			(void);
 char *		lmplayer_pictures_dir		(void);
 char *		lmplayer_create_full_path		(const char *path);
 GMount *	lmplayer_get_mount_for_media	(const char *uri);
