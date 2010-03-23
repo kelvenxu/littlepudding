@@ -95,10 +95,7 @@
               </packing>
             </child>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <object class="GtkHBox" id="hbox6">
+              <object class="GtkHBox" id="player-plugins-box">
                 <property name="visible">True</property>
                 <child>
                   <placeholder/>
@@ -107,17 +104,50 @@
                   <placeholder/>
                 </child>
                 <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox6">
+                <property name="visible">True</property>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
                   <object class="GtkButton" id="player-preference-button">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Pop preferencess dialog</property>
                     <property name="relief">none</property>
                     <property name="focus_on_click">False</property>
                     <child>
                       <object class="GtkImage" id="image10">
                         <property name="visible">True</property>
                         <property name="stock">gtk-preferences</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="player-plugin-button">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="relief">none</property>
+                    <property name="focus_on_click">False</property>
+                    <child>
+                      <object class="GtkImage" id="image7">
+                        <property name="visible">True</property>
+                        <property name="pixbuf">plugins.png</property>
                       </object>
                     </child>
                   </object>

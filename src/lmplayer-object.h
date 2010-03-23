@@ -171,6 +171,11 @@ struct _LmplayerObject
 
 	GtkWidget *prefs_button;
 	GtkWidget *prefs;
+
+	GtkWidget *plugin_button;
+	GtkWidget *plugins_box;
+	GtkWidget *plugins_manager_dialog;
+
 	gchar *skinfile;
 
 	LmplayerStates state;

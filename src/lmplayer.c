@@ -51,6 +51,7 @@
 #include "lmplayer-search.h"
 #include "lmplayer-config.h"
 #include "lmplayer-prefs.h"
+#include "lmplayer-plugin-manager.h"
 
 #define REWIND_OR_PREVIOUS 4000
 
@@ -64,7 +65,7 @@
 
 static void video_widget_create (LmplayerObject *lmplayer);
 static void lmplayer_message_connection_receive_cb (const char *msg, LmplayerObject *lmp);
-static void lmplayer_action_remote (LmplayerObject *lmp, LmpRemoteCommand cmd, const char *url);
+static void lmplayer_action_remote (LmplayerObject *lmp, LmplayerRemoteCommand cmd, const char *url);
 static gboolean lmplayer_action_open_files (LmplayerObject *lmplayer, char **list);
 static gboolean lmplayer_action_open_dialog (LmplayerObject *lmplayer, const char *path, gboolean play);
 static gboolean lmplayer_action_open_files_list (LmplayerObject *lmplayer, GSList *list);
@@ -1929,6 +1930,61 @@ prefs_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 	lmplayer_prefs_show(lmplayer);
 }
 
+static gboolean
+lmplayer_plugins_window_delete_cb(GtkWidget *window, GdkEventAny *event, gpointer data)
+{
+	gtk_widget_hide (window);
+
+	return TRUE;
+}
+
+static void
+lmplayer_plugins_response_cb(GtkDialog *dialog, int response_id, gpointer data)
+{
+	if (response_id == GTK_RESPONSE_CLOSE)
+		gtk_widget_hide (GTK_WIDGET (dialog));
+}
+
+static void
+plugin_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
+{
+	if(!lmplayer->plugins_manager_dialog)
+	{
+		GtkWidget *manager;
+
+		lmplayer->plugins_manager_dialog = gtk_dialog_new_with_buttons (_("Configure Plugins"),
+							      GTK_WINDOW(lmplayer->win),
+							      GTK_DIALOG_DESTROY_WITH_PARENT,
+							      GTK_STOCK_CLOSE,
+							      GTK_RESPONSE_CLOSE,
+							      NULL);
+
+		gtk_container_set_border_width(GTK_CONTAINER(lmplayer->plugins_manager_dialog), 5);
+		gtk_box_set_spacing (GTK_BOX(GTK_DIALOG(lmplayer->plugins_manager_dialog)->vbox), 2);
+		gtk_dialog_set_has_separator(GTK_DIALOG(lmplayer->plugins_manager_dialog), FALSE);
+
+		g_signal_connect_object(G_OBJECT(lmplayer->plugins_manager_dialog),
+					 "delete_event",
+					 G_CALLBACK (lmplayer_plugins_window_delete_cb),
+					 NULL, 0);
+
+		g_signal_connect_object(G_OBJECT(lmplayer->plugins_manager_dialog),
+					 "response",
+					 G_CALLBACK (lmplayer_plugins_response_cb),
+					 NULL, 0);
+
+		manager = lmplayer_plugin_manager_new();
+
+		gtk_widget_show_all(GTK_WIDGET(manager));
+		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(lmplayer->plugins_manager_dialog)->vbox), manager);
+	}
+
+	gtk_window_present(GTK_WINDOW(lmplayer->plugins_manager_dialog));
+
+	//if(lmplayer->plugins_manager_dialog)
+	//	gtk_widget_show_all(lmplayer->plugins_manager_dialog);
+}
+
 static void 
 about_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 {
@@ -1960,7 +2016,7 @@ about_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 				     "license", license,
 				     "wrap-license", TRUE,
 				     "website-label", _("Lmplayer Website"),
-				     "website", "http://linuxmediaplay.sf.net/",
+				     "website", "http://www.lmplayer.com/",
 				     NULL);
 
 	g_free (backend_version);
@@ -1994,6 +2050,7 @@ lmplayer_callback_connect(LmplayerObject *lmplayer)
 				G_CALLBACK(order_switch_button_clicked_cb), lmplayer);
 
 	g_signal_connect(G_OBJECT(lmplayer->about_button), "clicked", G_CALLBACK(about_button_clicked_cb), lmplayer);
+	g_signal_connect(G_OBJECT(lmplayer->plugin_button), "clicked", G_CALLBACK(plugin_button_clicked_cb), lmplayer);
 	g_signal_connect(G_OBJECT(lmplayer->prefs_button), "clicked", G_CALLBACK(prefs_button_clicked_cb), lmplayer);
 	g_signal_connect(G_OBJECT(lmplayer->win), "destroy", G_CALLBACK(main_window_destroy_cb), lmplayer);
 	
@@ -2347,21 +2404,21 @@ lmplayer_message_connection_receive_cb (const char *msg, LmplayerObject *lmp)
 
 
 static void
-lmplayer_action_remote (LmplayerObject *lmplayer, LmpRemoteCommand cmd, const char *url)
+lmplayer_action_remote (LmplayerObject *lmplayer, LmplayerRemoteCommand cmd, const char *url)
 {
 	gboolean handled = TRUE;
 
 	switch (cmd) {
-	case LMP_REMOTE_COMMAND_PLAY:
+	case LMPLAYER_REMOTE_COMMAND_PLAY:
 		lmplayer_action_play(lmplayer);
 		break;
-	case LMP_REMOTE_COMMAND_PLAYPAUSE:
+	case LMPLAYER_REMOTE_COMMAND_PLAYPAUSE:
 		lmplayer_action_play_pause(lmplayer);
 		break;
-	case LMP_REMOTE_COMMAND_PAUSE:
+	case LMPLAYER_REMOTE_COMMAND_PAUSE:
 		lmplayer_action_pause(lmplayer);
 		break;
-	case LMP_REMOTE_COMMAND_STOP:
+	case LMPLAYER_REMOTE_COMMAND_STOP:
 		{
 			char *mrl, *subtitle;
 			lmplayer_playlist_set_at_start(lmplayer->playlist);
@@ -2376,7 +2433,7 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmpRemoteCommand cmd, const ch
 				g_free(subtitle);
 			}
 		};
-	case LMP_REMOTE_COMMAND_SEEK_FORWARD:
+	case LMPLAYER_REMOTE_COMMAND_SEEK_FORWARD:
 		{
 			double offset = 0;
 
@@ -2388,7 +2445,7 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmpRemoteCommand cmd, const ch
 				lmplayer_action_seek_relative(lmplayer,  offset * 1000);
 			break;
 		}
-	case LMP_REMOTE_COMMAND_SEEK_BACKWARD:
+	case LMPLAYER_REMOTE_COMMAND_SEEK_BACKWARD:
 		{
 			double offset = 0;
 
@@ -2400,29 +2457,29 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmpRemoteCommand cmd, const ch
 				lmplayer_action_seek_relative(lmplayer,  - (offset * 1000));
 			break;
 		}
-	case LMP_REMOTE_COMMAND_VOLUME_UP:
+	case LMPLAYER_REMOTE_COMMAND_VOLUME_UP:
 		lmplayer_action_volume_relative(lmplayer, VOLUME_UP_OFFSET);
 		break;
-	case LMP_REMOTE_COMMAND_VOLUME_DOWN:
+	case LMPLAYER_REMOTE_COMMAND_VOLUME_DOWN:
 		lmplayer_action_volume_relative(lmplayer, VOLUME_DOWN_OFFSET);
 		break;
-	case LMP_REMOTE_COMMAND_NEXT:
+	case LMPLAYER_REMOTE_COMMAND_NEXT:
 		lmplayer_action_next(lmplayer);
 		break;
-	case LMP_REMOTE_COMMAND_PREVIOUS:
+	case LMPLAYER_REMOTE_COMMAND_PREVIOUS:
 		lmplayer_action_previous(lmplayer);
 		break;
-	case LMP_REMOTE_COMMAND_FULLSCREEN:
+	case LMPLAYER_REMOTE_COMMAND_FULLSCREEN:
 		g_print(_("Do nothing!\n"));
 		break;
-	case LMP_REMOTE_COMMAND_QUIT:
+	case LMPLAYER_REMOTE_COMMAND_QUIT:
 		lmplayer_action_exit(lmplayer);
 		break;
-	case LMP_REMOTE_COMMAND_ENQUEUE:
+	case LMPLAYER_REMOTE_COMMAND_ENQUEUE:
 		g_assert(url != NULL);
 		lmplayer_playlist_add_mrl_with_cursor(lmplayer->playlist, url, NULL);
 		break;
-	case LMP_REMOTE_COMMAND_REPLACE:
+	case LMPLAYER_REMOTE_COMMAND_REPLACE:
 		lmplayer_playlist_clear(lmplayer->playlist);
 		if(url == NULL)
 		{
@@ -2446,13 +2503,13 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmpRemoteCommand cmd, const ch
 		else
 			lmplayer_playlist_add_mrl_with_cursor(lmplayer->playlist, url, NULL);
 		break;
-	case LMP_REMOTE_COMMAND_SHOW:
+	case LMPLAYER_REMOTE_COMMAND_SHOW:
 		gtk_window_present(GTK_WINDOW(lmplayer->win));
 		break;
-	case LMP_REMOTE_COMMAND_TOGGLE_CONTROLS:
+	case LMPLAYER_REMOTE_COMMAND_TOGGLE_CONTROLS:
 		g_print(_("Do nothing!\n"));
 		break;
-	case LMP_REMOTE_COMMAND_SHOW_PLAYING:
+	case LMPLAYER_REMOTE_COMMAND_SHOW_PLAYING:
 		{
 			char *title;
 			gboolean custom;
@@ -2463,7 +2520,7 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmpRemoteCommand cmd, const ch
 			g_free (title);
 		}
 		break;
-	case LMP_REMOTE_COMMAND_SHOW_VOLUME:
+	case LMPLAYER_REMOTE_COMMAND_SHOW_VOLUME:
 		{
 			char *vol_str;
 			int vol;
@@ -2477,37 +2534,37 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmpRemoteCommand cmd, const ch
 			g_free (vol_str);
 		}
 		break;
-	case LMP_REMOTE_COMMAND_UP:
+	case LMPLAYER_REMOTE_COMMAND_UP:
 		g_print(_("Do nothing!\n"));
 		break;
-	case LMP_REMOTE_COMMAND_DOWN:
+	case LMPLAYER_REMOTE_COMMAND_DOWN:
 		g_print(_("Do nothing!\n"));
 		break;
-	case LMP_REMOTE_COMMAND_LEFT:
+	case LMPLAYER_REMOTE_COMMAND_LEFT:
 		g_print(_("Do nothing!\n"));
 		break;
-	case LMP_REMOTE_COMMAND_RIGHT:
+	case LMPLAYER_REMOTE_COMMAND_RIGHT:
 		g_print(_("Do nothing!\n"));
 		break;
-	case LMP_REMOTE_COMMAND_SELECT:
+	case LMPLAYER_REMOTE_COMMAND_SELECT:
 		g_print(_("Do nothing!\n"));
 		break;
-	case LMP_REMOTE_COMMAND_DVD_MENU:
+	case LMPLAYER_REMOTE_COMMAND_DVD_MENU:
 		g_print(_("Do nothing!\n"));
 		break;
-	case LMP_REMOTE_COMMAND_ZOOM_UP:
+	case LMPLAYER_REMOTE_COMMAND_ZOOM_UP:
 		g_print(_("Do nothing!\n"));
 		break;
-	case LMP_REMOTE_COMMAND_ZOOM_DOWN:
+	case LMPLAYER_REMOTE_COMMAND_ZOOM_DOWN:
 		g_print(_("Do nothing!\n"));
 		break;
-	case LMP_REMOTE_COMMAND_EJECT:
+	case LMPLAYER_REMOTE_COMMAND_EJECT:
 		g_print(_("Do nothing!\n"));
 		break;
-	case LMP_REMOTE_COMMAND_PLAY_DVD:
+	case LMPLAYER_REMOTE_COMMAND_PLAY_DVD:
 		g_print(_("Do nothing!\n"));
 		break;
-	case LMP_REMOTE_COMMAND_MUTE:
+	case LMPLAYER_REMOTE_COMMAND_MUTE:
 		lmplayer_action_volume_relative(lmplayer, -1.0);
 		break;
 	default:
@@ -2619,6 +2676,7 @@ main(int argc, char* argv[])
 	//lmplayer->order_model = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-order-mode");
 	lmplayer->order_switch_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-order-switch-button");
 	lmplayer->about_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-about-button");
+	lmplayer->plugin_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-plugin-button");
 	lmplayer->prefs_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-preference-button");
 	
 	lmplayer_search_view_setup(lmplayer);
@@ -2641,6 +2699,8 @@ main(int argc, char* argv[])
 	lmplayer_setup_toolbar(lmplayer);
 
 	lmplayer_options_process_late(lmplayer, &optionstate);
+
+	lmplayer_object_plugins_init(lmplayer);
 
 	if(optionstate.filenames != NULL && lmplayer_action_open_files(lmplayer, optionstate.filenames))
 	{

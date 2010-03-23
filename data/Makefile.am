@@ -20,6 +20,7 @@ stuff_DATA=\
 	lmplayer-default.ui\
 	lmplayer-classic.ui\
 	lmplayer-library-prefs.ui\
+	plugins.ui\
 	order.png\
 	order.svg\
 	playlist-view.png\
@@ -29,7 +30,8 @@ stuff_DATA=\
 	repeat.png\
 	repeat.svg\
 	search-view.png\
-	search-view.svg
+	search-view.svg \
+	plugins.png
 
 desktopdir=$(datadir)/applications
 desktop_in_files=lmplayer.desktop.in.in

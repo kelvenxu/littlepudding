@@ -59,6 +59,9 @@ AC_SUBST(LMPLAYER_PL_PARSER_VERSION_MAJOR)
 AC_SUBST(LMPLAYER_PL_PARSER_VERSION_MINOR)
 AC_SUBST(LMPLAYER_PL_PARSER_VERSION_MICRO)
 
+PLUGINDIR='${libdir}/lmplayer/plugins'
+AC_SUBST(PLUGINDIR)
+
 AC_ARG_ENABLE(nvtv, AC_HELP_STRING([--enable-nvtv],[Enable support for TV-output with nvtv]), enable_nvtv="$enableval", enable_nvtv=yes)
 
 if test x$enable_nvtv = xyes; then

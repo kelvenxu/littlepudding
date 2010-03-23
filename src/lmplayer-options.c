@@ -99,7 +99,7 @@ lmplayer_options_process_for_server (BaconMessageConnection *conn,
 	int default_action, i;
 
 	commands = NULL;
-	default_action = LMP_REMOTE_COMMAND_REPLACE;
+	default_action = LMPLAYER_REMOTE_COMMAND_REPLACE;
 
 	/* We can only handle "printplaying" on its own */
 	if (options->printplaying)
@@ -107,7 +107,7 @@ lmplayer_options_process_for_server (BaconMessageConnection *conn,
 		char *line;
 		GMainLoop *loop = g_main_loop_new (NULL, FALSE);
 
-		line = lmplayer_option_create_line (LMP_REMOTE_COMMAND_SHOW_PLAYING);
+		line = lmplayer_option_create_line (LMPLAYER_REMOTE_COMMAND_SHOW_PLAYING);
 		bacon_message_connection_set_callback (conn,
 				lmplayer_print_playing_cb, loop);
 		bacon_message_connection_send (conn, line);
@@ -120,7 +120,7 @@ lmplayer_options_process_for_server (BaconMessageConnection *conn,
 	/* Are we quitting ? */
 	if (options->quit) {
 		char *line;
-		line = lmplayer_option_create_line (LMP_REMOTE_COMMAND_QUIT);
+		line = lmplayer_option_create_line (LMPLAYER_REMOTE_COMMAND_QUIT);
 		bacon_message_connection_send (conn, line);
 		g_free (line);
 		return;
@@ -131,9 +131,9 @@ lmplayer_options_process_for_server (BaconMessageConnection *conn,
 		/* FIXME translate that */
 		g_warning ("Can't enqueue and replace at the same time");
 	} else if (options->replace) {
-		default_action = LMP_REMOTE_COMMAND_REPLACE;
+		default_action = LMPLAYER_REMOTE_COMMAND_REPLACE;
 	} else if (options->enqueue) {
-		default_action = LMP_REMOTE_COMMAND_ENQUEUE;
+		default_action = LMPLAYER_REMOTE_COMMAND_ENQUEUE;
 	}
 
 	/* Send the files to enqueue */
@@ -146,60 +146,60 @@ lmplayer_options_process_for_server (BaconMessageConnection *conn,
 		bacon_message_connection_send (conn, line);
 		/* Even if the default action is replace, we only want to replace with the
 		   first file.  After that, we enqueue. */
-		default_action = LMP_REMOTE_COMMAND_ENQUEUE;
+		default_action = LMPLAYER_REMOTE_COMMAND_ENQUEUE;
 		g_free (line);
 		g_free (full_path);
 	}
 
 	if (options->playpause) {
 		commands = g_list_append (commands, lmplayer_option_create_line
-					  (LMP_REMOTE_COMMAND_PLAYPAUSE));
+					  (LMPLAYER_REMOTE_COMMAND_PLAYPAUSE));
 	}
 
 	if (options->play) {
 		commands = g_list_append (commands, lmplayer_option_create_line
-					  (LMP_REMOTE_COMMAND_PLAY));
+					  (LMPLAYER_REMOTE_COMMAND_PLAY));
 	}
 
 	if (options->pause) {
 		commands = g_list_append (commands, lmplayer_option_create_line
-					  (LMP_REMOTE_COMMAND_PAUSE));
+					  (LMPLAYER_REMOTE_COMMAND_PAUSE));
 	}
 
 	if (options->next) {
 		commands = g_list_append (commands, lmplayer_option_create_line
-					  (LMP_REMOTE_COMMAND_NEXT));
+					  (LMPLAYER_REMOTE_COMMAND_NEXT));
 	}
 
 	if (options->previous) {
 		commands = g_list_append (commands, lmplayer_option_create_line
-					  (LMP_REMOTE_COMMAND_PREVIOUS));
+					  (LMPLAYER_REMOTE_COMMAND_PREVIOUS));
 	}
 
 	if (options->seekfwd) {
 		commands = g_list_append (commands, lmplayer_option_create_line
-					  (LMP_REMOTE_COMMAND_SEEK_FORWARD));
+					  (LMPLAYER_REMOTE_COMMAND_SEEK_FORWARD));
 	}
 
 	if (options->seekbwd) {
 		commands = g_list_append (commands, lmplayer_option_create_line
-					  (LMP_REMOTE_COMMAND_SEEK_BACKWARD));
+					  (LMPLAYER_REMOTE_COMMAND_SEEK_BACKWARD));
 	}
 
 	if (options->volumeup) {
 		commands = g_list_append (commands, lmplayer_option_create_line
-					  (LMP_REMOTE_COMMAND_VOLUME_UP));
+					  (LMPLAYER_REMOTE_COMMAND_VOLUME_UP));
 	}
 
 	if (options->volumedown) {
 		commands = g_list_append (commands, lmplayer_option_create_line
-					  (LMP_REMOTE_COMMAND_VOLUME_DOWN));
+					  (LMPLAYER_REMOTE_COMMAND_VOLUME_DOWN));
 	}
 
 	/* No commands, no files, show ourselves */
 	if (commands == NULL && options->filenames == NULL) {
 		char *line;
-		line = lmplayer_option_create_line (LMP_REMOTE_COMMAND_SHOW);
+		line = lmplayer_option_create_line (LMPLAYER_REMOTE_COMMAND_SHOW);
 		bacon_message_connection_send (conn, line);
 		g_free (line);
 		return;
