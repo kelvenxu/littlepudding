@@ -561,6 +561,7 @@ data/icons/hicolor/48x48/apps/Makefile
 data/icons/hicolor/scalable/Makefile
 data/icons/hicolor/scalable/apps/Makefile
 plugins/Makefile
+plugins/lmplayer/Makefile
 plugins/rereading/Makefile
 bindings/Makefile
 bindings/python/Makefile

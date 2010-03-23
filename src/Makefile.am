@@ -111,7 +111,8 @@ lmplayer_LDFLAGS = \
 lmplayer_LDADD =						\
 	backend/libbaconvideowidget.la			\
 	libbaconmessageconnection.la			\
-	$(top_srcdir)/liblmplayer-plugin/liblmplayermodule.la \
+	$(top_builddir)/liblmplayer-plugin/liblmplayermodule.la \
+	$(top_builddir)/bindings/python/lmplayer-python.la \
 	$(EXTRA_GNOME_LIBS)				\
 	$(XVIDMODE_LIBS)				\
 	$(NVTV_LIBS)					\
