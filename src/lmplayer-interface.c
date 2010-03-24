@@ -38,7 +38,7 @@
 #include <gconf/gconf-client.h>
 
 #include "lmplayer-interface.h"
-#include "lmplayer-object.h"
+#include "lmplayer-private.h"
 
 static GtkWidget *
 lmplayer_interface_error_dialog (const char *title, const char *reason,

@@ -23,7 +23,7 @@
 #ifndef _LMPLAYER_URI_H_
 #define _LMPLAYER_URI_H_
 
-#include "lmplayer-object.h"
+#include "lmplayer.h"
 
 G_BEGIN_DECLS
 

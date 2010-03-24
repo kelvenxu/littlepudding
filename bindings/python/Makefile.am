@@ -34,9 +34,7 @@ lmplayer.c: lmplayer.defs lmplayer.override
 		--prefix py$* $(<F) ) > $@ 
 
 BINDING_HEADERS_SRCDIR_IN = \
-	src/lmplayer-object.h				\
 	src/lmplayer.h				\
-	src/lmplayer-remote-command.h				\
 	liblmplayer-plugin/lmplayer-plugin.h		\
 	$(NULL)
 

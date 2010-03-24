@@ -483,6 +483,8 @@ GNOME_COMPILE_WARNINGS([maximum])
 GNOME_CXX_WARNINGS
 GNOME_MAINTAINER_MODE_DEFINES
 
+GTK_DOC_CHECK(1.11)
+
 # This macro expands DIR and assigns it to RET.
 # If DIR is NONE, then it's replaced by DEFAULT.
 # Based on AC_DEFINE_DIR
@@ -541,6 +543,7 @@ AC_SUBST([AM_CFLAGS])
 AC_SUBST([AM_CXXFLAGS])
 AC_SUBST([AM_LDFLAGS])
 
+
 AC_OUTPUT([
 Makefile
 src/backend/Makefile
@@ -570,6 +573,9 @@ bindings/Makefile
 bindings/python/Makefile
 tests/Makefile
 po/Makefile.in
+docs/Makefile
+docs/reference/Makefile
+docs/reference/version.xml
 ])
 
 AC_MSG_NOTICE([Lmplayer was configured with the following options:])

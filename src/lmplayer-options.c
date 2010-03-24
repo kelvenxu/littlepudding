@@ -29,6 +29,7 @@
 #include "lmplayer-options.h"
 #include "lmplayer-uri.h"
 #include "lmplayer-debug.h"
+#include "lmplayer-private.h"
 
 LmpCmdLineOptions optionstate;	/* Decoded command line options */
 

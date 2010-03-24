@@ -25,7 +25,7 @@
 #ifndef __LMPLAYER_MENU_H__
 #define __LMPLAYER_MENU_H__  1
 
-#include "lmplayer-object.h"
+#include "lmplayer-private.h"
 
 void lmplayer_ui_manager_setup (LmplayerObject *lmplayer);
 void lmplayer_setup_toolbar(LmplayerObject *lmplayer);

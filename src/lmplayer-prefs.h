@@ -25,7 +25,7 @@
 #ifndef __LMPLAYER_PREFS_H__
 #define __LMPLAYER_PREFS_H__  1
 
-#include "lmplayer-object.h"
+#include "lmplayer-private.h"
 
 void lmplayer_setup_prefs(LmplayerObject *lmplayer);
 void lmplayer_prefs_show(LmplayerObject *lmplayer);

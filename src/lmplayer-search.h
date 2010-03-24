@@ -25,7 +25,7 @@
 #ifndef __LMPLAYER_SEARCH_H__
 #define __LMPLAYER_SEARCH_H__  1
 
-#include "lmplayer-object.h"
+#include "lmplayer-private.h"
 
 void lmplayer_search_view_setup(LmplayerObject *lmplayer);
 void lmplayer_search_init(LmplayerObject *lmplayer);

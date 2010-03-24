@@ -18,6 +18,45 @@
   )
 )
 
+(define-enum RemoteCommand
+  (in-module "Lmplayer")
+  (c-name "LmplayerRemoteCommand")
+  (gtype-id "LMPLAYER_TYPE_REMOTE_COMMAND")
+  (values
+    '("unknown" "LMPLAYER_REMOTE_COMMAND_UNKNOWN")
+    '("play" "LMPLAYER_REMOTE_COMMAND_PLAY")
+    '("pause" "LMPLAYER_REMOTE_COMMAND_PAUSE")
+    '("stop" "LMPLAYER_REMOTE_COMMAND_STOP")
+    '("playpause" "LMPLAYER_REMOTE_COMMAND_PLAYPAUSE")
+    '("next" "LMPLAYER_REMOTE_COMMAND_NEXT")
+    '("previous" "LMPLAYER_REMOTE_COMMAND_PREVIOUS")
+    '("seek-forward" "LMPLAYER_REMOTE_COMMAND_SEEK_FORWARD")
+    '("seek-backward" "LMPLAYER_REMOTE_COMMAND_SEEK_BACKWARD")
+    '("volume-up" "LMPLAYER_REMOTE_COMMAND_VOLUME_UP")
+    '("volume-down" "LMPLAYER_REMOTE_COMMAND_VOLUME_DOWN")
+    '("fullscreen" "LMPLAYER_REMOTE_COMMAND_FULLSCREEN")
+    '("quit" "LMPLAYER_REMOTE_COMMAND_QUIT")
+    '("enqueue" "LMPLAYER_REMOTE_COMMAND_ENQUEUE")
+    '("replace" "LMPLAYER_REMOTE_COMMAND_REPLACE")
+    '("show" "LMPLAYER_REMOTE_COMMAND_SHOW")
+    '("toggle-controls" "LMPLAYER_REMOTE_COMMAND_TOGGLE_CONTROLS")
+    '("show-playing" "LMPLAYER_REMOTE_COMMAND_SHOW_PLAYING")
+    '("show-volume" "LMPLAYER_REMOTE_COMMAND_SHOW_VOLUME")
+    '("up" "LMPLAYER_REMOTE_COMMAND_UP")
+    '("down" "LMPLAYER_REMOTE_COMMAND_DOWN")
+    '("left" "LMPLAYER_REMOTE_COMMAND_LEFT")
+    '("right" "LMPLAYER_REMOTE_COMMAND_RIGHT")
+    '("select" "LMPLAYER_REMOTE_COMMAND_SELECT")
+    '("dvd-menu" "LMPLAYER_REMOTE_COMMAND_DVD_MENU")
+    '("zoom-up" "LMPLAYER_REMOTE_COMMAND_ZOOM_UP")
+    '("zoom-down" "LMPLAYER_REMOTE_COMMAND_ZOOM_DOWN")
+    '("eject" "LMPLAYER_REMOTE_COMMAND_EJECT")
+    '("play-dvd" "LMPLAYER_REMOTE_COMMAND_PLAY_DVD")
+    '("mute" "LMPLAYER_REMOTE_COMMAND_MUTE")
+    '("toggle-aspect" "LMPLAYER_REMOTE_COMMAND_TOGGLE_ASPECT")
+  )
+)
+
 
 ;; From lmplayer-plugin.h
 
@@ -96,6 +135,91 @@
 
 
 ;; From lmplayer.h
+
+(define-function lmplayer_remote_command_get_type
+  (c-name "lmplayer_remote_command_get_type")
+  (return-type "GType")
+)
+
+(define-function lmplayer_remote_command_quark
+  (c-name "lmplayer_remote_command_quark")
+  (return-type "GQuark")
+)
+
+(define-function lmplayer_object_get_type
+  (c-name "lmplayer_object_get_type")
+  (return-type "GType")
+  (parameters
+  )
+)
+
+(define-function lmplayer_object_new
+  (c-name "lmplayer_object_new")
+  (is-constructor-of "LmplayerObject")
+  (return-type "LmplayerObject*")
+  (parameters
+  )
+)
+
+(define-function lmplayer_file_opened
+  (c-name "lmplayer_file_opened")
+  (return-type "none")
+  (parameters
+    '("LmplayerObject*" "lmplayer")
+    '("const-char*" "mrl")
+  )
+)
+
+(define-function lmplayer_file_closed
+  (c-name "lmplayer_file_closed")
+  (return-type "none")
+  (parameters
+    '("LmplayerObject*" "lmplayer")
+  )
+)
+
+(define-function lmplayer_metadata_updated
+  (c-name "lmplayer_metadata_updated")
+  (return-type "none")
+  (parameters
+    '("LmplayerObject*" "lmplayer")
+    '("const-char*" "artist")
+    '("const-char*" "title")
+    '("const-char*" "album")
+  )
+)
+
+(define-function lmplayer_is_fullscreen
+  (c-name "lmplayer_is_fullscreen")
+  (return-type "gboolean")
+  (parameters
+    '("LmplayerObject*" "lmplayer")
+  )
+)
+
+(define-function lmplayer_is_playing
+  (c-name "lmplayer_is_playing")
+  (return-type "gboolean")
+  (parameters
+    '("LmplayerObject*" "lmplayer")
+  )
+)
+
+(define-function lmplayer_is_paused
+  (c-name "lmplayer_is_paused")
+  (return-type "gboolean")
+  (parameters
+    '("LmplayerObject*" "lmplayer")
+  )
+)
+
+(define-function lmplayer_is_seekable
+  (c-name "lmplayer_is_seekable")
+  (return-type "gboolean")
+  (parameters
+    '("LmplayerObject*" "lmplayer")
+  )
+)
 
 (define-function lmplayer_action_play
   (c-name "lmplayer_action_play")
@@ -197,14 +321,6 @@
   )
 )
 
-(define-function lmplayer_action_play_pause
-  (c-name "lmplayer_action_play_pause")
-  (return-type "none")
-  (parameters
-    '("LmplayerObject*" "lmplayer")
-  )
-)
-
 (define-function lmplayer_action_previous
   (c-name "lmplayer_action_previous")
   (return-type "none")
@@ -289,6 +405,65 @@
 (define-function lmplayer_object_plugins_shutdown
   (c-name "lmplayer_object_plugins_shutdown")
   (return-type "none")
+)
+
+(define-function lmplayer_add_tools_button
+  (c-name "lmplayer_add_tools_button")
+  (return-type "none")
+  (parameters
+    '("LmplayerObject*" "lmplayer")
+    '("GtkWidget*" "button")
+    '("const-char*" "id")
+  )
+)
+
+(define-function lmplayer_remove_tools_button
+  (c-name "lmplayer_remove_tools_button")
+  (return-type "none")
+  (parameters
+    '("LmplayerObject*" "lmplayer")
+    '("const-char*" "id")
+  )
+)
+
+(define-function lmplayer_get_main_window
+  (c-name "lmplayer_get_main_window")
+  (return-type "GtkWindow*")
+  (parameters
+    '("LmplayerObject*" "lmplayer")
+  )
+)
+
+(define-function lmplayer_get_ui_manager
+  (c-name "lmplayer_get_ui_manager")
+  (return-type "GtkUIManager*")
+  (parameters
+    '("LmplayerObject*" "lmplayer")
+  )
+)
+
+(define-function lmplayer_get_video_widget
+  (c-name "lmplayer_get_video_widget")
+  (return-type "GtkWidget*")
+  (parameters
+    '("LmplayerObject*" "lmplayer")
+  )
+)
+
+(define-function lmplayer_get_video_widget_backend_name
+  (c-name "lmplayer_get_video_widget_backend_name")
+  (return-type "char*")
+  (parameters
+    '("LmplayerObject*" "lmplayer")
+  )
+)
+
+(define-function lmplayer_get_current_time
+  (c-name "lmplayer_get_current_time")
+  (return-type "gint64")
+  (parameters
+    '("LmplayerObject*" "lmplayer")
+  )
 )
 
 

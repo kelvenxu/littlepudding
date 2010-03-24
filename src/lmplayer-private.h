@@ -1,10 +1,10 @@
 /* vi: set sw=4 ts=4: */
 /*
- * lmplayer-object.h
+ * lmplayer-private.h
  *
  * This file is part of lmplayer.
  *
- * Copyright (C) 2008 - kelvenxu <kelvenxu@gmail.com>.
+ * Copyright (C) 2010 - kelvenxu <kelvenxu@gmail.com>.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,45 +22,21 @@
  * Boston, MA 02111-1307, USA.
  * */
 
-#ifndef __LMPLAYER_OBJECT_H__
-#define __LMPLAYER_OBJECT_H__  1
+#ifndef __LMPLAYER_PRIVATE_H__
+#define __LMPLAYER_PRIVATE_H__  1
 
 #include <glib-object.h>
-#include <gio/gio.h>
+#include <glib.h>
 #include <gconf/gconf-client.h>
 #include <gtk/gtk.h>
-//#include <libskin/skin.h>
 
 #include "bacon-message-connection.h"
-#include <totem-pl-parser.h>
 #include "bacon-video-widget.h"
-#include "lmplayer-notebook.h"
 #include "lmplayer-playlist.h"
 #include "lmplayer-open-location.h"
+#include "lmplayer.h"
 
 G_BEGIN_DECLS
-
-#define SEEK_FORWARD_OFFSET 60
-#define SEEK_BACKWARD_OFFSET -15
-
-#define VOLUME_DOWN_OFFSET (-0.08)
-#define VOLUME_UP_OFFSET (0.08)
-
-#define ZOOM_IN_OFFSET 1
-#define ZOOM_OUT_OFFSET -1
-
-
-#define LMPLAYER_TYPE_OBJECT (lmplayer_object_get_type ())
-#define LMPLAYER_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), LMPLAYER_TYPE_OBJECT, LmplayerObject))
-#define LMPLAYER_OBJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), LMPLAYER_TYPE_OBJECT, LmplayerObjectClass))
-#define LMPLAYER_IS_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), LMPLAYER_TYPE_OBJECT))
-#define LMPLAYER_IS_OBJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), LMPLAYER_TYPE_OBJECT))
-#define LMPLAYER_OBJECT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), LMPLAYER_TYPE_OBJECT, LmplayerObjectClass))
-
-typedef struct _LmplayerObject			LmplayerObject;
-typedef struct _LmplayerObject			Lmplayer;
-typedef struct _LmplayerObjectClass		LmplayerObjectClass;
-typedef struct _LmplayerObjectPrivate	LmplayerObjectPrivate;
 
 typedef enum
 {
@@ -116,7 +92,7 @@ struct _LmplayerObject
 
 	//SkinLyric *lyricview;
 
-	LmplayerNotebook *notebook;
+	//LmplayerNotebook *notebook;
 	BaconVideoWidget *bvw;
 	GtkWidget *statusbar;
 
@@ -186,39 +162,18 @@ struct _LmplayerObject
 	//gchar *monitor_path;
 };
 
-struct _LmplayerObjectClass
-{
-	GObjectClass parent;
+#define SEEK_FORWARD_OFFSET 60
+#define SEEK_BACKWARD_OFFSET -15
 
-	void (*file_opened)			(LmplayerObject *lmplayer, const char *mrl);
-	void (*file_closed)			(LmplayerObject *lmplayer);
-	void (*metadata_updated)		(LmplayerObject *lmplayer,
-						 const char *artist,
-						 const char *title,
-						 const char *album);
-};
+#define VOLUME_DOWN_OFFSET (-0.08)
+#define VOLUME_UP_OFFSET (0.08)
 
-
-GType lmplayer_object_get_type();
-
-LmplayerObject* lmplayer_object_new();
+#define ZOOM_IN_OFFSET 1
+#define ZOOM_OUT_OFFSET -1
 
 void lmplayer_action_open(LmplayerObject *lmplayer);
 void lmplayer_action_open_location(LmplayerObject *lmplayer);
 
-void lmplayer_file_opened (LmplayerObject *lmplayer, const char *mrl);
-void lmplayer_file_closed (LmplayerObject *lmplayer);
-void lmplayer_metadata_updated (LmplayerObject *lmplayer,
-			const char *artist,
-			const char *title,
-			const char *album);
-void lmplayer_metadata_updated (LmplayerObject *lmplayer, const char *artist, const char *title, const char *album);
-
-gboolean lmplayer_is_fullscreen(LmplayerObject *lmplayer);
-gboolean lmplayer_is_playing (LmplayerObject *lmplayer);
-gboolean lmplayer_is_paused (LmplayerObject *lmplayer);
-gboolean lmplayer_is_seekable (LmplayerObject *lmplayer);
-
-
 G_END_DECLS
-#endif /*__LMPLAYER_OBJECT_H__ */
+
+#endif /*__LMPLAYER_PRIVATE_H__ */

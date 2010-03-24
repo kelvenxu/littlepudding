@@ -25,7 +25,7 @@
 
 #include "bacon-message-connection.h"
 #include "lmplayer-remote-command.h"
-#include "lmplayer-object.h"
+#include "lmplayer.h"
 
 G_BEGIN_DECLS
 

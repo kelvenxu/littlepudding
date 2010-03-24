@@ -25,7 +25,7 @@
 #ifndef __LMPLAYER_CONFIG_H__
 #define __LMPLAYER_CONFIG_H__  1
 
-#include "lmplayer-object.h"
+#include "lmplayer-private.h"
 
 //int lmplayer_load_config(LmplayerObject *lmplayer);
 

@@ -35,7 +35,7 @@
 
 #include "lmplayer-mime-types.h"
 #include "lmplayer-uri.h"
-#include "lmplayer-object.h"
+#include "lmplayer-private.h"
 
 static GtkFileFilter *filter_all = NULL;
 static GtkFileFilter *filter_subs = NULL;

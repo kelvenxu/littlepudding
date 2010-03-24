@@ -25,7 +25,7 @@
 #ifndef __LMPLAYER_MAGNETIC_H__
 #define __LMPLAYER_MAGNETIC_H__  1
 
-#include "lmplayer-object.h"
+#include "lmplayer-private.h"
 
 void lmplayer_magnetic_activate(LmplayerObject *lmplayer);
 
