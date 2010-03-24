@@ -28,6 +28,7 @@
 #include <gmodule.h>
 #include <gtk/gtk.h>
 
+#include "lmplayer.h"
 #include "lmplayer-plugin.h"
 
 #define LMPLAYER_TYPE_REREADING_PLUGIN	(lmplayer_rereading_plugin_get_type())
@@ -40,6 +41,10 @@
 typedef struct 
 {
 	LmplayerPlugin parent;
+
+	Lmplayer *lmplayer;
+	GtkWidget *dialog;
+
 	/* plugin object members */
 } LmplayerRereadingPlugin;
 
@@ -75,10 +80,40 @@ lmplayer_rereading_plugin_init(LmplayerRereadingPlugin *plugin)
 	 */
 }
 
+static void
+active_button_clicked_cb(GtkButton *button, LmplayerRereadingPlugin *self)
+{
+	gtk_widget_show(self->dialog);
+}
+
 static gboolean
 impl_activate (LmplayerPlugin *plugin, LmplayerObject *lmplayer, GError **error)
 {
 	LmplayerRereadingPlugin *self = LMPLAYER_REREADING_PLUGIN (plugin);
+
+	GtkBuilder *builder;
+	//GtkWidget *dialog;
+	//GtkWidget *start_button;
+	//GtkWidget *end_button;
+	//GtkWidget *stop_button;
+	//GtkWidget *quit_button;
+
+	self->lmplayer = g_object_ref(lmplayer);
+
+	GtkWindow *main_window = lmplayer_get_main_window(lmplayer);
+	builder = lmplayer_plugin_load_interface(plugin, "rereading.ui", TRUE, main_window, self);
+	g_object_unref(main_window);
+
+	self->dialog = GTK_WIDGET(gtk_builder_get_object(builder, "rereading-window"));
+
+	g_signal_connect(G_OBJECT(self->dialog), "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+	g_signal_connect(G_OBJECT(self->dialog), "destroy", G_CALLBACK(gtk_widget_destroyed), &self->dialog);
+
+	GtkWidget *active_button = gtk_button_new_with_label("Rereading");
+
+	g_signal_connect(active_button, "clicked", G_CALLBACK(active_button_clicked_cb), self);
+
+	lmplayer_add_tools_button(lmplayer, active_button, "rereading");
 
 	/* Initialise resources, connect to events, create menu items and UI, etc., here.
 	 * Note that impl_activate and impl_deactivate can be called multiple times in one
@@ -93,6 +128,8 @@ static void
 impl_deactivate	(LmplayerPlugin *plugin, LmplayerObject *lmplayer)
 {
 	LmplayerRereadingPlugin *self = LMPLAYER_REREADING_PLUGIN (plugin);
+
+	g_object_unref(self->lmplayer);
 
 	/* Destroy resources created in impl_activate here. e.g. Disconnect from signals
 	 * and remove menu entries and UI. */

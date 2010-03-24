@@ -36,7 +36,10 @@ librereading_la_CFLAGS = \
 	-I$(top_srcdir)/src/backend	\
 	-I$(top_srcdir)/liblmplayer-plugin 
 
-EXTRA_DIST = $(plugin_in_files) $(config_DATA)
+uidir = $(plugindir)
+ui_DATA = rereading.ui
+
+EXTRA_DIST = $(plugin_in_files) $(config_DATA) $(ui_DATA)
 
 CLEANFILES = $(plugin_DATA) $(BUILT_SOURCES)
 DISTCLEANFILES = $(plugin_DATA)

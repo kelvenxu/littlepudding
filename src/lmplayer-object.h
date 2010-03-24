@@ -214,11 +214,6 @@ void lmplayer_metadata_updated (LmplayerObject *lmplayer,
 			const char *album);
 void lmplayer_metadata_updated (LmplayerObject *lmplayer, const char *artist, const char *title, const char *album);
 
-GtkWindow *lmplayer_get_main_window(LmplayerObject *lmplayer);
-GtkUIManager *lmplayer_get_ui_manager(LmplayerObject *lmplayer);
-GtkWidget *lmplayer_get_video_widget(LmplayerObject *lmplayer);
-char *lmplayer_get_video_widget_backend_name(LmplayerObject *lmplayer);
-gint64 lmplayer_get_current_time(LmplayerObject *lmplayer);
 gboolean lmplayer_is_fullscreen(LmplayerObject *lmplayer);
 gboolean lmplayer_is_playing (LmplayerObject *lmplayer);
 gboolean lmplayer_is_paused (LmplayerObject *lmplayer);

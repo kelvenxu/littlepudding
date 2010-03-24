@@ -2678,6 +2678,7 @@ main(int argc, char* argv[])
 	lmplayer->about_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-about-button");
 	lmplayer->plugin_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-plugin-button");
 	lmplayer->prefs_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-preference-button");
+	lmplayer->plugins_box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-plugins-box");
 	
 	lmplayer_search_view_setup(lmplayer);
 

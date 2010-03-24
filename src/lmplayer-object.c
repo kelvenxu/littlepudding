@@ -225,6 +225,28 @@ lmplayer_object_plugins_shutdown(void)
 	lmplayer_plugins_engine_shutdown ();
 }
 
+void
+lmplayer_add_tools_button(LmplayerObject *lmplayer, GtkWidget *button, const char *id)
+{
+	g_return_if_fail(lmplayer);
+
+	gtk_box_pack_start(GTK_BOX(lmplayer->plugins_box), button, FALSE, FALSE, 0);
+	g_object_set(lmplayer->plugins_box, id, button, NULL);
+}
+
+void 
+lmplayer_remove_tools_button(LmplayerObject *lmplayer, const char *id)
+{
+	GtkWidget *widget;
+
+	g_return_if_fail(lmplayer);
+
+	g_object_get(lmplayer->plugins_box, id, &widget, NULL);
+
+	if(widget)
+		gtk_container_remove(GTK_CONTAINER(lmplayer->plugins_box), widget);
+}
+
 LmplayerObject* lmplayer_object_new()
 {
 	return g_object_new(LMPLAYER_TYPE_OBJECT, NULL);
