@@ -1,0 +1,4 @@
+lmplayer_object_get_type
+lmplayer_notebook_get_type
+lmplayer_remote_command_get_type
+bacon_video_widget_get_type
