@@ -265,7 +265,6 @@ LmplayerObject*
 lmplayer_object_new()
 {
 	return g_object_new(LMPLAYER_TYPE_OBJECT, NULL);
-	//return g_new0(LmplayerObject, 1);
 }
 
 void
@@ -348,9 +347,6 @@ lmplayer_get_current_time(LmplayerObject *lmplayer)
 gboolean
 lmplayer_is_fullscreen(LmplayerObject *lmplayer)
 {
-	//g_return_val_if_fail(LMPLAYER_IS_OBJECT(lmplayer), FALSE);
-
-	//return (lmplayer->controls_visibility == LMPLAYER_CONTROLS_FULLSCREEN);
 	return FALSE;
 }
 
@@ -430,8 +426,6 @@ static void
 play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 {
 	GtkWidget *play;
-
-	lmplayer_debug("state: %d", state);
 
 	play = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-play");
 
@@ -889,29 +883,6 @@ lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
 
 		play_pause_set_label (lmplayer, LMPLAYER_PLAYLIST_STATUS_NONE);
 
-		/* Play/Pause */
-		//lmplayer_action_set_sensitivity ("play", FALSE);
-
-		/* Volume */
-		//lmplayer_main_set_sensitivity ("tmw_volume_button", FALSE);
-		//lmplayer_action_set_sensitivity ("volume-up", FALSE);
-		//lmplayer_action_set_sensitivity ("volume-down", FALSE);
-		//lmplayer->volume_sensitive = FALSE;
-
-		/* Control popup */
-		//lmplayer_fullscreen_set_can_set_volume (lmplayer->fs, FALSE);
-		//lmplayer_fullscreen_set_seekable (lmplayer->fs, FALSE);
-		//lmplayer_action_set_sensitivity ("next-chapter", FALSE);
-		//lmplayer_action_set_sensitivity ("previous-chapter", FALSE);
-
-		/* Take a screenshot */
-		//lmplayer_action_set_sensitivity ("take-screenshot", FALSE);
-
-		/* Clear the playlist */
-		//lmplayer_action_set_sensitivity ("clear-playlist", FALSE);
-
-		/* Set the logo */
-		//bacon_video_widget_set_logo_mode (lmplayer->bvw, TRUE);
 		update_mrl_label (lmplayer, NULL);
 	} 
 	else 
@@ -920,8 +891,6 @@ lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
 		gdouble volume;
 		char *autoload_sub = NULL;
 		GError *err = NULL;
-
-		//bacon_video_widget_set_logo_mode (lmplayer->bvw, FALSE);
 
 		if (subtitle == NULL && lmplayer->autoload_subs != FALSE)
 			autoload_sub = lmplayer_uri_get_subtitle_uri (mrl);
@@ -934,34 +903,17 @@ lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
 		gdk_window_set_cursor (GTK_WIDGET(lmplayer->win)->window, NULL);
 		lmplayer->mrl = g_strdup (mrl);
 
-		/* Play/Pause */
-		//lmplayer_action_set_sensitivity ("play", TRUE);
-
 		/* Volume */
 		caps = bacon_video_widget_can_set_volume (lmplayer->bvw);
-		//lmplayer_main_set_sensitivity ("tmw_volume_button", caps);
-		//lmplayer_fullscreen_set_can_set_volume (lmplayer->fs, caps);
 		volume = bacon_video_widget_get_volume (lmplayer->bvw);
-		//lmplayer_action_set_sensitivity ("volume-up", caps && volume < (1.0 - VOLUME_EPSILON));
-		//lmplayer_action_set_sensitivity ("volume-down", caps && volume > VOLUME_EPSILON);
-		//lmplayer->volume_sensitive = caps;
-
-		/* Take a screenshot */
-		//lmplayer_action_set_sensitivity ("take-screenshot", retval);
-
-		/* Clear the playlist */
-		//lmplayer_action_set_sensitivity ("clear-playlist", retval);
 
 		/* Set the playlist */
 		play_pause_set_label(lmplayer, retval ? STATE_PAUSED : STATE_STOPPED);
 
-		lmplayer_debug(" ");
 		if (retval == FALSE && warn != FALSE)
 		{
 			char *msg, *disp;
 
-			lmplayer_debug(" ");
-			lmplayer_debug(" ");
 			disp = lmplayer_uri_escape_for_display (lmplayer->mrl);
 			msg = g_strdup_printf(_("Lmplayer could not play '%s'."), disp);
 			g_free (disp);
@@ -983,17 +935,13 @@ lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
 				g_error_free (err);
 			g_free (lmplayer->mrl);
 			lmplayer->mrl = NULL;
-			//bacon_video_widget_set_logo_mode (lmplayer->bvw, TRUE);
 		} 
 		else 
 		{
-			lmplayer_debug(" ");
 			lmplayer_file_opened (lmplayer, lmplayer->mrl);
-			lmplayer_debug(" ");
 		}
 	}
 	update_buttons (lmplayer);
-	//update_media_menu_items (lmplayer);
 
 	return retval;
 }
@@ -1117,8 +1065,6 @@ lmplayer_action_set_mrl_and_play (LmplayerObject *lmplayer, const char *mrl, con
 	if(lmplayer_action_set_mrl(lmplayer, mrl, subtitle) != FALSE)
 		lmplayer_action_play(lmplayer);
 }
-
-
 
 void
 lmplayer_action_play_media (LmplayerObject *lmplayer, TotemDiscMediaType type, const char *device)
@@ -1255,7 +1201,6 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	if(lmplayer->conn != NULL)
 		bacon_message_connection_free(lmplayer->conn);
 
-	//lmplayer_sublang_exit (lmplayer);
 	lmplayer_destroy_file_filters();
 
 	lmplayer_object_plugins_shutdown();
@@ -1296,8 +1241,8 @@ lmplayer_seek_time_rel(LmplayerObject *lmplayer, gint64 time, gboolean relative)
 	if (bacon_video_widget_is_seekable (lmplayer->bvw) == FALSE)
 		return;
 
-	//totem_statusbar_set_seeking (TOTEM_STATUSBAR (totem->statusbar), TRUE);
-	//totem_time_label_set_seeking (TOTEM_TIME_LABEL (totem->fs->time_label), TRUE);
+	//lmplayer_statusbar_set_seeking (TOTEM_STATUSBAR (totem->statusbar), TRUE);
+	//lmplayer_time_label_set_seeking (TOTEM_TIME_LABEL (totem->fs->time_label), TRUE);
 
 	if (relative != FALSE) {
 		gint64 oldmsec;
@@ -1309,8 +1254,8 @@ lmplayer_seek_time_rel(LmplayerObject *lmplayer, gint64 time, gboolean relative)
 
 	bacon_video_widget_seek_time (lmplayer->bvw, sec, &err);
 
-	//totem_statusbar_set_seeking (TOTEM_STATUSBAR (totem->statusbar), FALSE);
-	//totem_time_label_set_seeking (TOTEM_TIME_LABEL (totem->fs->time_label), FALSE);
+	//lmplayer_statusbar_set_seeking (TOTEM_STATUSBAR (totem->statusbar), FALSE);
+	//lmplayer_time_label_set_seeking (TOTEM_TIME_LABEL (totem->fs->time_label), FALSE);
 
 	if (err != NULL)
 	{
@@ -1377,7 +1322,6 @@ void lmplayer_action_error_and_exit(const char *title, const char *reason, Lmpla
 	lmplayer_action_stop (lmplayer);
 	lmplayer_action_exit (lmplayer);
 }
-
 
 GQuark
 lmplayer_remote_command_quark (void)
@@ -1766,7 +1710,6 @@ on_eos_event (GtkWidget *widget, LmplayerObject *lmplayer)
 
 	if(lmplayer->repeat_one)
 	{
-		//lmplayer_action_previous(lmplayer);
 		lmplayer_action_stop(lmplayer);
 		lmplayer_action_play(lmplayer);
 		return FALSE;
@@ -1962,8 +1905,6 @@ video_widget_create (LmplayerObject *lmplayer)
 	bvw = &(lmplayer->bvw);
 	g_object_add_weak_pointer(G_OBJECT(lmplayer->bvw), (gpointer *)bvw);
 
-	lmplayer_debug("realize bvw");
-	//gtk_widget_realize(GTK_WIDGET(lmplayer->bvw));
 	gtk_widget_show(GTK_WIDGET(lmplayer->bvw));
 
 	//bacon_video_widget_set_visuals(lmplayer->bvw, "GOOM:what a GOOM!");
@@ -2033,34 +1974,12 @@ static void
 playlist_repeat_toggled_cb (LmplayerPlaylist *playlist, gboolean repeat, LmplayerObject *lmplayer)
 {
 	lmplayer_debug("playlist_repeat_toggled_cb");
-	//GtkAction *action;
-
-	//action = gtk_action_group_get_action (totem->main_action_group, "repeat-mode");
-
-	//g_signal_handlers_block_matched (G_OBJECT (action), G_SIGNAL_MATCH_DATA, 0, 0,
-	//		NULL, NULL, totem);
-
-	//gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), repeat);
-
-	//g_signal_handlers_unblock_matched (G_OBJECT (action), G_SIGNAL_MATCH_DATA, 0, 0,
-	//		NULL, NULL, totem);
 }
 
 static void
 playlist_shuffle_toggled_cb (LmplayerPlaylist *playlist, gboolean shuffle, LmplayerObject *lmplayer)
 {
 	lmplayer_debug("playlist_shuffle_toggled_cb");
-	//GtkAction *action;
-
-	//action = gtk_action_group_get_action (totem->main_action_group, "shuffle-mode");
-
-	//g_signal_handlers_block_matched (G_OBJECT (action), G_SIGNAL_MATCH_DATA, 0, 0,
-	//		NULL, NULL, totem);
-
-	//gtk_toggle_action_set_active (GTK_TOGGLE_ACTION (action), shuffle);
-
-	//g_signal_handlers_unblock_matched (G_OBJECT (action), G_SIGNAL_MATCH_DATA, 0, 0,
-	//		NULL, NULL, totem);
 }
 
 void 
@@ -2099,3 +2018,4 @@ playlist_widget_setup(LmplayerObject *lmplayer)
 	g_signal_connect (G_OBJECT (playlist), "subtitle-changed",
 			G_CALLBACK (playlist_subtitle_changed_cb), lmplayer);
 }
+

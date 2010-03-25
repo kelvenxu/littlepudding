@@ -64,33 +64,18 @@ struct _LmplayerObject
 {
 	GObject parent;
 
-	//gpointer player;
-	//gpointer ui;
-
-	//SkinArchive *ar;
-	//SkinBuilder *builder;
-
 	GtkBuilder *builder;
-	//SkinWindow *win;
 	GtkWidget *win;
 
 	GtkWidget *view;
 	LmplayerViewType view_type;
 	GtkWidget *view_switch;
-	//GtkWidget *order_model;
 	GtkWidget *order_switch_button;
 
 	GtkWidget *about_button;
 
 	gboolean repeat;
 	gboolean repeat_one;
-
-	//SkinWindow *pl_win;
-	//SkinWindow *lyric_win;
-	//SkinWindow *eq_win;
-	//SkinWindow *mini_win;
-
-	//SkinLyric *lyricview;
 
 	//LmplayerNotebook *notebook;
 	BaconVideoWidget *bvw;
@@ -110,7 +95,6 @@ struct _LmplayerObject
 
 	/* Volume */
 	GtkWidget *volume; //FIXME:
-	//SkinHScale *volume;
 	gboolean volume_sensitive;
 
 	//GtkActionGroup *main_action_group;
@@ -123,14 +107,10 @@ struct _LmplayerObject
 	/* Seek */
 	GtkWidget *seek;
 	GtkAdjustment *seekadj;
-	//SkinHScale *seek;
 	gboolean seek_lock;
 	gboolean seekable;
 
 	gint64 stream_length;
-
-	//SkinDigitalTime *led;
-	//SkinDigitalTime *mini_led;
 
 	gint index;
 	gint seek_to;
@@ -142,8 +122,6 @@ struct _LmplayerObject
 	gchar *lyric_filename;
 	gboolean has_lyric;
 	gboolean lyric_downloaded;
-	//gchar *artist;
-	//gchar *title;
 
 	GtkWidget *prefs_button;
 	GtkWidget *prefs;
@@ -157,9 +135,6 @@ struct _LmplayerObject
 	LmplayerStates state;
 
 	LmplayerOpenLocation *open_location;
-
-	//gchar *database;
-	//gchar *monitor_path;
 };
 
 #define SEEK_FORWARD_OFFSET 60
@@ -173,7 +148,11 @@ struct _LmplayerObject
 
 void lmplayer_action_open(LmplayerObject *lmplayer);
 void lmplayer_action_open_location(LmplayerObject *lmplayer);
-void lmplayer_action_error_and_exit(const char *title, const char *reason, LmplayerObject *lmplayer);
+
+void lmplayer_action_error_and_exit(const char *title, 
+																		const char *reason, 
+																		LmplayerObject *lmplayer);
+
 gboolean lmplayer_action_open_files (LmplayerObject *lmplayer, char **list);
 
 void video_widget_create (LmplayerObject *lmplayer);

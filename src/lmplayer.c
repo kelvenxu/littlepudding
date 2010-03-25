@@ -55,7 +55,6 @@
 
 
 static void lmplayer_message_connection_receive_cb (const char *msg, LmplayerObject *lmp);
-//static gboolean lmplayer_action_open_files (LmplayerObject *lmplayer, char **list);
 
 gboolean seek_slider_pressed_cb (GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer);
 void seek_slider_changed_cb (GtkAdjustment *adj, LmplayerObject *lmplayer);
@@ -65,7 +64,6 @@ static gchar * lmplayer_build_default_playlist_filename();
 
 //static gboolean lmplayer_build_lyric_name(LmplayerObject *lmplayer);
 //static gboolean lmplayer_load_local_lyric(LmplayerObject *lmplayer);
-
 
 /*
 static void
@@ -153,58 +151,6 @@ lmplayer_metadata_get_title(LmplayerObject *lmplayer)
 	}
 
 	return str_utf8;
-}
-
-
-
-
-void 
-lmplayer_action_minimize(LmplayerObject *lmplayer)
-{
-	//gtk_window_iconify(GTK_WINDOW(lmplayer->pl_win));
-	//gtk_window_iconify(GTK_WINDOW(lmplayer->lyric_win));
-	//gtk_window_iconify(GTK_WINDOW(lmplayer->eq_win));
-	//gtk_window_iconify(GTK_WINDOW(lmplayer->mini_win));
-	//gtk_window_iconify(GTK_WINDOW(lmplayer->win));
-}
-
-void 
-lmplayer_action_minimode(LmplayerObject *lmplayer, gboolean minimode)
-{
-#if 0
-	SkinCheckButton *button;
-
-	lmplayer->minimode = minimode;
-
-	if(minimode)
-	{
-		gtk_widget_hide(GTK_WIDGET(lmplayer->pl_win));
-		gtk_widget_hide(GTK_WIDGET(lmplayer->lyric_win));
-		gtk_widget_hide(GTK_WIDGET(lmplayer->eq_win));
-		gtk_widget_hide(GTK_WIDGET(lmplayer->win));
-		gtk_widget_show_all(GTK_WIDGET(lmplayer->mini_win));
-	}
-	else
-	{
-		gtk_widget_hide(GTK_WIDGET(lmplayer->mini_win));
-		gtk_widget_show_all(GTK_WIDGET(lmplayer->win));
-
-		button = (SkinCheckButton *)skin_builder_get_object(lmplayer->builder, "player-playlist");
-		if(skin_check_button_get_active(button))
-			gtk_widget_show_all(GTK_WIDGET(lmplayer->pl_win));
-
-		button = (SkinCheckButton *)skin_builder_get_object(lmplayer->builder, "player-lyric");
-		if(skin_check_button_get_active(button))
-			gtk_widget_show_all(GTK_WIDGET(lmplayer->lyric_win));
-
-		button = (SkinCheckButton *)skin_builder_get_object(lmplayer->builder, "player-equalizer");
-		if(skin_check_button_get_active(button))
-			gtk_widget_show_all(GTK_WIDGET(lmplayer->eq_win));
-	}
-
-	lmplayer_debug("play_pause_set_label");
-	play_pause_set_label(lmplayer, lmplayer->state);
-#endif
 }
 
 #if 0
@@ -348,29 +294,9 @@ lmplayer_build_default_playlist_filename()
 void 
 lmplayer_action_load_default_playlist(LmplayerObject *lmplayer)
 {
-	//const gchar *home;
-	//gchar *cfg_path;
 	gchar *uri;
 
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
-
-#if 0
-	if(lmplayer->pls == NULL)
-	{
-		home = g_getenv("HOME");
-		cfg_path = g_build_path(G_DIR_SEPARATOR_S, home, ".lmplayer", NULL);
-
-		if(cfg_path != NULL)
-		{
-			lmplayer->pls = g_build_filename(cfg_path, "default_playlist.pls", NULL);
-			g_free(cfg_path);
-
-		}
-
-		if(lmplayer->pls == NULL)
-			return;
-	}
-#endif
 
 	if(lmplayer->pls == NULL)
 		lmplayer->pls = lmplayer_build_default_playlist_filename();
@@ -386,80 +312,10 @@ lmplayer_action_load_default_playlist(LmplayerObject *lmplayer)
 	}
 }
 
-
-
-
-
-
-
 void
 lmplayer_action_change_skin(LmplayerObject *lmplayer)
 {
-#if 0
-	GtkWidget *fs;
-	int response;
-
-	fs = gtk_file_chooser_dialog_new (_("Select a new skin package"),
-			NULL,
-			GTK_FILE_CHOOSER_ACTION_OPEN,
-			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-			GTK_STOCK_ADD, GTK_RESPONSE_ACCEPT,
-			NULL);
-	GtkFileFilter *filter = gtk_file_filter_new();
-	gtk_file_filter_add_mime_type(filter, "application/zip");
-	gtk_file_filter_set_name(filter, _("Lmplayer Skin Package (*.zip)"));
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (fs), filter);
-
-	gtk_dialog_set_default_response (GTK_DIALOG (fs), GTK_RESPONSE_ACCEPT);
-	gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER (fs), FALSE);
-	gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (fs), TRUE);
-
-	gchar *path = g_build_path(G_DIR_SEPARATOR_S, g_get_home_dir(), ".lmplayer/skins", NULL);
-	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (fs), path);
-	g_free(path);
-
-	response = gtk_dialog_run (GTK_DIALOG (fs));
-
-	if (response != GTK_RESPONSE_ACCEPT) 
-	{
-		gtk_widget_destroy (fs);
-		return;
-	}
-
-	gchar *filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fs));
-	if (filename == NULL) 
-	{
-		gtk_widget_destroy (fs);
-		return;
-	}
-	gtk_widget_destroy (fs);
-
-	// change skin:
-	SkinArchive *ar = skin_archive_new();
-	skin_archive_load(ar, filename);
-	if(lmplayer->ar)
-		g_object_unref(lmplayer->ar);
-	lmplayer->ar = ar;
-	skin_builder_add_from_archive(lmplayer->builder, ar);
-
-	gtk_widget_modify_base(GTK_WIDGET(lmplayer->playlist), 
-			GTK_STATE_NORMAL, 
-			&(lmplayer->ar->playlist->attr.color_bg));
-	
-	lmplayer_playlist_set_color(lmplayer->playlist, 
-			&(lmplayer->ar->playlist->attr.color_hilight),
-			&(lmplayer->ar->playlist->attr.color_text));
-
-	if(lmplayer->skinfile)
-	{
-		g_free(lmplayer->skinfile);
-		lmplayer->skinfile = filename;
-	}
-#endif
 }
-
-
-
 
 gboolean
 seek_slider_pressed_cb (GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer)
@@ -487,9 +343,6 @@ seek_slider_released_cb(GtkWidget *widget, GdkEventButton *event, LmplayerObject
 	return FALSE;
 }
 
-
-
-
 static gboolean 
 main_window_destroy_cb(GtkWidget *widget, LmplayerObject *lmplayer)
 {
@@ -497,73 +350,6 @@ main_window_destroy_cb(GtkWidget *widget, LmplayerObject *lmplayer)
 	search_library_quit();
 	return FALSE;
 }
-
-#if 0
-static gboolean 
-main_window_state_changed_cb (GtkWidget *widget, GdkEventWindowState *event, LmplayerObject *lmplayer)
-{
-	switch(event->changed_mask)
-	{
-		case GDK_WINDOW_STATE_WITHDRAWN:
-			lmplayer_debug("withdrawn");
-			break;
-		case GDK_WINDOW_STATE_ICONIFIED:
-			if(gdk_window_get_state(widget->window) == 2)
-			{
-				gtk_window_iconify(GTK_WINDOW(lmplayer->pl_win));
-				gtk_window_iconify(GTK_WINDOW(lmplayer->lyric_win));
-				gtk_window_iconify(GTK_WINDOW(lmplayer->eq_win));
-				gtk_window_iconify(GTK_WINDOW(lmplayer->win));
-			}
-			else if(gdk_window_get_state(widget->window) == 0)
-			{
-				gtk_window_deiconify(GTK_WINDOW(lmplayer->pl_win));
-				gtk_window_deiconify(GTK_WINDOW(lmplayer->lyric_win));
-				gtk_window_deiconify(GTK_WINDOW(lmplayer->eq_win));
-				gtk_window_deiconify(GTK_WINDOW(lmplayer->win));
-			}
-			break;
-		case GDK_WINDOW_STATE_MAXIMIZED:
-			lmplayer_debug("maximized");
-			break;
-		case GDK_WINDOW_STATE_STICKY:
-			lmplayer_debug("sticky");
-			break;
-		case GDK_WINDOW_STATE_FULLSCREEN:
-			lmplayer_debug("fullscreen");
-			break;
-		case GDK_WINDOW_STATE_ABOVE:
-			lmplayer_debug("above");
-			break;
-		case GDK_WINDOW_STATE_BELOW:
-			lmplayer_debug("below");
-			break;
-		default:
-			lmplayer_debug("default");
-			break;
-	}
-
-	return FALSE;
-}
-#endif
-
-#if 0
-static void 
-main_window_right_button_press_cb(SkinWindow *win, LmplayerObject *lmplayer)
-{
-	GtkWidget *menu;
-
-	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
-	g_return_if_fail(GTK_IS_UI_MANAGER(lmplayer->menus));
-
-	menu = gtk_ui_manager_get_widget(lmplayer->menus, "/MainMenu");
-	g_return_if_fail(GTK_IS_MENU(menu));
-
-	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
-			1, gtk_get_current_event_time());
-
-}
-#endif
 
 #if 0
 static void
@@ -651,58 +437,6 @@ order_switch_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 			break;
 	}
 }
-
-#if 0
-static void
-order_changed_cb(GtkComboBox *combo, LmplayerObject *lmplayer)
-{
-	int order;
-	order = gtk_combo_box_get_active(combo);
-	switch(order)
-	{
-		case LMPLAYER_ORDER_NORMAL:
-			lmplayer_playlist_set_repeat(lmplayer->playlist, FALSE);
-			lmplayer->repeat = FALSE;
-			lmplayer->repeat_one = FALSE;
-			break;
-		case LMPLAYER_ORDER_REPEAT:
-			lmplayer_playlist_set_repeat(lmplayer->playlist, TRUE);
-			lmplayer->repeat = TRUE;
-			lmplayer->repeat_one = FALSE;
-			break;
-		case LMPLAYER_ORDER_REPEAT_ONE:
-			lmplayer_playlist_set_repeat(lmplayer->playlist, FALSE);
-			lmplayer->repeat_one = TRUE;
-			lmplayer->repeat = FALSE;
-			break;
-	}
-}
-
-static void
-lmplayer_setup_order_model(LmplayerObject *lmplayer)
-{
-	GtkWidget *box;
-
-	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
-
-	box = (GtkWidget*)gtk_builder_get_object(lmplayer->builder, "player-order-model-box");
-
-	lmplayer->order_model = gtk_combo_box_new_text();
-	gtk_combo_box_append_text(GTK_COMBO_BOX(lmplayer->order_model), _("Normal"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(lmplayer->order_model), _("Repeat"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(lmplayer->order_model), _("Repeat one"));
-
-	g_object_set(G_OBJECT(lmplayer->order_model), 
-			"focus-on-click", FALSE,
-			"has-frame", FALSE,
-			NULL);
-
-	gtk_combo_box_set_active(GTK_COMBO_BOX(lmplayer->order_model), 0);
-	
-	g_signal_connect(G_OBJECT(lmplayer->order_model), "changed", G_CALLBACK(order_changed_cb), lmplayer);
-	gtk_container_add(GTK_CONTAINER(box), lmplayer->order_model);
-}
-#endif
 
 static void 
 prefs_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
@@ -836,16 +570,6 @@ lmplayer_callback_connect(LmplayerObject *lmplayer)
 	
 }
 
-
-/*
-static void
-update_seekable (LmplayerObject *lmplayer)
-{
-}
-*/
-
-
-
 static void 
 lmplayer_volume_value_changed_cb(GtkScaleButton *scale, gdouble value, LmplayerObject *lmplayer)
 {
@@ -854,10 +578,6 @@ lmplayer_volume_value_changed_cb(GtkScaleButton *scale, gdouble value, LmplayerO
 
 	bacon_video_widget_set_volume(lmplayer->bvw, value);
 }
-
-
-
-
 
 #if 0
 static void
@@ -937,12 +657,9 @@ lmplayer_message_connection_receive_cb (const char *msg, LmplayerObject *lmp)
 
 	lmplayer_debug("url: %s", url);
 	lmplayer_action_remote (lmp, command, url);
-	lmplayer_debug(" ");
 
 	g_free (url);
 }
-
-
 
 int 
 main(int argc, char* argv[])
@@ -959,9 +676,8 @@ main(int argc, char* argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	g_thread_init(NULL);
 	gtk_init(&argc, &argv);
-	g_type_init();
+	g_thread_init(NULL);
 
 	bacon_video_widget_init_backend(NULL, NULL);
 
@@ -989,12 +705,10 @@ main(int argc, char* argv[])
 				_("Make sure that GNOME is properly installed."), NULL);
 	}
 
-	lmplayer_debug(" ");
 	lmplayer = lmplayer_object_new();
+
 	if(lmplayer == NULL)
-	{
 		lmplayer_action_exit(NULL);
-	}
 
 	lmplayer->gc = gc;
 	lmplayer->pls = NULL;
@@ -1019,9 +733,6 @@ main(int argc, char* argv[])
 		lmplayer_options_process_early (lmplayer, &optionstate);
 	}
 
-	//lmplayer_load_config(lmplayer);
-
-	lmplayer_debug(" ");
 	lmplayer->builder = lmplayer_interface_load("lmplayer-default.ui", TRUE, NULL, NULL);
 	if(lmplayer->builder == NULL)
 	{
@@ -1034,9 +745,6 @@ main(int argc, char* argv[])
 		lmplayer_action_exit(NULL);
 	}
 
-	lmplayer_debug(" ");
-	//lmplayer->lyricview = SKIN_LYRIC(skin_builder_get_object(lmplayer->builder, "lyric-lyricview"));
-
 	lmplayer->seek = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-progressbar");
 	lmplayer->seekadj = gtk_range_get_adjustment(GTK_RANGE(lmplayer->seek));
 
@@ -1044,7 +752,6 @@ main(int argc, char* argv[])
 	//lmplayer->statusbar = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_statusbar"));
 	lmplayer->view = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-view");
 	lmplayer->playlist_view_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-playlist-view-button");
-	//lmplayer->order_model = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-order-mode");
 	lmplayer->order_switch_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-order-switch-button");
 	lmplayer->about_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-about-button");
 	lmplayer->plugin_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-plugin-button");
