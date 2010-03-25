@@ -87,21 +87,18 @@ IGNORE_HFILES += \
 	lmplayer-subtitle-encoding.h			\
 	lmplayer-menu.h					\
 	video-utils.h					\
-	debug.h						\
+	lmplayer-utils.h					\
+	lmplayer-debug.h						\
+	lmplayer-notebook.h						\
+	lmplayer-search.h \
+	lmplayer-config.h \
+	lmplayer-encode.h \
+	lmplayer-magnetic.h \
+	audio-spectrum.h \
 	lmplayer-dnd-menu.h
 
 # Plugin files
-IGNORE_HFILES += \
-	bacon-video-widget-properties.h	\
-	lmplayer-gallery.h			\
-	lmplayer-gallery-progress.h	\
-	lmplayer-screenshot.h		\
-	lmplayer-screenshot-plugin.h	\
-	lmplayer-skipto.h			\
-	lmplayer-skipto-plugin.h		\
-	lmplayer-time-entry.h		\
-	lmplayer-tracker-widget.h		\
-	lmplayer-marshal.h
+IGNORE_HFILES += 
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
@@ -132,11 +129,11 @@ GTKDOC_CFLAGS = \
 GTKDOC_LIBS = \
 	$(EXTRA_GNOME_LIBS) \
 	$(DEPENDENCY_LIBS) \
-	$(top_srcdir)/src/liblmplayer-main.la \
 	$(top_srcdir)/src/libbaconmessageconnection.la\
 	$(top_srcdir)/src/backend/libbaconvideowidget.la \
 	$(top_srcdir)/liblmplayer-plugin/liblmplayermodule.la \
-	$(top_srcdir)/bindings/python/lmplayer-python.la
+	$(top_srcdir)/bindings/python/lmplayer-python.la \
+	$(top_srcdir)/src/liblmplayer-main.la 
 
 
 

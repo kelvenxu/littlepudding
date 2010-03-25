@@ -174,6 +174,11 @@ GtkUIManager *lmplayer_get_ui_manager(LmplayerObject *lmplayer);
 GtkWidget *lmplayer_get_video_widget(LmplayerObject *lmplayer);
 char *lmplayer_get_video_widget_backend_name(LmplayerObject *lmplayer);
 gint64 lmplayer_get_current_time(LmplayerObject *lmplayer);
+gboolean lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
+				   const char *mrl, 
+				   const char *subtitle,
+				   gboolean warn);
+void lmplayer_action_remote (LmplayerObject *lmplayer, LmplayerRemoteCommand cmd, const char *url);
 
 G_END_DECLS
 

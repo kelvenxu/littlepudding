@@ -173,6 +173,11 @@ struct _LmplayerObject
 
 void lmplayer_action_open(LmplayerObject *lmplayer);
 void lmplayer_action_open_location(LmplayerObject *lmplayer);
+void lmplayer_action_error_and_exit(const char *title, const char *reason, LmplayerObject *lmplayer);
+gboolean lmplayer_action_open_files (LmplayerObject *lmplayer, char **list);
+
+void video_widget_create (LmplayerObject *lmplayer);
+void playlist_widget_setup(LmplayerObject *lmplayer);
 
 G_END_DECLS
 
