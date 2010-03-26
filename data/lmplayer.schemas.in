@@ -97,5 +97,16 @@
 			</locale>
 		</schema>
 
+		<schema>
+			<key>/schemas/apps/lmplayer/ui</key>
+			<applyto>/apps/lmplayer/ui</applyto>
+			<owner>lmplayer</owner>
+			<type>string</type>
+			<default>lmplayer-default.ui</default>
+			<locale name="C">
+				<short>Lmplayer ui file</short>
+			</locale>
+		</schema>
+
 	</schemalist>
 </gconfschemafile>

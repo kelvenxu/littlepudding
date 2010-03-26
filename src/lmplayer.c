@@ -733,12 +733,25 @@ main(int argc, char* argv[])
 		lmplayer_options_process_early (lmplayer, &optionstate);
 	}
 
-	lmplayer->builder = lmplayer_interface_load("lmplayer-default.ui", TRUE, NULL, NULL);
+	gchar *ui = gconf_client_get_string(gc, GCONF_PREFIX"/ui", NULL);
+	if(!ui)
+	{
+		ui = g_strdup("lmplayer-default.ui");
+		gconf_client_set_string(gc, GCONF_PREFIX"/ui", ui, NULL);
+	}
+
+	//lmplayer->builder = lmplayer_interface_load("lmplayer-default.ui", TRUE, NULL, NULL);
+	//lmplayer->builder = lmplayer_interface_load("lmplayer-classic.ui", TRUE, NULL, NULL);
+	lmplayer->builder = lmplayer_interface_load(ui, TRUE, NULL, NULL);
 	if(lmplayer->builder == NULL)
 	{
+		g_free(ui);
 		lmplayer_action_exit(NULL);
 	}
 
+	g_free(ui);
+
+	
 	lmplayer->win = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-window");
 	if(lmplayer->win == NULL)
 	{
