@@ -186,11 +186,8 @@ void lmplayer_action_change_skin(LmplayerObject *lmplayer);
 void lmplayer_object_plugins_init(LmplayerObject *lmplayer);
 void lmplayer_object_plugins_shutdown (void);
 
-void lmplayer_add_tools_button(LmplayerObject *lmplayer, 
-																GtkWidget *button, 
-																const char *id);
-
-void lmplayer_remove_tools_button(LmplayerObject *lmplayer, const char *id);
+void lmplayer_add_tools_button(LmplayerObject *lmplayer, GtkWidget *button);
+void lmplayer_remove_tools_button(LmplayerObject *lmplayer, GtkWidget *button);
 
 GtkWindow * lmplayer_get_main_window(LmplayerObject *lmplayer);
 GtkUIManager *lmplayer_get_ui_manager(LmplayerObject *lmplayer);

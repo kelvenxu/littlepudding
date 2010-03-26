@@ -44,6 +44,7 @@ typedef struct
 
 	Lmplayer *lmplayer;
 	GtkWidget *dialog;
+	GtkWidget *tool_button;
 
 	gint64 start;
 	gint64 end;
@@ -205,16 +206,17 @@ impl_activate (LmplayerPlugin *plugin, LmplayerObject *lmplayer, GError **error)
 	g_timeout_add_seconds(1, (GSourceFunc)timer_cb, self);
 
 	// setup ui icon
-	GtkWidget *active_button = gtk_button_new();
+	self->tool_button = gtk_button_new();
 	GtkWidget *image = gtk_image_new_from_file(LMPLAYER_PLUGIN_DIR"/rereading/rereading.png");
-	gtk_container_add(GTK_CONTAINER(active_button), image);
-	gtk_button_set_relief(GTK_BUTTON(active_button), GTK_RELIEF_NONE);
-	gtk_widget_set_tooltip_text(active_button, _("Rereading"));
+	gtk_container_add(GTK_CONTAINER(self->tool_button), image);
+	gtk_button_set_relief(GTK_BUTTON(self->tool_button), GTK_RELIEF_NONE);
+	gtk_widget_set_tooltip_text(self->tool_button, _("Rereading"));
 
-	g_signal_connect(active_button, "clicked", 
+	g_signal_connect(self->tool_button, "clicked", 
 			G_CALLBACK(active_button_clicked_cb), self);
 
-	lmplayer_add_tools_button(lmplayer, active_button, "rereading");
+	lmplayer_add_tools_button(lmplayer, self->tool_button);
+	gtk_widget_show_all(self->tool_button);
 
 	/* Initialise resources, connect to events, create menu items and UI, etc., here.
 	 * Note that impl_activate and impl_deactivate can be called multiple times in one
@@ -230,6 +232,7 @@ impl_deactivate(LmplayerPlugin *plugin, LmplayerObject *lmplayer)
 {
 	LmplayerRereadingPlugin *self = LMPLAYER_REREADING_PLUGIN (plugin);
 
+	lmplayer_remove_tools_button(self->lmplayer, self->tool_button);
 	g_object_unref(self->lmplayer);
 
 	/* Destroy resources created in impl_activate here. e.g. Disconnect from signals
