@@ -25,9 +25,14 @@
 #include "lmplayer-private.h"
 #include "lmplayerobject-marshal.h"
 #include "lmplayer-debug.h"
+#include "lmplayer-uri.h"
+#include "lmplayer-utils.h"
+#include "lmplayer-interface.h"
+#include "lmplayer-encode.h"
 #include "lmplayer-plugins-engine.h"
 #include <glib/gi18n.h>
 #include <glib.h>
+#include <stdlib.h>
 
 #define REWIND_OR_PREVIOUS 4000
 
@@ -425,6 +430,20 @@ update_buttons(LmplayerObject *lmplayer)
 		break;
 	}
 }
+
+static void 
+lmplayer_statusbar_set_text(LmplayerObject *lmplayer, gchar *text)
+{
+#if 0
+	SkinStatusBar *sb;
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+
+	sb = (SkinStatusBar*)skin_builder_get_object(lmplayer->builder, "player-statusbar");
+
+	skin_status_bar_set_text(sb, text);
+#endif
+}
+
 static void
 play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 {
@@ -729,11 +748,9 @@ lmplayer_action_open_files_list(LmplayerObject *lmplayer, GSList *list)
 	changed = FALSE;
 	cleared = FALSE;
 
-	lmplayer_debug(" ");
 	if (list == NULL)
 		return changed;
 
-	lmplayer_debug(" ");
 	lmplayer_window_set_waiting_cursor(GTK_WIDGET(lmplayer->win)->window);
 
 	for (l = list ; l != NULL; l = l->next)

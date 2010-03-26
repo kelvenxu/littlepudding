@@ -127,7 +127,7 @@ static gboolean
 main_window_move_cb(GtkWindow *win, LmplayerObject *lmplayer)
 {
 	gint new_x, new_y;
-	gint star_x, star_y;
+	//gint star_x, star_y;
 	gint rx, ry;
 	
 	static gint count = 0;

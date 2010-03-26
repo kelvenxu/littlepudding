@@ -200,7 +200,8 @@ bail:
 #endif /* HAVE_XVIDMODE */
 }
 
-static void screen_changed_cb (GtkWidget *video_widget, GdkScreen *previous_screen, BaconResize *resize)
+static void 
+screen_changed_cb (GtkWidget *video_widget, GdkScreen *previous_screen, BaconResize *resize)
 {
 #ifdef HAVE_XVIDMODE
 	if (resize->priv->resized == TRUE)

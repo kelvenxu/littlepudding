@@ -99,18 +99,6 @@ lmplayer_dvb_setup_result (int result, const char *device, gpointer user_data)
 */
 
 
-static void 
-lmplayer_statusbar_set_text(LmplayerObject *lmplayer, gchar *text)
-{
-#if 0
-	SkinStatusBar *sb;
-	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
-
-	sb = (SkinStatusBar*)skin_builder_get_object(lmplayer->builder, "player-statusbar");
-
-	skin_status_bar_set_text(sb, text);
-#endif
-}
 
 // 取得string类型的metadata, 并将其转换成utf8编码
 static gchar *

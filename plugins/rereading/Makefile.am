@@ -7,8 +7,7 @@ plugin_in_files = rereading.lmplayer-plugin.in
 
 %.lmplayer-plugin: %.lmplayer-plugin.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< $@ -d -u -c $(top_builddir)/po/.intltool-merge-cache
 
-plugin_DATA = $(plugin_in_files:.lmplayer-plugin.in=.lmplayer-plugin) \
-	rereading.png
+plugin_DATA = $(plugin_in_files:.lmplayer-plugin.in=.lmplayer-plugin) 
 
 common_defines = \
 	-D_REENTRANT					\
@@ -40,7 +39,10 @@ librereading_la_CFLAGS = \
 uidir = $(plugindir)
 ui_DATA = rereading.ui
 
-EXTRA_DIST = $(plugin_in_files) $(config_DATA) $(ui_DATA)
+imagedir = $(plugindir)
+image_DATA = rereading.png
+
+EXTRA_DIST = $(plugin_in_files) $(config_DATA) $(ui_DATA) $(image_DATA)
 
 CLEANFILES = $(plugin_DATA) $(BUILT_SOURCES)
 DISTCLEANFILES = $(plugin_DATA)
