@@ -45,6 +45,9 @@ typedef struct
 	Lmplayer *lmplayer;
 	GtkWidget *dialog;
 
+	int start;
+	int end;
+
 	/* plugin object members */
 } LmplayerRereadingPlugin;
 
@@ -78,6 +81,59 @@ lmplayer_rereading_plugin_init(LmplayerRereadingPlugin *plugin)
 	 * occur several times during one Lmplayer session) should be created in impl_activate, and destroyed
 	 * in impl_deactivate. 
 	 */
+
+	plugin->start = -1;
+	plugin->end = -1;
+}
+
+static void
+start_button_clicked_cb(GtkButton *button, LmplayerRereadingPlugin *self)
+{
+	self->start = lmplayer_get_current_time(self->lmplayer);
+}
+
+static void
+end_button_clicked_cb(GtkButton *button, LmplayerRereadingPlugin *self)
+{
+	self->end = lmplayer_get_current_time(self->lmplayer);
+	lmplayer_action_seek(self->lmplayer, self->start);
+}
+
+static void
+stop_button_clicked_cb(GtkButton *button, LmplayerRereadingPlugin *self)
+{
+	lmplayer_action_seek(self->lmplayer, self->end);
+	self->start = -1;
+	self->end = -1;
+}
+
+static void
+quit_button_clicked_cb(GtkButton *button, LmplayerRereadingPlugin *self)
+{
+	gtk_widget_hide(self->dialog);
+
+	lmplayer_action_seek(self->lmplayer, self->end);
+	self->start = -1;
+	self->end = -1;
+}
+
+static gboolean
+timer_cb(LmplayerRereadingPlugin *self)
+{
+	if(self->start == -1 || self->end == -1)
+		return TRUE;
+
+	if(!lmplayer_is_playing(self->lmplayer))
+		return TRUE;
+
+	int cur = lmplayer_get_current_time(self->lmplayer);
+	
+	if(cur >= self->end)
+	{
+		lmplayer_action_seek(self->lmplayer, self->start);
+	}
+
+	return TRUE;
 }
 
 static void
@@ -89,14 +145,13 @@ active_button_clicked_cb(GtkButton *button, LmplayerRereadingPlugin *self)
 static gboolean
 impl_activate (LmplayerPlugin *plugin, LmplayerObject *lmplayer, GError **error)
 {
-	LmplayerRereadingPlugin *self = LMPLAYER_REREADING_PLUGIN (plugin);
-
 	GtkBuilder *builder;
-	//GtkWidget *dialog;
-	//GtkWidget *start_button;
-	//GtkWidget *end_button;
-	//GtkWidget *stop_button;
-	//GtkWidget *quit_button;
+	GtkWidget *start_button;
+	GtkWidget *end_button;
+	GtkWidget *stop_button;
+	GtkWidget *quit_button;
+
+	LmplayerRereadingPlugin *self = LMPLAYER_REREADING_PLUGIN (plugin);
 
 	self->lmplayer = g_object_ref(lmplayer);
 
@@ -106,12 +161,32 @@ impl_activate (LmplayerPlugin *plugin, LmplayerObject *lmplayer, GError **error)
 
 	self->dialog = GTK_WIDGET(gtk_builder_get_object(builder, "rereading-window"));
 
-	g_signal_connect(G_OBJECT(self->dialog), "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), NULL);
-	g_signal_connect(G_OBJECT(self->dialog), "destroy", G_CALLBACK(gtk_widget_destroyed), &self->dialog);
+	g_signal_connect(G_OBJECT(self->dialog), "delete-event", 
+			G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+	g_signal_connect(G_OBJECT(self->dialog), "destroy", 
+			G_CALLBACK(gtk_widget_destroyed), &self->dialog);
 
-	GtkWidget *active_button = gtk_button_new_with_label("Rereading");
+	start_button = GTK_WIDGET(gtk_builder_get_object(builder, "mark-start-button"));
+	end_button = GTK_WIDGET(gtk_builder_get_object(builder, "mark-end-button"));
+	stop_button = GTK_WIDGET(gtk_builder_get_object(builder, "stop-rereading-button"));
+	quit_button = GTK_WIDGET(gtk_builder_get_object(builder, "quit-rereading-button"));
 
-	g_signal_connect(active_button, "clicked", G_CALLBACK(active_button_clicked_cb), self);
+	g_signal_connect(G_OBJECT(start_button), "clicked", G_CALLBACK(start_button_clicked_cb), self);
+	g_signal_connect(G_OBJECT(end_button), "clicked", G_CALLBACK(end_button_clicked_cb), self);
+	g_signal_connect(G_OBJECT(stop_button), "clicked", G_CALLBACK(stop_button_clicked_cb), self);
+	g_signal_connect(G_OBJECT(quit_button), "clicked", G_CALLBACK(quit_button_clicked_cb), self);
+
+	g_timeout_add_seconds(1, (GSourceFunc)timer_cb, self);
+
+	// setup ui icon
+	GtkWidget *active_button = gtk_button_new();
+	GtkWidget *image = gtk_image_new_from_file(LMPLAYER_PLUGIN_DIR"/rereading/rereading.png");
+	gtk_container_add(GTK_CONTAINER(active_button), image);
+	gtk_button_set_relief(GTK_BUTTON(active_button), GTK_RELIEF_NONE);
+	gtk_widget_set_tooltip_text(active_button, _("Rereading"));
+
+	g_signal_connect(active_button, "clicked", 
+			G_CALLBACK(active_button_clicked_cb), self);
 
 	lmplayer_add_tools_button(lmplayer, active_button, "rereading");
 
@@ -125,7 +200,7 @@ impl_activate (LmplayerPlugin *plugin, LmplayerObject *lmplayer, GError **error)
 }
 
 static void
-impl_deactivate	(LmplayerPlugin *plugin, LmplayerObject *lmplayer)
+impl_deactivate(LmplayerPlugin *plugin, LmplayerObject *lmplayer)
 {
 	LmplayerRereadingPlugin *self = LMPLAYER_REREADING_PLUGIN (plugin);
 

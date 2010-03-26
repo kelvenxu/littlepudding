@@ -23,6 +23,7 @@
 
   <chapter>
     <title>Core API</title>
+		<xi:include href="xml/lmplayer.xml"/>
 		<xi:include href="xml/lmplayer-object.xml"/>
     <xi:include href="xml/bacon-video-widget.xml"/>
     <xi:include href="xml/lmplayer-interface.xml"/>
