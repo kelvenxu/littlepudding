@@ -343,6 +343,13 @@ lmplayer_get_current_time(LmplayerObject *lmplayer)
 	return bacon_video_widget_get_current_time(lmplayer->bvw);
 }
 
+gint64
+lmplayer_get_stream_length(LmplayerObject *lmplayer)
+{
+	g_return_val_if_fail(LMPLAYER_IS_OBJECT(lmplayer), 0);
+
+	return bacon_video_widget_get_stream_length(lmplayer->bvw);
+}
 
 gboolean
 lmplayer_is_fullscreen(LmplayerObject *lmplayer)

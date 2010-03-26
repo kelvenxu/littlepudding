@@ -45,8 +45,9 @@ typedef struct
 	Lmplayer *lmplayer;
 	GtkWidget *dialog;
 
-	int start;
-	int end;
+	gint64 start;
+	gint64 end;
+	gint64 slength;
 
 	/* plugin object members */
 } LmplayerRereadingPlugin;
@@ -84,25 +85,39 @@ lmplayer_rereading_plugin_init(LmplayerRereadingPlugin *plugin)
 
 	plugin->start = -1;
 	plugin->end = -1;
+	plugin->slength = -1;
 }
 
 static void
 start_button_clicked_cb(GtkButton *button, LmplayerRereadingPlugin *self)
 {
 	self->start = lmplayer_get_current_time(self->lmplayer);
+	self->slength = lmplayer_get_stream_length(self->lmplayer);
 }
 
 static void
 end_button_clicked_cb(GtkButton *button, LmplayerRereadingPlugin *self)
 {
+	if(self->start == -1)
+		return;
+	
+	if(!lmplayer_is_playing(self->lmplayer))
+		return;
+
 	self->end = lmplayer_get_current_time(self->lmplayer);
-	lmplayer_action_seek(self->lmplayer, self->start);
+	lmplayer_action_seek(self->lmplayer, (gdouble)self->start / (gdouble)self->slength);
 }
 
 static void
 stop_button_clicked_cb(GtkButton *button, LmplayerRereadingPlugin *self)
 {
-	lmplayer_action_seek(self->lmplayer, self->end);
+	if(self->start == -1)
+		return;
+	
+	if(!lmplayer_is_playing(self->lmplayer))
+		return;
+
+	lmplayer_action_seek(self->lmplayer, (gdouble)self->end / (gdouble)self->slength);
 	self->start = -1;
 	self->end = -1;
 }
@@ -112,7 +127,13 @@ quit_button_clicked_cb(GtkButton *button, LmplayerRereadingPlugin *self)
 {
 	gtk_widget_hide(self->dialog);
 
-	lmplayer_action_seek(self->lmplayer, self->end);
+	if(self->start == -1 || self->end == -1)
+		return;
+
+	if(!lmplayer_is_playing(self->lmplayer))
+		return;
+
+	lmplayer_action_seek(self->lmplayer, (gdouble)self->end / (gdouble)self->slength);
 	self->start = -1;
 	self->end = -1;
 }
@@ -130,7 +151,7 @@ timer_cb(LmplayerRereadingPlugin *self)
 	
 	if(cur >= self->end)
 	{
-		lmplayer_action_seek(self->lmplayer, self->start);
+		lmplayer_action_seek(self->lmplayer, (gdouble)self->start / (gdouble)self->slength);
 	}
 
 	return TRUE;
@@ -157,9 +178,14 @@ impl_activate (LmplayerPlugin *plugin, LmplayerObject *lmplayer, GError **error)
 
 	GtkWindow *main_window = lmplayer_get_main_window(lmplayer);
 	builder = lmplayer_plugin_load_interface(plugin, "rereading.ui", TRUE, main_window, self);
-	g_object_unref(main_window);
 
 	self->dialog = GTK_WIDGET(gtk_builder_get_object(builder, "rereading-window"));
+	gtk_window_set_transient_for(GTK_WINDOW(self->dialog), main_window);
+	gtk_window_set_position(GTK_WINDOW(self->dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+	g_object_unref(main_window);
+
+	gtk_window_set_title(GTK_WINDOW(self->dialog), _("Lmplayer rereading"));
+	gtk_window_set_resizable(GTK_WINDOW(self->dialog), FALSE);
 
 	g_signal_connect(G_OBJECT(self->dialog), "delete-event", 
 			G_CALLBACK(gtk_widget_hide_on_delete), NULL);
