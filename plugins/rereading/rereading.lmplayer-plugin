@@ -1,8 +1,8 @@
 [Lmplayer Plugin]
 	Module=rereading
 	IAge=1
-	Builtin=true
-	Name=Lmplayer rereading
+	Builtin=false
+	Name=Rereading
 	Description=Simple rereading plugin for lmplayer.
 	Authors=kelvenxu
 	Copyright=Copyright © 2010
