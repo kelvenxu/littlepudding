@@ -1218,8 +1218,8 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 		gconf_client_set_int(lmplayer->gc, GCONF_PREFIX"/volume", CLAMP(vol, 0, 100), NULL);
 	}
 
-	if(lmplayer->conn != NULL)
-		bacon_message_connection_free(lmplayer->conn);
+	if(lmplayer->uapp)
+		g_object_unref(lmplayer->uapp);
 
 	lmplayer_destroy_file_filters();
 
@@ -1509,6 +1509,7 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmplayerRemoteCommand cmd, con
 		break;
 	case LMPLAYER_REMOTE_COMMAND_SHOW_PLAYING:
 		{
+#if 0
 			char *title;
 			gboolean custom;
 
@@ -1516,10 +1517,12 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmplayerRemoteCommand cmd, con
 			bacon_message_connection_send(lmplayer->conn,
 					title ? title : SHOW_PLAYING_NO_TRACKS);
 			g_free (title);
+#endif
 		}
 		break;
 	case LMPLAYER_REMOTE_COMMAND_SHOW_VOLUME:
 		{
+#if 0
 			char *vol_str;
 			int vol;
 
@@ -1530,6 +1533,7 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmplayerRemoteCommand cmd, con
 			vol_str = g_strdup_printf ("%d", vol);
 			bacon_message_connection_send(lmplayer->conn, vol_str);
 			g_free (vol_str);
+#endif
 		}
 		break;
 	case LMPLAYER_REMOTE_COMMAND_UP:

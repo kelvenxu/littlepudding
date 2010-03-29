@@ -26,6 +26,7 @@
 #include "bacon-message-connection.h"
 #include "lmplayer-remote-command.h"
 #include "lmplayer.h"
+#include <unique/uniqueapp.h>
 
 G_BEGIN_DECLS
 
@@ -61,8 +62,8 @@ void lmplayer_options_process_early (LmplayerObject* lmp,
 void lmplayer_options_process_late (LmplayerObject *lmp, 
 				const LmpCmdLineOptions* options);
 
-void lmplayer_options_process_for_server (BaconMessageConnection *conn, 
-				const LmpCmdLineOptions* options);
+void lmplayer_options_process_for_server(UniqueApp *app, const LmpCmdLineOptions* options);
+void lmplayer_options_register_remote_commands(LmplayerObject *lmplayer);
 
 G_END_DECLS
 

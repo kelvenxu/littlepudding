@@ -252,6 +252,7 @@ PKG_CHECK_MODULES(EXTRA_GNOME,
 									gconf-2.0
 									gmodule-2.0 
 									liblmplayer-search >= 0.10.0
+									unique-1.0
 									$ISO_CODES)
 
 EXTRA_GNOME_CFLAGS="$EXTRA_GNOME_CFLAGS"

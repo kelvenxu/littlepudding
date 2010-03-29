@@ -78,6 +78,22 @@ lmplayer_options_process_early (LmplayerObject *lmp, const LmpCmdLineOptions* op
 	}
 }
 
+void
+lmplayer_options_register_remote_commands(LmplayerObject *lmplayer)
+{
+	GEnumClass *klass;
+	guint i;
+
+	klass = (GEnumClass *) g_type_class_ref(LMPLAYER_TYPE_REMOTE_COMMAND);
+	for (i = LMPLAYER_REMOTE_COMMAND_UNKNOWN + 1; i < klass->n_values; i++) 
+	{
+		GEnumValue *val;
+		val = g_enum_get_value(klass, i);
+		unique_app_add_command(lmplayer->uapp, val->value_name, i);
+	}
+	g_type_class_unref (klass);
+}
+
 static void
 lmplayer_print_playing_cb (const gchar *msg, gpointer user_data)
 {
@@ -93,7 +109,7 @@ lmplayer_option_create_line (int command)
 }
 
 void
-lmplayer_options_process_for_server (BaconMessageConnection *conn,
+lmplayer_options_process_for_server(UniqueApp *app,
 		const LmpCmdLineOptions* options)
 {
 	GList *commands, *l;
@@ -102,6 +118,7 @@ lmplayer_options_process_for_server (BaconMessageConnection *conn,
 	commands = NULL;
 	default_action = LMPLAYER_REMOTE_COMMAND_REPLACE;
 
+#if 0
 	/* We can only handle "printplaying" on its own */
 	if (options->printplaying)
 	{
@@ -111,18 +128,22 @@ lmplayer_options_process_for_server (BaconMessageConnection *conn,
 		line = lmplayer_option_create_line (LMPLAYER_REMOTE_COMMAND_SHOW_PLAYING);
 		bacon_message_connection_set_callback (conn,
 				lmplayer_print_playing_cb, loop);
-		bacon_message_connection_send (conn, line);
+		//bacon_message_connection_send (conn, line);
+		unique_app_send_message(app, line, NULL);
 		g_free (line);
 
 		g_main_loop_run (loop);
 		return;
 	}
+#endif
 
 	/* Are we quitting ? */
 	if (options->quit) {
 		char *line;
-		line = lmplayer_option_create_line (LMPLAYER_REMOTE_COMMAND_QUIT);
-		bacon_message_connection_send (conn, line);
+		//line = lmplayer_option_create_line (LMPLAYER_REMOTE_COMMAND_QUIT);
+		unique_app_send_message (app, LMPLAYER_REMOTE_COMMAND_QUIT, NULL);
+		//bacon_message_connection_send (conn, line);
+		//unique_app_send_message(app, line, NULL);
 		g_free (line);
 		return;
 	}
@@ -140,15 +161,19 @@ lmplayer_options_process_for_server (BaconMessageConnection *conn,
 	/* Send the files to enqueue */
 	for (i = 0; options->filenames && options->filenames[i] != NULL; i++)
 	{
-		char *line, *full_path;
-		full_path = lmplayer_create_full_path (options->filenames[i]);
-		line = g_strdup_printf ("%03d %s", default_action,
-					full_path ? full_path : options->filenames[i]);
-		bacon_message_connection_send (conn, line);
+		UniqueMessageData *data;
+		//char *line; 
+		char *full_path;
+
+		data = unique_message_data_new();
+		full_path = lmplayer_create_full_path(options->filenames[i]);
+		unique_message_data_set_text(data, full_path ? full_path : options->filenames[i], -1);
+		full_path = lmplayer_create_full_path(options->filenames[i]);
+		//bacon_message_connection_send (conn, line);
+		unique_app_send_message(app, default_action, data);
 		/* Even if the default action is replace, we only want to replace with the
 		   first file.  After that, we enqueue. */
 		default_action = LMPLAYER_REMOTE_COMMAND_ENQUEUE;
-		g_free (line);
 		g_free (full_path);
 	}
 
@@ -199,17 +224,14 @@ lmplayer_options_process_for_server (BaconMessageConnection *conn,
 
 	/* No commands, no files, show ourselves */
 	if (commands == NULL && options->filenames == NULL) {
-		char *line;
-		line = lmplayer_option_create_line (LMPLAYER_REMOTE_COMMAND_SHOW);
-		bacon_message_connection_send (conn, line);
-		g_free (line);
+		unique_app_send_message (app, LMPLAYER_REMOTE_COMMAND_SHOW, NULL);
 		return;
 	}
 
 	/* Send commands */
 	for (l = commands; l != NULL; l = l->next) {
-		bacon_message_connection_send (conn, l->data);
-		g_free (l->data);
+		int command = GPOINTER_TO_INT (l->data);
+		unique_app_send_message (app, command, NULL);
 	}
 	g_list_free (commands);
 }

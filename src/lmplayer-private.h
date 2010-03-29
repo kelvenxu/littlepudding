@@ -29,8 +29,8 @@
 #include <glib.h>
 #include <gconf/gconf-client.h>
 #include <gtk/gtk.h>
+#include <unique/uniqueapp.h>
 
-#include "bacon-message-connection.h"
 #include "bacon-video-widget.h"
 #include "lmplayer-playlist.h"
 #include "lmplayer-open-location.h"
@@ -100,7 +100,7 @@ struct _LmplayerObject
 	//GtkActionGroup *main_action_group;
 	GtkUIManager *menus;
 
-	BaconMessageConnection* conn;
+	UniqueApp *uapp;
 	GVolumeMonitor* monitor;
 	gboolean drives_changed;
 

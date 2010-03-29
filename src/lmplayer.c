@@ -54,7 +54,11 @@
 #include "lmplayer-plugin-manager.h"
 
 
-static void lmplayer_message_connection_receive_cb (const char *msg, LmplayerObject *lmp);
+static UniqueResponse lmplayer_message_received_cb(UniqueApp *app,
+			   int                command,
+			   UniqueMessageData *message_data,
+			   guint              time_,
+			   LmplayerObject             *lmplayer);
 
 gboolean seek_slider_pressed_cb (GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer);
 void seek_slider_changed_cb (GtkAdjustment *adj, LmplayerObject *lmplayer);
@@ -87,6 +91,26 @@ lmplayer_action_save_state (LmplayerObject *lmplayer, const char *page_id)
 }
 */
 
+static UniqueResponse
+lmplayer_message_received_cb(UniqueApp *app,
+			   int                command,
+			   UniqueMessageData *message_data,
+			   guint              time_,
+			   LmplayerObject             *lmplayer)
+{
+	char *url;
+
+	if (message_data != NULL)
+		url = unique_message_data_get_text(message_data);
+	else
+		url = NULL;
+
+	lmplayer_action_remote(lmplayer, command, url);
+
+	g_free (url);
+
+	return UNIQUE_RESPONSE_OK;
+}
 
 /*
 static void
@@ -704,10 +728,12 @@ main(int argc, char* argv[])
 
 	if(optionstate.notconnectexistingsession == FALSE)
 	{
-		lmplayer->conn = bacon_message_connection_new(GETTEXT_PACKAGE);
-		if(bacon_message_connection_get_is_server(lmplayer->conn) == FALSE)
+		//lmplayer->conn = bacon_message_connection_new(GETTEXT_PACKAGE);
+		lmplayer->uapp = unique_app_new("com.lmplayer.Lmplayer", NULL);
+		lmplayer_options_register_remote_commands(lmplayer);
+		if(unique_app_is_running(lmplayer->uapp) != FALSE)
 		{
-			lmplayer_options_process_for_server(lmplayer->conn, &optionstate);
+			lmplayer_options_process_for_server(lmplayer->uapp, &optionstate);
 			gdk_notify_startup_complete ();
 			lmplayer_action_exit (lmplayer);
 		}
@@ -792,13 +818,6 @@ main(int argc, char* argv[])
 		lmplayer_action_set_mrl(lmplayer, NULL, NULL);
 	}
 
-	if(lmplayer->conn != NULL && bacon_message_connection_get_is_server (lmplayer->conn) != FALSE)
-	{
-		bacon_message_connection_set_callback (lmplayer->conn,
-				(BaconMessageReceivedFunc)
-				lmplayer_message_connection_receive_cb, lmplayer);
-	}
-	
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->win));
 
 	if(hasfiles)
@@ -815,6 +834,13 @@ main(int argc, char* argv[])
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(lmplayer->view), LMPLAYER_VIEW_TYPE_PLAYLIST);
 
 	lmplayer_search_init(lmplayer);
+
+	if(lmplayer->uapp != NULL) 
+	{
+		g_signal_connect(lmplayer->uapp, "message-received",
+				  G_CALLBACK(lmplayer_message_received_cb), lmplayer);
+	}
+
 	gtk_main();
 	return 0;
 }

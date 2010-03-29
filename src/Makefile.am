@@ -2,7 +2,7 @@ SUBDIRS = backend
 
 bin_PROGRAMS = lmplayer 
 libexec_PROGRAMS =
-noinst_LTLIBRARIES = libbaconmessageconnection.la liblmplayer-main.la 
+noinst_LTLIBRARIES = liblmplayer-main.la 
 
 common_defines = \
 	-D_REENTRANT					\
@@ -16,29 +16,6 @@ common_defines = \
 	$(DISABLE_DEPRECATED)
 
 modules_flags = -export_dynamic -avoid-version -module -no-undefined
-
-# Bacon message connection ltlibrary
-
-BACON_MESSAGE_CONNECTION = \
-	bacon-message-connection.c \
-	bacon-message-connection.h
-
-libbaconmessageconnection_la_SOURCES =	\
-	$(BACON_MESSAGE_CONNECTION)
-
-libbaconmessageconnection_la_CPPFLAGS = \
-	$(common_defines)	\
-	$(AM_CPPFLAGS)
-
-libbaconmessageconnection_la_CFLAGS = \
-	$(EXTRA_GNOME_CFLAGS)	\
-	$(WARN_CFLAGS)		\
-	$(DBUS_CFLAGS)		\
-	$(AM_CFLAGS)
-
-libbaconmessageconnection_la_LDFLAGS = \
-	$(AM_LDFLAGS)
-
 
 EGGDIR=$(srcdir)/../../libegg/libegg/recent-files/
 BACONDIR=$(srcdir)/../../libbacon/src
@@ -167,7 +144,6 @@ lmplayer_LDFLAGS = \
 
 lmplayer_LDADD =						\
 	backend/libbaconvideowidget.la			\
-	libbaconmessageconnection.la			\
 	liblmplayer-main.la \
 	$(top_builddir)/liblmplayer-plugin/liblmplayermodule.la \
 	$(EXTRA_GNOME_LIBS)				\
