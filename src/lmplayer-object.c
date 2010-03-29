@@ -1507,35 +1507,6 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmplayerRemoteCommand cmd, con
 	case LMPLAYER_REMOTE_COMMAND_TOGGLE_CONTROLS:
 		g_print(_("Do nothing!\n"));
 		break;
-	case LMPLAYER_REMOTE_COMMAND_SHOW_PLAYING:
-		{
-#if 0
-			char *title;
-			gboolean custom;
-
-			title = lmplayer_playlist_get_current_title(lmplayer->playlist, &custom);
-			bacon_message_connection_send(lmplayer->conn,
-					title ? title : SHOW_PLAYING_NO_TRACKS);
-			g_free (title);
-#endif
-		}
-		break;
-	case LMPLAYER_REMOTE_COMMAND_SHOW_VOLUME:
-		{
-#if 0
-			char *vol_str;
-			int vol;
-
-			if (bacon_video_widget_can_set_volume(lmplayer->bvw) == FALSE)
-				vol = 0;
-			else
-				vol = bacon_video_widget_get_volume(lmplayer->bvw);
-			vol_str = g_strdup_printf ("%d", vol);
-			bacon_message_connection_send(lmplayer->conn, vol_str);
-			g_free (vol_str);
-#endif
-		}
-		break;
 	case LMPLAYER_REMOTE_COMMAND_UP:
 		g_print(_("Do nothing!\n"));
 		break;
