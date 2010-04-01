@@ -30,6 +30,8 @@
 #include <gconf/gconf-client.h>
 #include <gtk/gtk.h>
 #include <unique/uniqueapp.h>
+#include <lyric-widget.h>
+#include <lyric-downloader.h>
 
 #include "bacon-video-widget.h"
 #include "lmplayer-playlist.h"
@@ -135,6 +137,9 @@ struct _LmplayerObject
 	LmplayerStates state;
 
 	LmplayerOpenLocation *open_location;
+
+	LmplayerLyricDownloader *lyric_downloader;
+	LmplayerLyricWidget *lyric_widget;
 };
 
 #define SEEK_FORWARD_OFFSET 60
@@ -157,6 +162,7 @@ gboolean lmplayer_action_open_files (LmplayerObject *lmplayer, char **list);
 
 void video_widget_create (LmplayerObject *lmplayer);
 void playlist_widget_setup(LmplayerObject *lmplayer);
+void lyric_widget_setup(LmplayerObject *lmplayer);
 
 G_END_DECLS
 

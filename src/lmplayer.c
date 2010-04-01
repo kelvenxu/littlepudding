@@ -66,8 +66,6 @@ gboolean seek_slider_released_cb(GtkWidget *widget, GdkEventButton *event, Lmpla
 static void lmplayer_volume_value_changed_cb(GtkScaleButton *hscale, gdouble value, LmplayerObject *lmplayer);
 static gchar * lmplayer_build_default_playlist_filename();
 
-//static gboolean lmplayer_build_lyric_name(LmplayerObject *lmplayer);
-//static gboolean lmplayer_load_local_lyric(LmplayerObject *lmplayer);
 
 /*
 static void
@@ -165,76 +163,7 @@ lmplayer_metadata_get_title(LmplayerObject *lmplayer)
 	return str_utf8;
 }
 
-#if 0
-static gboolean
-lmplayer_build_lyric_name(LmplayerObject *lmplayer)
-{
-	gchar *fn;
-	GError *error = NULL;
-	gboolean flag;
-	gint i;
-
-	if(lmplayer->lyric_filename)
-	{
-		g_free(lmplayer->lyric_filename);
-		lmplayer->lyric_filename = NULL;
-	}
-
-	if(lmplayer->mrl == NULL)
-		return FALSE;
-
-	fn = g_filename_from_uri(lmplayer->mrl, NULL, &error);
-	if(fn == NULL)
-	{
-		fprintf(stderr, _("Not found lyric file: %s\n"), error->message);
-		g_error_free(error);
-		return FALSE;
-	}
-
-	for(i = strlen(fn) - 1; i >=0; --i)
-	{
-		if(fn[i] == '.')
-		{
-			fn[i] = '\0';
-			flag = TRUE;
-			break;
-		}
-	}
-
-	if(!flag)
-	{
-		lmplayer->has_lyric = FALSE;
-		return FALSE;
-	}
-	
-	lmplayer->lyric_filename = g_strdup_printf("%s.lrc", fn);
-	
-	return TRUE;
-}
-#endif
-
-#if 0
-static gboolean
-lmplayer_load_local_lyric(LmplayerObject *lmplayer)
-{
-	static gint count = 0;
-
-	if(g_file_test(lmplayer->lyric_filename, G_FILE_TEST_EXISTS))
-	{
-		lmplayer_debug("load lyric: %s successfully\n", lmplayer->lyric_filename);
-		skin_lyric_add_file(lmplayer->lyricview, lmplayer->lyric_filename);
-		lmplayer->has_lyric = TRUE;
-	}
-
-	++count;
-	
-	if(lmplayer->has_lyric || count == 5)
-		return FALSE;
-
-	return TRUE;
-}
-#endif
-
+// FIXME: remove this function
 void
 lmplayer_load_net_lyric(LmplayerObject *lmplayer)
 {
@@ -794,7 +723,8 @@ main(int argc, char* argv[])
 
 	lmplayer_ui_manager_setup(lmplayer);
 	playlist_widget_setup(lmplayer);
-	video_widget_create(lmplayer);
+	video_widget_create(lmplayer); 
+	lyric_widget_setup(lmplayer);
 	
 	//TODO: 安装其它如会话管理、cd播放、文件监视等功能
 	lmplayer->state = STATE_STOPPED;
