@@ -571,6 +571,7 @@ data/icons/hicolor/scalable/apps/Makefile
 plugins/Makefile
 plugins/lmplayer/Makefile
 plugins/rereading/Makefile
+plugins/lyric/Makefile
 bindings/Makefile
 bindings/python/Makefile
 tests/Makefile

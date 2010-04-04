@@ -30,8 +30,6 @@
 #include <gconf/gconf-client.h>
 #include <gtk/gtk.h>
 #include <unique/uniqueapp.h>
-#include <lyric-widget.h>
-#include <lyric-downloader.h>
 
 #include "bacon-video-widget.h"
 #include "lmplayer-playlist.h"
@@ -121,9 +119,6 @@ struct _LmplayerObject
 	gchar *mrl;
 	gchar *pls; //notebook播放列表的配置文件
 	//LmplayerObjectPrivate *priv;
-	gchar *lyric_filename;
-	gboolean has_lyric;
-	gboolean lyric_downloaded;
 
 	GtkWidget *prefs_button;
 	GtkWidget *prefs;
@@ -137,9 +132,7 @@ struct _LmplayerObject
 	LmplayerStates state;
 
 	LmplayerOpenLocation *open_location;
-
-	LmplayerLyricDownloader *lyric_downloader;
-	LmplayerLyricWidget *lyric_widget;
+	GtkWidget *extra_widget_box;
 };
 
 #define SEEK_FORWARD_OFFSET 60
@@ -162,7 +155,6 @@ gboolean lmplayer_action_open_files (LmplayerObject *lmplayer, char **list);
 
 void video_widget_create (LmplayerObject *lmplayer);
 void playlist_widget_setup(LmplayerObject *lmplayer);
-void lyric_widget_setup(LmplayerObject *lmplayer);
 
 G_END_DECLS
 

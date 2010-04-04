@@ -33,7 +33,6 @@
 #include <glib/gi18n.h>
 #include <glib.h>
 #include <stdlib.h>
-#include "lyric-downloader-tt.h"
 
 #define REWIND_OR_PREVIOUS 4000
 
@@ -60,6 +59,7 @@ enum {
 	FILE_OPENED,
 	FILE_CLOSED,
 	METADATA_UPDATED,
+	START_PLAYING,
 	LAST_SIGNAL
 };
 
@@ -89,8 +89,6 @@ struct _LmplayerObjectPrivate
 
 static gboolean lmplayer_action_open_files_list(LmplayerObject *lmplayer, GSList *list);
 static gboolean lmplayer_action_open_dialog (LmplayerObject *lmplayer, const char *path, gboolean play);
-static gboolean lmplayer_build_lyric_name(LmplayerObject *lmplayer);
-static gboolean lmplayer_load_local_lyric(LmplayerObject *lmplayer);
 
 static void
 lmplayer_object_dispose (LmplayerObject *self)
@@ -220,6 +218,15 @@ lmplayer_object_class_init (LmplayerObjectClass *self_class)
 				NULL, NULL,
 				lmplayerobject_marshal_VOID__STRING_STRING_STRING,
 				G_TYPE_NONE, 3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+
+	lmplayer_table_signals[START_PLAYING] =
+		g_signal_new ("start-playing",
+				G_TYPE_FROM_CLASS (object_class),
+				G_SIGNAL_RUN_LAST,
+				G_STRUCT_OFFSET (LmplayerObjectClass, start_playing),
+				NULL, NULL,
+				g_cclosure_marshal_VOID__STRING,
+				G_TYPE_NONE, 1, G_TYPE_STRING);
 }
 
 /**
@@ -355,6 +362,18 @@ lmplayer_get_stream_length(LmplayerObject *lmplayer)
 	return bacon_video_widget_get_stream_length(lmplayer->bvw);
 }
 
+/* will free it */
+gchar *
+lmplayer_get_current_mrl(LmplayerObject *lmplayer)
+{
+	char *mrl; 
+	char *subtitle;
+
+	mrl = lmplayer_playlist_get_current_mrl(lmplayer->playlist, &subtitle);
+
+	return mrl;
+}
+
 gboolean
 lmplayer_is_fullscreen(LmplayerObject *lmplayer)
 {
@@ -405,6 +424,72 @@ lmplayer_is_seekable (LmplayerObject *lmplayer)
 		return FALSE;
 
 	return bacon_video_widget_is_seekable (lmplayer->bvw) != FALSE;
+}
+
+// 取得string类型的metadata, 并将其转换成utf8编码
+static gchar *
+lmplayer_metadata_get_artist(LmplayerObject *lmplayer)
+{
+	gchar *str = NULL;
+	gchar *str_utf8 = NULL;
+	GValue value = { 0, };
+
+	bacon_video_widget_get_metadata(lmplayer->bvw, BVW_INFO_ARTIST, &value);
+	str = g_value_dup_string (&value);
+	g_value_unset (&value);
+
+	if(str)
+	{
+		str_utf8 = lmplayer_encode_convert_to_utf8(str);
+		g_free (str);
+	}
+
+	return str_utf8;
+}
+
+gchar *
+lmplayer_get_current_title(LmplayerObject *lmplayer)
+{
+	gchar *str = NULL;
+	gchar *str_utf8 = NULL;
+	GValue value = { 0, };
+
+	g_return_val_if_fail(LMPLAYER_IS_OBJECT(lmplayer), NULL);
+
+	bacon_video_widget_get_metadata(lmplayer->bvw, BVW_INFO_TITLE, &value);
+	str = g_value_dup_string (&value);
+	g_value_unset (&value);
+
+	if(str)
+	{
+		str_utf8 = lmplayer_encode_convert_to_utf8(str);
+		g_free (str);
+	}
+
+	return str_utf8;
+
+}
+
+gchar *
+lmplayer_get_current_artist(LmplayerObject *lmplayer)
+{
+	gchar *str = NULL;
+	gchar *str_utf8 = NULL;
+	GValue value = { 0, };
+
+	g_return_val_if_fail(LMPLAYER_IS_OBJECT(lmplayer), NULL);
+
+	bacon_video_widget_get_metadata(lmplayer->bvw, BVW_INFO_ARTIST, &value);
+	str = g_value_dup_string (&value);
+	g_value_unset (&value);
+
+	if(str)
+	{
+		str_utf8 = lmplayer_encode_convert_to_utf8(str);
+		g_free (str);
+	}
+
+	return str_utf8;
 }
 
 static void 
@@ -507,9 +592,9 @@ lmplayer_action_play (LmplayerObject *lmplayer)
 	lmplayer_debug("retval: %d", retval);
 	if (retval != FALSE)
 	{
-		lmplayer->has_lyric = FALSE;
-		lmplayer_build_lyric_name(lmplayer);
-		lmplayer_load_local_lyric(lmplayer);
+		g_signal_emit (G_OBJECT (lmplayer),
+						 lmplayer_table_signals[START_PLAYING],
+						 0, lmplayer->mrl);
 		return;
 	}
 
@@ -1206,9 +1291,6 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 		lmplayer->pls = NULL;
 	}
 
-	if(lmplayer->lyric_filename)
-		g_free(lmplayer->lyric_filename);
-
 	if(lmplayer->bvw) 
 	{
 		int vol;
@@ -1767,13 +1849,6 @@ on_got_metadata_event (BaconVideoWidget *bvw, LmplayerObject *lmplayer)
 	lmplayer_playlist_set_stream_length(LMPLAYER_PLAYLIST(lmplayer->playlist), lmplayer->stream_length);
 	lmplayer_info_update(lmplayer);
 	playlist_active_name_changed_cb (LMPLAYER_PLAYLIST (lmplayer->playlist), lmplayer);
-
-#if 0
-	if(lmplayer->has_lyric == FALSE && lmplayer->lyric_downloaded == FALSE)
-	{
-		lmplayer_load_net_lyric(lmplayer);
-	}
-#endif
 }
 
 static void
@@ -1822,9 +1897,6 @@ update_current_time (BaconVideoWidget *bvw,
 
 			gtk_range_set_range(GTK_RANGE(lmplayer->seek), 0.0, (gdouble)stream_length);
 			gtk_range_set_value(GTK_RANGE(lmplayer->seek), (gdouble)current_time);
-
-			if(lmplayer->has_lyric)
-				lmplayer_lyric_widget_set_current_second(lmplayer->lyric_widget, current_time / 1000);
 		}
 	}
 
@@ -2017,118 +2089,23 @@ playlist_widget_setup(LmplayerObject *lmplayer)
 			G_CALLBACK (playlist_subtitle_changed_cb), lmplayer);
 }
 
-static gboolean
-lmplayer_build_lyric_name(LmplayerObject *lmplayer)
+void
+lmplayer_add_extra_widget(LmplayerObject *lmplayer, GtkWidget *widget)
 {
-	gchar *fn;
-	GError *error = NULL;
-	gboolean flag;
-	gint i;
-
-	if(lmplayer->lyric_filename)
-	{
-		g_free(lmplayer->lyric_filename);
-		lmplayer->lyric_filename = NULL;
-	}
-
-	if(lmplayer->mrl == NULL)
-		return FALSE;
-
-	fn = g_filename_from_uri(lmplayer->mrl, NULL, &error);
-	if(fn == NULL)
-	{
-		fprintf(stderr, _("Not found lyric file: %s\n"), error->message);
-		g_error_free(error);
-		return FALSE;
-	}
-
-	for(i = strlen(fn) - 1; i >=0; --i)
-	{
-		if(fn[i] == '.')
-		{
-			fn[i] = '\0';
-			flag = TRUE;
-			break;
-		}
-	}
-
-	if(!flag)
-	{
-		lmplayer->has_lyric = FALSE;
-		return FALSE;
-	}
-	
-	lmplayer->lyric_filename = g_strdup_printf("%s.lrc", fn);
-	
-	return TRUE;
-}
-
-static gboolean
-lmplayer_load_local_lyric(LmplayerObject *lmplayer)
-{
-	lmplayer->has_lyric = FALSE;
-
-	if(g_file_test(lmplayer->lyric_filename, G_FILE_TEST_EXISTS))
-	{
-		lmplayer_debug("load lyric: %s successfully\n", lmplayer->lyric_filename);
-		lmplayer_lyric_widget_add_file(lmplayer->lyric_widget, lmplayer->lyric_filename);
-		lmplayer->has_lyric = TRUE;
-	}
-
-	if(lmplayer->has_lyric)
-		return FALSE;
-
-	return TRUE;
-}
-
-static void
-lyric_downloader_finished_cb(LmplayerLyricDownloader *downloader, LmplayerObject *lmplayer)
-{
-	g_print("download finished \n");
-	// add file to lyric widget ? which file ?
-	
-	lmplayer_load_local_lyric(lmplayer);
-}
-
-static gboolean            
-lyric_box_configure_cb(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data)
-{
-	g_print("lyric_box configure cb\n");
-	return FALSE;
-}
-
-void 
-lyric_widget_setup(LmplayerObject *lmplayer)
-{
-	GtkWidget *box;
-	LmplayerLyricWidget *widget = NULL;
-
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+	g_return_if_fail(GTK_IS_WIDGET(widget));
+	g_return_if_fail(GTK_IS_CONTAINER(lmplayer->extra_widget_box));
 
-	widget = LMPLAYER_LYRIC_WIDGET(lmplayer_lyric_widget_new());
+	gtk_container_add(GTK_CONTAINER(lmplayer->extra_widget_box), widget);
+}
 
-	lmplayer->lyric_widget = widget;
+void
+lmplayer_remove_extra_widget(LmplayerObject *lmplayer, GtkWidget *widget)
+{
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+	g_return_if_fail(GTK_IS_WIDGET(widget));
+	g_return_if_fail(GTK_IS_CONTAINER(lmplayer->extra_widget_box));
 
-	box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-lyric-box");
-	gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(widget));
-
-	GtkStyle *style = gtk_widget_get_default_style();
-	lmplayer_lyric_widget_set_color(widget, 
-			&(style->white),
-			&(style->black),
-			//&(style->bg[GTK_STATE_NORMAL]), 
-			//&(style->fg[GTK_STATE_NORMAL]), 
-			//&(style->fg[GTK_STATE_PRELIGHT]));
-			&(style->bg[GTK_STATE_SELECTED]));
-	lmplayer_lyric_widget_set_size(widget, 200, 400);
-	g_signal_connect(G_OBJECT(box), "configure-event", G_CALLBACK(lyric_box_configure_cb), lmplayer);
-	gtk_widget_show_all(GTK_WIDGET(widget));
-
-	LmplayerLyricDownloader *downloader = NULL;
-	//downloader = lmplayer_lyric_downloader_new();
-	downloader = g_object_new(LMPLAYER_TYPE_LYRIC_DOWNLOADER_TT, NULL);
-
-	g_signal_connect(G_OBJECT(downloader), "download_finished", 
-			G_CALLBACK(lyric_downloader_finished_cb), lmplayer);
+	gtk_container_remove(GTK_CONTAINER(lmplayer->extra_widget_box), widget);
 }
 

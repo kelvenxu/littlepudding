@@ -114,6 +114,7 @@ struct _LmplayerObjectClass
 	void (*file_opened)			(LmplayerObject *lmplayer, const char *mrl);
 	void (*file_closed)			(LmplayerObject *lmplayer);
 	void (*metadata_updated) (LmplayerObject *lmplayer, const char *artist, const char *title, const char *album);
+	void (*start_playing)			(LmplayerObject *lmplayer, const char *mrl);
 };
 
 
@@ -187,6 +188,10 @@ void lmplayer_object_plugins_shutdown (void);
 void lmplayer_add_tools_button(LmplayerObject *lmplayer, GtkWidget *button);
 void lmplayer_remove_tools_button(LmplayerObject *lmplayer, GtkWidget *button);
 
+gchar *lmplayer_get_current_title(LmplayerObject *lmplayer);
+gchar *lmplayer_get_current_artist(LmplayerObject *lmplayer);
+gchar *lmplayer_get_current_mrl(LmplayerObject *lmplayer);
+
 GtkWindow * lmplayer_get_main_window(LmplayerObject *lmplayer);
 GtkUIManager *lmplayer_get_ui_manager(LmplayerObject *lmplayer);
 GtkWidget *lmplayer_get_video_widget(LmplayerObject *lmplayer);
@@ -202,6 +207,9 @@ gboolean lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
 void lmplayer_action_remote (LmplayerObject *lmplayer, 
 															LmplayerRemoteCommand cmd, 
 															const char *url);
+
+void lmplayer_add_extra_widget(LmplayerObject *lmplayer, GtkWidget *widget);
+void lmplayer_remove_extra_widget(LmplayerObject *lmplayer, GtkWidget *widget);
 
 G_END_DECLS
 

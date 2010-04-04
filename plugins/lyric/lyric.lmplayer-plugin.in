@@ -1,0 +1,9 @@
+[Lmplayer Plugin]
+	Module=lyric
+	IAge=1
+	Builtin=false
+	Name=Lyric
+	Description=Lyric view for lmplayer.
+	Authors=kelvenxu
+	Copyright=Copyright © 2010
+	Website=http://www.lmplayer.com/

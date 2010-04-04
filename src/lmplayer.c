@@ -122,89 +122,7 @@ lmplayer_dvb_setup_result (int result, const char *device, gpointer user_data)
 
 
 
-// 取得string类型的metadata, 并将其转换成utf8编码
-static gchar *
-lmplayer_metadata_get_artist(LmplayerObject *lmplayer)
-{
-	gchar *str = NULL;
-	gchar *str_utf8 = NULL;
-	GValue value = { 0, };
 
-	bacon_video_widget_get_metadata(lmplayer->bvw, BVW_INFO_ARTIST, &value);
-	str = g_value_dup_string (&value);
-	g_value_unset (&value);
-
-	if(str)
-	{
-		str_utf8 = lmplayer_encode_convert_to_utf8(str);
-		g_free (str);
-	}
-
-	return str_utf8;
-}
-
-static gchar *
-lmplayer_metadata_get_title(LmplayerObject *lmplayer)
-{
-	gchar *str = NULL;
-	gchar *str_utf8 = NULL;
-	GValue value = { 0, };
-
-	bacon_video_widget_get_metadata(lmplayer->bvw, BVW_INFO_TITLE, &value);
-	str = g_value_dup_string (&value);
-	g_value_unset (&value);
-
-	if(str)
-	{
-		str_utf8 = lmplayer_encode_convert_to_utf8(str);
-		g_free (str);
-	}
-
-	return str_utf8;
-}
-
-// FIXME: remove this function
-void
-lmplayer_load_net_lyric(LmplayerObject *lmplayer)
-{
-	gchar *title;
-	gchar *artist;
-	//gchar *cmd;
-
-	printf("download lyric from net\n");
-	if(g_file_test(lmplayer->lyric_filename, G_FILE_TEST_EXISTS))
-		return;
-
-    title = lmplayer_metadata_get_title(lmplayer);
-	if(title == NULL)
-		return;
-
-   	artist = lmplayer_metadata_get_artist(lmplayer);
-	if(artist == NULL)
-	{
-		g_free(title);
-		return;
-	}
-	//cmd = g_strdup_printf("lyric-downloader --title %s --artist %s --output %s", 
-	//		title, artist, lmplayer->lyric_filename);
-	//printf("%s\n", cmd);
-	//int re = system(cmd);
-	
-	if(fork() == 0)
-	{
-		execlp("lyric-downloader", 
-				"lyric-downloader",
-				"-a", artist,
-				"-t", title,
-				"-o", lmplayer->lyric_filename,
-				NULL);
-	}
-	//g_free(cmd);
-	g_free(title);
-	g_free(artist);
-	lmplayer->lyric_downloaded = TRUE;
-	//g_timeout_add(1000, (GSourceFunc)lmplayer_load_local_lyric, lmplayer);
-}
 
 /**
  * lmplayer_build_default_playlist_filename:
@@ -713,6 +631,7 @@ main(int argc, char* argv[])
 	lmplayer->plugin_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-plugin-button");
 	lmplayer->prefs_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-preference-button");
 	lmplayer->plugins_box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-plugins-box");
+	lmplayer->extra_widget_box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-extra-widget-box");
 	
 	lmplayer_search_view_setup(lmplayer);
 
@@ -724,7 +643,6 @@ main(int argc, char* argv[])
 	lmplayer_ui_manager_setup(lmplayer);
 	playlist_widget_setup(lmplayer);
 	video_widget_create(lmplayer); 
-	lyric_widget_setup(lmplayer);
 	
 	//TODO: 安装其它如会话管理、cd播放、文件监视等功能
 	lmplayer->state = STATE_STOPPED;
