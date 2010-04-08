@@ -1,7 +1,7 @@
 AC_PREREQ(2.52)
 
 m4_define(lmplayer_version_major, 0)
-m4_define(lmplayer_version_minor, 10)
+m4_define(lmplayer_version_minor, 12)
 m4_define(lmplayer_version_micro, 0)
 
 AC_INIT([lmplayer],
