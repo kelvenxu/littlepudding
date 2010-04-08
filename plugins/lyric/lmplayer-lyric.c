@@ -229,7 +229,6 @@ start_playing_cb(LmplayerObject *lmplayer, gchar *mrl, LmplayerLyricPlugin *self
 static void
 lyric_downloader_finished_cb(LmplayerLyricDownloader *downloader, LmplayerLyricPlugin *self)
 {
-	g_print("download finished \n");
 	// add file to lyric widget ? which file ?
 	
 	load_local_lyric(self);
@@ -242,7 +241,6 @@ lyric_box_resize_cb(GtkWidget *widget, GtkAllocation *allocation, LmplayerLyricP
 	static gint height;
 	if(width != allocation->width || height != allocation->height)
 	{
-		g_print("lyric_box configure cb: w: %d h: %d\n", allocation->width, allocation->height);
 		//lmplayer_lyric_widget_set_size(LMPLAYER_LYRIC_WIDGET(self->lyric_widget), 
 		//															allocation->width, 
 		//															allocation->height);

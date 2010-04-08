@@ -44,9 +44,6 @@
 #include "lmplayer-dvb-setup.h"
 #include "lmplayer-encode.h"
 #include "lmplayer-utils.h"
-#include "lmplayer-debug.h"
-#include "lmplayer-skin.h"
-#include "lmplayer-magnetic.h"
 #include "search-library.h"
 #include "lmplayer-search.h"
 #include "lmplayer-config.h"
@@ -118,10 +115,6 @@ lmplayer_dvb_setup_result (int result, const char *device, gpointer user_data)
 }
 */
 
-
-
-
-
 /**
  * lmplayer_build_default_playlist_filename:
  *
@@ -177,7 +170,6 @@ lmplayer_action_change_skin(LmplayerObject *lmplayer)
 gboolean
 seek_slider_pressed_cb (GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer)
 {
-	lmplayer_debug(" ");
 	lmplayer->seek_lock = TRUE;
 	//lmplayer_statusbar_set_seeking (LMPLAYER_STATUSBAR(lmplayer->statusbar), TRUE);
 
@@ -275,7 +267,6 @@ order_switch_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 			lmplayer_playlist_set_repeat(lmplayer->playlist, FALSE);
 			lmplayer->repeat = FALSE;
 			lmplayer->repeat_one = FALSE;
-			printf("normal order\n");
 			gtk_image_set_from_file(GTK_IMAGE(image), DATADIR"/lmplayer/order.png");
 			break;
 		case LMPLAYER_ORDER_REPEAT:
@@ -283,14 +274,12 @@ order_switch_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 			lmplayer->repeat = TRUE;
 			lmplayer->repeat_one = FALSE;
 			gtk_image_set_from_file(GTK_IMAGE(image), DATADIR"/lmplayer/repeat.png");
-			printf("repeat order\n");
 			break;
 		case LMPLAYER_ORDER_REPEAT_ONE:
 			lmplayer_playlist_set_repeat(lmplayer->playlist, FALSE);
 			lmplayer->repeat_one = TRUE;
 			lmplayer->repeat = FALSE;
 			gtk_image_set_from_file(GTK_IMAGE(image), DATADIR"/lmplayer/repeat-one.png");
-			printf("repeat_one\n");
 			break;
 	}
 }
@@ -315,48 +304,6 @@ lmplayer_plugins_response_cb(GtkDialog *dialog, int response_id, gpointer data)
 	if (response_id == GTK_RESPONSE_CLOSE)
 		gtk_widget_hide (GTK_WIDGET (dialog));
 }
-
-#if 0
-static void
-plugin_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
-{
-	if(!lmplayer->plugins_manager_dialog)
-	{
-		GtkWidget *manager;
-
-		lmplayer->plugins_manager_dialog = gtk_dialog_new_with_buttons (_("Configure Plugins"),
-							      GTK_WINDOW(lmplayer->win),
-							      GTK_DIALOG_DESTROY_WITH_PARENT,
-							      GTK_STOCK_CLOSE,
-							      GTK_RESPONSE_CLOSE,
-							      NULL);
-
-		gtk_container_set_border_width(GTK_CONTAINER(lmplayer->plugins_manager_dialog), 5);
-		gtk_box_set_spacing (GTK_BOX(GTK_DIALOG(lmplayer->plugins_manager_dialog)->vbox), 2);
-		gtk_dialog_set_has_separator(GTK_DIALOG(lmplayer->plugins_manager_dialog), FALSE);
-
-		g_signal_connect_object(G_OBJECT(lmplayer->plugins_manager_dialog),
-					 "delete_event",
-					 G_CALLBACK (lmplayer_plugins_window_delete_cb),
-					 NULL, 0);
-
-		g_signal_connect_object(G_OBJECT(lmplayer->plugins_manager_dialog),
-					 "response",
-					 G_CALLBACK (lmplayer_plugins_response_cb),
-					 NULL, 0);
-
-		manager = lmplayer_plugin_manager_new();
-
-		gtk_widget_show_all(GTK_WIDGET(manager));
-		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(lmplayer->plugins_manager_dialog)->vbox), manager);
-	}
-
-	gtk_window_present(GTK_WINDOW(lmplayer->plugins_manager_dialog));
-
-	//if(lmplayer->plugins_manager_dialog)
-	//	gtk_widget_show_all(lmplayer->plugins_manager_dialog);
-}
-#endif
 
 static void 
 about_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
@@ -423,7 +370,6 @@ lmplayer_callback_connect(LmplayerObject *lmplayer)
 				G_CALLBACK(order_switch_button_clicked_cb), lmplayer);
 
 	g_signal_connect(G_OBJECT(lmplayer->about_button), "clicked", G_CALLBACK(about_button_clicked_cb), lmplayer);
-	//g_signal_connect(G_OBJECT(lmplayer->plugin_button), "clicked", G_CALLBACK(plugin_button_clicked_cb), lmplayer);
 	g_signal_connect(G_OBJECT(lmplayer->prefs_button), "clicked", G_CALLBACK(prefs_button_clicked_cb), lmplayer);
 	g_signal_connect(G_OBJECT(lmplayer->win), "destroy", G_CALLBACK(main_window_destroy_cb), lmplayer);
 	
@@ -514,10 +460,36 @@ lmplayer_message_connection_receive_cb (const char *msg, LmplayerObject *lmp)
 	else
 		url = NULL;
 
-	lmplayer_debug("url: %s", url);
 	lmplayer_action_remote (lmp, command, url);
 
 	g_free (url);
+}
+
+static GtkBuilder *
+lmplayer_load_ui(LmplayerObject *lmplayer)
+{
+	gchar *uiname = NULL;
+	GtkBuilder *builder = NULL;
+
+	gchar *ui = gconf_client_get_string(lmplayer->gc, GCONF_PREFIX"/ui", NULL);
+	if(ui)
+	{
+		uiname = g_build_filename("ui", ui, NULL);
+		g_free(ui);
+	}
+	else
+	{
+		gconf_client_set_string(lmplayer->gc, GCONF_PREFIX"/ui", "lmplayer-default.ui", NULL);
+		uiname = g_strdup("ui/lmplayer-default.ui");
+	}
+
+	if(uiname)
+	{
+		builder = lmplayer_interface_load(uiname, TRUE, NULL, NULL);
+		g_free(uiname);
+	}
+
+	return builder;
 }
 
 int 
@@ -575,7 +547,6 @@ main(int argc, char* argv[])
 
 	if(optionstate.notconnectexistingsession == FALSE)
 	{
-		//lmplayer->conn = bacon_message_connection_new(GETTEXT_PACKAGE);
 		lmplayer->uapp = unique_app_new("com.lmplayer.Lmplayer", NULL);
 		lmplayer_options_register_remote_commands(lmplayer);
 		if(unique_app_is_running(lmplayer->uapp) != FALSE)
@@ -594,27 +565,11 @@ main(int argc, char* argv[])
 		lmplayer_options_process_early (lmplayer, &optionstate);
 	}
 
-	gchar *ui = gconf_client_get_string(gc, GCONF_PREFIX"/ui", NULL);
-	if(!ui)
+	lmplayer->builder = lmplayer_load_ui(lmplayer);
+	if(!lmplayer->builder)
 	{
-		ui = g_strdup("lmplayer-default.ui");
-		gconf_client_set_string(gc, GCONF_PREFIX"/ui", ui, NULL);
-	}
-
-	gchar *uiname = g_build_filename("ui", ui, NULL);
-	g_free(ui);
-
-	//lmplayer->builder = lmplayer_interface_load("lmplayer-default.ui", TRUE, NULL, NULL);
-	//lmplayer->builder = lmplayer_interface_load("lmplayer-classic.ui", TRUE, NULL, NULL);
-	lmplayer->builder = lmplayer_interface_load(uiname, TRUE, NULL, NULL);
-	if(lmplayer->builder == NULL)
-	{
-		g_free(uiname);
 		lmplayer_action_exit(NULL);
 	}
-
-	g_free(uiname);
-
 	
 	lmplayer->win = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-window");
 	if(lmplayer->win == NULL)
@@ -622,19 +577,27 @@ main(int argc, char* argv[])
 		lmplayer_action_exit(NULL);
 	}
 
-	lmplayer->seek = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-progressbar");
+	lmplayer->seek = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, 
+			"player-progressbar");
 	lmplayer->seekadj = gtk_range_get_adjustment(GTK_RANGE(lmplayer->seek));
 
 	lmplayer->volume = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-volume");
-	//lmplayer->statusbar = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "tmw_statusbar"));
+	//lmplayer->statusbar = GTK_WIDGET(gtk_builder_get_object(lmplayer->xml, "player-statusbar"));
 	lmplayer->view = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-view");
-	lmplayer->playlist_view_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-playlist-view-button");
-	lmplayer->order_switch_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-order-switch-button");
-	lmplayer->about_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-about-button");
-	lmplayer->plugin_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-plugin-button");
-	lmplayer->prefs_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-preference-button");
-	lmplayer->plugins_box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-plugins-box");
-	lmplayer->extra_widget_box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-extra-widget-box");
+	lmplayer->playlist_view_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, 
+			"player-playlist-view-button");
+	lmplayer->order_switch_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, 
+			"player-order-switch-button");
+	lmplayer->about_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, 
+			"player-about-button");
+	lmplayer->plugin_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, 
+			"player-plugin-button");
+	lmplayer->prefs_button = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, 
+			"player-preference-button");
+	lmplayer->plugins_box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, 
+			"player-plugins-box");
+	lmplayer->extra_widget_box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, 
+			"player-extra-widget-box");
 	
 	lmplayer_search_view_setup(lmplayer);
 
@@ -647,7 +610,6 @@ main(int argc, char* argv[])
 	playlist_widget_setup(lmplayer);
 	video_widget_create(lmplayer); 
 	
-	//TODO: 安装其它如会话管理、cd播放、文件监视等功能
 	lmplayer->state = STATE_STOPPED;
 	lmplayer->seek_lock = FALSE;
 
@@ -678,7 +640,6 @@ main(int argc, char* argv[])
 	}
 	else
 	{
-		lmplayer_debug("load default playlist");
 		lmplayer_action_load_default_playlist(lmplayer);
 	}
 

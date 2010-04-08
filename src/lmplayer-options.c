@@ -28,7 +28,6 @@
 
 #include "lmplayer-options.h"
 #include "lmplayer-uri.h"
-#include "lmplayer-debug.h"
 #include "lmplayer-private.h"
 
 LmpCmdLineOptions optionstate;	/* Decoded command line options */
@@ -58,11 +57,9 @@ const GOptionEntry options[] = {
 void
 lmplayer_options_process_late (LmplayerObject *lmplayper, const LmpCmdLineOptions* options)
 {
-	lmplayer_debug(" ");
 	/* Handle --playlist-idx */
 	lmplayper->index = options->playlistidx;
 
-	lmplayer_debug(" ");
 	/* Handle --seek */
 	lmplayper->seek_to = options->seek;
 }

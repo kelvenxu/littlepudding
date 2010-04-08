@@ -24,7 +24,6 @@
 
 #include "lmplayer-private.h"
 #include "lmplayerobject-marshal.h"
-#include "lmplayer-debug.h"
 #include "lmplayer-uri.h"
 #include "lmplayer-utils.h"
 #include "lmplayer-interface.h"
@@ -282,7 +281,6 @@ void
 lmplayer_file_opened (LmplayerObject *lmplayer,
 		   const char *mrl)
 {
-	lmplayer_debug(" ");
 	g_signal_emit (G_OBJECT (lmplayer),
 		       lmplayer_table_signals[FILE_OPENED],
 		       0, mrl);
@@ -545,17 +543,14 @@ play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 	switch (state)
 	{
 	case STATE_PLAYING:
-		lmplayer_debug("playing");
 		lmplayer_statusbar_set_text(lmplayer, _("Status: Playing"));
 		lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_PLAYING);
 		break;
 	case STATE_PAUSED:
-		lmplayer_debug("paused");
 		lmplayer_statusbar_set_text(lmplayer, _("Status: Paused"));
 		lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_PAUSED);
 		break;
 	case STATE_STOPPED:
-		lmplayer_debug("stop");
 		lmplayer_statusbar_set_text(lmplayer, _("Status: Stopped"));
 		lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_NONE);
 		break;
@@ -568,7 +563,6 @@ play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 
 	update_buttons(lmplayer);
 
-	lmplayer_debug(" ");
 	g_object_notify(G_OBJECT(lmplayer), "playing");
 }
 
@@ -589,7 +583,6 @@ lmplayer_action_play (LmplayerObject *lmplayer)
 	retval = bacon_video_widget_play (lmplayer->bvw,  &err);
 	play_pause_set_label(lmplayer, retval ? STATE_PLAYING : STATE_STOPPED);
 
-	lmplayer_debug("retval: %d", retval);
 	if (retval != FALSE)
 	{
 		g_signal_emit (G_OBJECT (lmplayer),
@@ -800,7 +793,6 @@ lmplayer_action_volume_relative (LmplayerObject *lmplayer, double off_pct)
 {
 	double vol;
 
-	lmplayer_debug(" ");
 	g_return_if_fail(lmplayer != NULL);
 
 	if (bacon_video_widget_can_set_volume (lmplayer->bvw) == FALSE)
@@ -926,7 +918,6 @@ lmplayer_action_open_files (LmplayerObject *lmplayer, char **list)
 
 	for (i = 0; list[i] != NULL; i++)
 	{
-		lmplayer_debug("file: %s", list[i]);
 		slist = g_slist_prepend(slist, list[i]);
 	}
 
@@ -972,10 +963,8 @@ lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
 {
 	gboolean retval = TRUE;
 
-	lmplayer_debug(" ");
 	if (lmplayer->mrl != NULL)
 	{
-		lmplayer_debug(" ");
 		g_free (lmplayer->mrl);
 		lmplayer->mrl = NULL;
 		bacon_video_widget_close (lmplayer->bvw);
@@ -985,8 +974,6 @@ lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
 
 	if (mrl == NULL)
 	{
-		lmplayer_debug(" ");
-
 		retval = FALSE;
 
 		play_pause_set_label (lmplayer, LMPLAYER_PLAYLIST_STATUS_NONE);
@@ -1003,7 +990,6 @@ lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
 		if (subtitle == NULL && lmplayer->autoload_subs != FALSE)
 			autoload_sub = lmplayer_uri_get_subtitle_uri (mrl);
 
-		lmplayer_debug("bacon_video_widget_open_with_subtitle: mrl=%s", mrl);
 		lmplayer_window_set_waiting_cursor (GTK_WIDGET(lmplayer->win)->window);
 		retval = bacon_video_widget_open_with_subtitle (lmplayer->bvw, mrl,
 								subtitle ? subtitle : autoload_sub, &err);
@@ -1038,7 +1024,6 @@ lmplayer_action_set_mrl_with_warning (LmplayerObject *lmplayer,
 
 		if (retval == FALSE)
 		{
-			lmplayer_debug(" ");
 			if (err)
 				g_error_free (err);
 			g_free (lmplayer->mrl);
@@ -1196,7 +1181,6 @@ lmplayer_action_play_media (LmplayerObject *lmplayer, TotemDiscMediaType type, c
 void
 lmplayer_action_stop (LmplayerObject *lmplayer)
 {
-	lmplayer_debug(" ");
 	bacon_video_widget_stop (lmplayer->bvw);
 	play_pause_set_label (lmplayer, STATE_STOPPED);
 }
@@ -1211,7 +1195,6 @@ lmplayer_action_stop (LmplayerObject *lmplayer)
 void
 lmplayer_action_play_pause (LmplayerObject *lmplayer)
 {
-	lmplayer_debug(" ");
 	if (lmplayer->mrl == NULL)
 	{
 		char *mrl, *subtitle;
@@ -1277,7 +1260,6 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	
 	if (gtk_main_level () > 0)
 	{
-		lmplayer_debug(" gtk main quit");
 		gtk_main_quit ();
 	}
 
@@ -1786,7 +1768,7 @@ lmplayer_info_update(LmplayerObject *lmplayer)
 static gboolean
 on_eos_event (GtkWidget *widget, LmplayerObject *lmplayer)
 {
-	lmplayer_debug(" ");
+	g_return_val_if_fail(LMPLAYER_IS_OBJECT(lmplayer), FALSE);
 
 	if(lmplayer->repeat_one)
 	{
@@ -2003,8 +1985,6 @@ playlist_current_removed_cb (GtkWidget *playlist, LmplayerObject *lmplayer)
 {
 	char *mrl, *subtitle;
 
-	lmplayer_debug("playlist_current_removed_cb");
-
 	/* Set play button status */
 	play_pause_set_label(lmplayer, STATE_STOPPED);
 	mrl = lmplayer_playlist_get_current_mrl(lmplayer->playlist, &subtitle);
@@ -2043,13 +2023,11 @@ playlist_subtitle_changed_cb (GtkWidget *playlist, LmplayerObject *lmplayer)
 static void
 playlist_repeat_toggled_cb (LmplayerPlaylist *playlist, gboolean repeat, LmplayerObject *lmplayer)
 {
-	lmplayer_debug("playlist_repeat_toggled_cb");
 }
 
 static void
 playlist_shuffle_toggled_cb (LmplayerPlaylist *playlist, gboolean shuffle, LmplayerObject *lmplayer)
 {
-	lmplayer_debug("playlist_shuffle_toggled_cb");
 }
 
 void 
