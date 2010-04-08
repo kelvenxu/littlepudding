@@ -46,6 +46,13 @@ typedef struct
 	GtkWidget *dialog;
 	GtkWidget *tool_button;
 
+	GtkBuilder *builder;
+	GtkWidget *start_button;
+	GtkWidget *end_button;
+	GtkWidget *stop_button;
+	GtkWidget *quit_button;
+	GtkWidget *readme_label;
+
 	gint64 start;
 	gint64 end;
 	gint64 slength;
@@ -87,6 +94,13 @@ lmplayer_rereading_plugin_init(LmplayerRereadingPlugin *plugin)
 	plugin->start = -1;
 	plugin->end = -1;
 	plugin->slength = -1;
+
+	plugin->builder = NULL;
+	plugin->start_button = NULL;
+	plugin->end_button = NULL;
+	plugin->stop_button = NULL;
+	plugin->quit_button = NULL;
+	plugin->readme_label = NULL;
 }
 
 static void
@@ -161,26 +175,39 @@ timer_cb(LmplayerRereadingPlugin *self)
 static void
 active_button_clicked_cb(GtkButton *button, LmplayerRereadingPlugin *self)
 {
+	g_return_if_fail(LMPLAYER_IS_REREADING_PLUGIN(self));
+
 	gtk_widget_show(self->dialog);
+	
+	if(!lmplayer_is_seekable(self->lmplayer))
+	{
+		gtk_widget_set_sensitive(self->start_button, FALSE);
+		gtk_widget_set_sensitive(self->end_button, FALSE);
+		gtk_widget_set_sensitive(self->stop_button, FALSE);
+		gtk_label_set_text(GTK_LABEL(self->readme_label), 
+				_("The current music can NOT seek, rereading is disabled"));
+	}
+	else
+	{
+		gtk_widget_set_sensitive(self->start_button, TRUE);
+		gtk_widget_set_sensitive(self->end_button, TRUE);
+		gtk_widget_set_sensitive(self->stop_button, TRUE);
+		gtk_label_set_text(GTK_LABEL(self->readme_label), "");
+	}
 }
 
 static gboolean
 impl_activate (LmplayerPlugin *plugin, LmplayerObject *lmplayer, GError **error)
 {
-	GtkBuilder *builder;
-	GtkWidget *start_button;
-	GtkWidget *end_button;
-	GtkWidget *stop_button;
-	GtkWidget *quit_button;
 
 	LmplayerRereadingPlugin *self = LMPLAYER_REREADING_PLUGIN (plugin);
 
 	self->lmplayer = g_object_ref(lmplayer);
 
 	GtkWindow *main_window = lmplayer_get_main_window(lmplayer);
-	builder = lmplayer_plugin_load_interface(plugin, "rereading.ui", TRUE, main_window, self);
+	self->builder = lmplayer_plugin_load_interface(plugin, "rereading.ui", TRUE, main_window, self);
 
-	self->dialog = GTK_WIDGET(gtk_builder_get_object(builder, "rereading-window"));
+	self->dialog = GTK_WIDGET(gtk_builder_get_object(self->builder, "rereading-window"));
 	gtk_window_set_transient_for(GTK_WINDOW(self->dialog), main_window);
 	gtk_window_set_position(GTK_WINDOW(self->dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 	g_object_unref(main_window);
@@ -193,15 +220,16 @@ impl_activate (LmplayerPlugin *plugin, LmplayerObject *lmplayer, GError **error)
 	g_signal_connect(G_OBJECT(self->dialog), "destroy", 
 			G_CALLBACK(gtk_widget_destroyed), &self->dialog);
 
-	start_button = GTK_WIDGET(gtk_builder_get_object(builder, "mark-start-button"));
-	end_button = GTK_WIDGET(gtk_builder_get_object(builder, "mark-end-button"));
-	stop_button = GTK_WIDGET(gtk_builder_get_object(builder, "stop-rereading-button"));
-	quit_button = GTK_WIDGET(gtk_builder_get_object(builder, "quit-rereading-button"));
+	self->start_button = GTK_WIDGET(gtk_builder_get_object(self->builder, "mark-start-button"));
+	self->end_button = GTK_WIDGET(gtk_builder_get_object(self->builder, "mark-end-button"));
+	self->stop_button = GTK_WIDGET(gtk_builder_get_object(self->builder, "stop-rereading-button"));
+	self->quit_button = GTK_WIDGET(gtk_builder_get_object(self->builder, "quit-rereading-button"));
+	self->readme_label = GTK_WIDGET(gtk_builder_get_object(self->builder, "readme-label"));
 
-	g_signal_connect(G_OBJECT(start_button), "clicked", G_CALLBACK(start_button_clicked_cb), self);
-	g_signal_connect(G_OBJECT(end_button), "clicked", G_CALLBACK(end_button_clicked_cb), self);
-	g_signal_connect(G_OBJECT(stop_button), "clicked", G_CALLBACK(stop_button_clicked_cb), self);
-	g_signal_connect(G_OBJECT(quit_button), "clicked", G_CALLBACK(quit_button_clicked_cb), self);
+	g_signal_connect(G_OBJECT(self->start_button), "clicked", G_CALLBACK(start_button_clicked_cb), self);
+	g_signal_connect(G_OBJECT(self->end_button), "clicked", G_CALLBACK(end_button_clicked_cb), self);
+	g_signal_connect(G_OBJECT(self->stop_button), "clicked", G_CALLBACK(stop_button_clicked_cb), self);
+	g_signal_connect(G_OBJECT(self->quit_button), "clicked", G_CALLBACK(quit_button_clicked_cb), self);
 
 	g_timeout_add_seconds(1, (GSourceFunc)timer_cb, self);
 
