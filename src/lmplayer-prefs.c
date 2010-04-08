@@ -2,6 +2,7 @@
 #include "lmplayer-prefs.h"
 #include "lmplayer-interface.h"
 #include "search-library.h"
+#include "lmplayer-plugin-manager.h"
 #include <stdlib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -73,6 +74,19 @@ setup_media_library_page(LmplayerObject *lmplayer, GtkWidget *notebook)
 	g_free(path);
 }
 
+static void
+setup_plugin_manager_page(LmplayerObject *lmplayer, GtkWidget *notebook)
+{
+	GtkWidget *manager = lmplayer_plugin_manager_new();
+
+	//gtk_container_add(GTK_CONTAINER(GTK_DIALOG(lmplayer->plugins_manager_dialog)->vbox), manager);
+	GtkWidget *label = gtk_label_new(_("Plugin"));
+
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), manager, label);
+
+	//gtk_widget_show_all(GTK_WIDGET(manager));
+}
+
 static GtkWidget *
 create_notebook(LmplayerObject *lmplayer)
 {
@@ -84,6 +98,7 @@ create_notebook(LmplayerObject *lmplayer)
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(notebook), TRUE);
 
 	setup_media_library_page(lmplayer, notebook);
+	setup_plugin_manager_page(lmplayer, notebook);
 
 	return notebook;
 }
@@ -98,7 +113,6 @@ lmplayer_setup_prefs(LmplayerObject *lmplayer)
 
 	gtk_dialog_add_button(GTK_DIALOG(lmplayer->prefs), GTK_STOCK_CLOSE, GTK_RESPONSE_OK);
 	gtk_dialog_set_default_response(GTK_DIALOG(lmplayer->prefs), GTK_RESPONSE_OK);
-	
 
 	GtkWidget *l = create_notebook(lmplayer);
 

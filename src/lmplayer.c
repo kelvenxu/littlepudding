@@ -51,8 +51,6 @@
 #include "lmplayer-search.h"
 #include "lmplayer-config.h"
 #include "lmplayer-prefs.h"
-#include "lmplayer-plugin-manager.h"
-
 
 static UniqueResponse lmplayer_message_received_cb(UniqueApp *app,
 			   int                command,
@@ -318,6 +316,7 @@ lmplayer_plugins_response_cb(GtkDialog *dialog, int response_id, gpointer data)
 		gtk_widget_hide (GTK_WIDGET (dialog));
 }
 
+#if 0
 static void
 plugin_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 {
@@ -357,6 +356,7 @@ plugin_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 	//if(lmplayer->plugins_manager_dialog)
 	//	gtk_widget_show_all(lmplayer->plugins_manager_dialog);
 }
+#endif
 
 static void 
 about_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
@@ -423,7 +423,7 @@ lmplayer_callback_connect(LmplayerObject *lmplayer)
 				G_CALLBACK(order_switch_button_clicked_cb), lmplayer);
 
 	g_signal_connect(G_OBJECT(lmplayer->about_button), "clicked", G_CALLBACK(about_button_clicked_cb), lmplayer);
-	g_signal_connect(G_OBJECT(lmplayer->plugin_button), "clicked", G_CALLBACK(plugin_button_clicked_cb), lmplayer);
+	//g_signal_connect(G_OBJECT(lmplayer->plugin_button), "clicked", G_CALLBACK(plugin_button_clicked_cb), lmplayer);
 	g_signal_connect(G_OBJECT(lmplayer->prefs_button), "clicked", G_CALLBACK(prefs_button_clicked_cb), lmplayer);
 	g_signal_connect(G_OBJECT(lmplayer->win), "destroy", G_CALLBACK(main_window_destroy_cb), lmplayer);
 	
