@@ -115,8 +115,6 @@ switch_ui_cb(GtkButton *button, LmplayerObject *lmplayer)
 			"Lmplayer need restart!");
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
-
-	//g_signal_connect_swapped(dialog, "response", G_CALLBACK(gtk_widget_destroy), dialog);
 }
 
 static void
@@ -167,6 +165,16 @@ setup_ui_switch_page(LmplayerObject *lmplayer, GtkWidget *notebook)
 	g_object_unref(liststore);
 
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(ui_view), FALSE);
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ui_view));
+	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
+
+	GtkTreePath *path = gtk_tree_path_new_first();
+
+	if(path)
+	{
+		gtk_tree_selection_select_path(selection, path);
+		gtk_tree_path_free(path);
+	}
 
 	GtkTreeViewColumn *col = gtk_tree_view_column_new();
 	gtk_tree_view_append_column(GTK_TREE_VIEW(ui_view), col);
@@ -174,7 +182,6 @@ setup_ui_switch_page(LmplayerObject *lmplayer, GtkWidget *notebook)
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_column_pack_start(col, renderer, TRUE);
 	gtk_tree_view_column_add_attribute(col, renderer, "text", COL_UI_NAME);
-
 
 	GtkWidget *treeview_box = (GtkWidget *)gtk_builder_get_object(builder, "treeview-box");
 	gtk_container_add(GTK_CONTAINER(treeview_box), ui_view);
