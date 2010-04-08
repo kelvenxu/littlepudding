@@ -36,10 +36,9 @@ setup_media_library_page(LmplayerObject *lmplayer, GtkWidget *notebook)
 {
 	g_return_if_fail(lmplayer && notebook);
 
-  GtkBuilder *builder = gtk_builder_new();
-  g_return_if_fail(GTK_IS_BUILDER(builder));
+  GtkBuilder *builder = lmplayer_interface_load("lmplayer-library-prefs.ui", TRUE, NULL, NULL);
 
-	builder = lmplayer_interface_load("lmplayer-library-prefs.ui", TRUE, NULL, NULL);
+  g_return_if_fail(GTK_IS_BUILDER(builder));
 
 	GtkWidget *vbox = (GtkWidget*)gtk_builder_get_object(builder, "library-prefs-vbox");
 
@@ -87,6 +86,109 @@ setup_plugin_manager_page(LmplayerObject *lmplayer, GtkWidget *notebook)
 	//gtk_widget_show_all(GTK_WIDGET(manager));
 }
 
+enum 
+{
+	COL_UI_NAME,
+	COL_UI_LOCATION,
+	NCOLS
+};
+static GtkWidget *ui_view;
+
+static void
+switch_ui_cb(GtkButton *button, LmplayerObject *lmplayer)
+{
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	gchar *name = NULL;
+
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ui_view));
+	gtk_tree_selection_get_selected(selection, &model, &iter);
+
+	gtk_tree_model_get(model, &iter, COL_UI_NAME, &name, -1);
+
+	gconf_client_set_string(lmplayer->gc, GCONF_PREFIX"/ui", name, NULL);
+
+	GtkWidget *dialog = gtk_message_dialog_new(lmplayer_get_main_window(lmplayer),
+			GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_INFO,
+			GTK_BUTTONS_OK,
+			"Lmplayer need restart!");
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+
+	//g_signal_connect_swapped(dialog, "response", G_CALLBACK(gtk_widget_destroy), dialog);
+}
+
+static void
+setup_ui_switch_page(LmplayerObject *lmplayer, GtkWidget *notebook)
+{
+	g_return_if_fail(lmplayer && notebook);
+
+	GtkBuilder *builder = lmplayer_interface_load("lmplayer-ui-switch-prefs.ui", TRUE, NULL, NULL);
+  g_return_if_fail(GTK_IS_BUILDER(builder));
+
+	// set store
+	GtkListStore *liststore = gtk_list_store_new(NCOLS, G_TYPE_STRING, G_TYPE_STRING);
+	
+	// travel path
+	{
+		GError *err = NULL;
+
+		GDir *dir = g_dir_open(DATADIR"/lmplayer/ui", 0, &err);
+		if(dir)
+		{
+			GtkTreeIter iter;
+			const char *file = g_dir_read_name(dir);
+			while(file)
+			{
+				gchar *fullpath = g_build_path(G_DIR_SEPARATOR_S, DATADIR"/ui", file, NULL);
+
+				if(fullpath && g_str_has_suffix(file, ".ui"))
+				{
+					gtk_list_store_append(liststore, &iter);
+					gtk_list_store_set(liststore, &iter, 
+							COL_UI_NAME, file,
+							COL_UI_LOCATION, fullpath,
+							-1);
+				}
+
+				if(fullpath)
+					g_free(fullpath);
+
+				file = g_dir_read_name(dir);
+			}
+
+			g_dir_close(dir);
+		}
+	}
+
+	// create tree view
+	ui_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(liststore));
+	g_object_unref(liststore);
+
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(ui_view), FALSE);
+
+	GtkTreeViewColumn *col = gtk_tree_view_column_new();
+	gtk_tree_view_append_column(GTK_TREE_VIEW(ui_view), col);
+
+	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+	gtk_tree_view_column_pack_start(col, renderer, TRUE);
+	gtk_tree_view_column_add_attribute(col, renderer, "text", COL_UI_NAME);
+
+
+	GtkWidget *treeview_box = (GtkWidget *)gtk_builder_get_object(builder, "treeview-box");
+	gtk_container_add(GTK_CONTAINER(treeview_box), ui_view);
+
+	GtkWidget *okbutton = (GtkWidget *)gtk_builder_get_object(builder, "use-ui-button");
+	g_signal_connect(okbutton, "clicked", G_CALLBACK(switch_ui_cb), lmplayer);
+
+	// append to notebook
+	GtkWidget *vbox = (GtkWidget *)gtk_builder_get_object(builder, "ui-switch-vbox");
+	GtkWidget *label = gtk_label_new(_("UI"));
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, label);
+	gtk_widget_show_all(vbox);
+}
+
 static GtkWidget *
 create_notebook(LmplayerObject *lmplayer)
 {
@@ -99,6 +201,7 @@ create_notebook(LmplayerObject *lmplayer)
 
 	setup_media_library_page(lmplayer, notebook);
 	setup_plugin_manager_page(lmplayer, notebook);
+	setup_ui_switch_page(lmplayer, notebook);
 
 	return notebook;
 }

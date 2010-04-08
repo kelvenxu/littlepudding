@@ -601,16 +601,19 @@ main(int argc, char* argv[])
 		gconf_client_set_string(gc, GCONF_PREFIX"/ui", ui, NULL);
 	}
 
+	gchar *uiname = g_build_filename("ui", ui, NULL);
+	g_free(ui);
+
 	//lmplayer->builder = lmplayer_interface_load("lmplayer-default.ui", TRUE, NULL, NULL);
 	//lmplayer->builder = lmplayer_interface_load("lmplayer-classic.ui", TRUE, NULL, NULL);
-	lmplayer->builder = lmplayer_interface_load(ui, TRUE, NULL, NULL);
+	lmplayer->builder = lmplayer_interface_load(uiname, TRUE, NULL, NULL);
 	if(lmplayer->builder == NULL)
 	{
-		g_free(ui);
+		g_free(uiname);
 		lmplayer_action_exit(NULL);
 	}
 
-	g_free(ui);
+	g_free(uiname);
 
 	
 	lmplayer->win = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-window");

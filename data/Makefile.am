@@ -17,21 +17,24 @@ stuff_DATA=\
 	lmplayer-32x32.png\
 	uri.ui\
 	lyricselectdlg.ui\
-	lmplayer-default.ui\
-	lmplayer-classic.ui\
 	lmplayer-library-prefs.ui\
+	lmplayer-ui-switch-prefs.ui\
 	plugins.ui\
 	order.png\
 	order.svg\
-	playlist-view.png\
-	playlist-view.svg\
 	repeat-one.png\
 	repeat-one.svg\
 	repeat.png\
 	repeat.svg\
-	search-view.png\
-	search-view.svg \
 	plugins.png
+
+uidir=$(pkgdatadir)/ui
+ui_DATA = lmplayer-default.ui \
+					lmplayer-classic.ui \
+					playlist-view.png\
+					playlist-view.svg\
+					search-view.png\
+					search-view.svg 
 
 desktopdir=$(datadir)/applications
 desktop_in_files=lmplayer.desktop.in.in
@@ -57,7 +60,7 @@ lmplayer-mime-types.h: mime-type-include.sh mime-type-list.txt mime-functions.sh
 	$(srcdir)/mime-type-include.sh $(srcdir)/mime-type-list.txt	\
 	> $@
 
-EXTRA_DIST=$(stuff_DATA) $(desktop_in_files) $(other_data) $(schema_in_files)
+EXTRA_DIST=$(stuff_DATA) $(ui_DATA) $(desktop_in_files) $(other_data) $(schema_in_files)
 
 CLEANFILES = \
 	*.bak *.uip core* *.orig *~ 	\
