@@ -141,6 +141,7 @@ lmplayer_statusbar_update_time (LmplayerStatusbar *statusbar)
 void
 lmplayer_statusbar_set_text (LmplayerStatusbar *statusbar, const char *label)
 {
+	g_return_if_fail (LMPLAYER_IS_STATUSBAR (statusbar));
   GtkStatusbar *gstatusbar = GTK_STATUSBAR (statusbar);
   guint id;
 

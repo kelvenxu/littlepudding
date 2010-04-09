@@ -552,17 +552,26 @@ play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 	switch (state)
 	{
 	case STATE_PLAYING:
-		lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar), _("Status: Playing"));
-		lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_PLAYING);
-		break;
+		{
+			if(lmplayer->statusbar)
+				lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar), _("Status: Playing"));
+			lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_PLAYING);
+			break;
+		}
 	case STATE_PAUSED:
-		lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar), _("Status: Paused"));
-		lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_PAUSED);
-		break;
+		{
+			if(lmplayer->statusbar)
+				lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar), _("Status: Paused"));
+			lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_PAUSED);
+			break;
+		}
 	case STATE_STOPPED:
-		lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar), _("Status: Stopped"));
-		lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_NONE);
-		break;
+		{
+			if(lmplayer->statusbar)
+				lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar), _("Status: Stopped"));
+			lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_NONE);
+			break;
+		}
 	default:
 		g_assert_not_reached();
 		return;
@@ -950,8 +959,11 @@ update_mrl_label (LmplayerObject *lmplayer, const char *name)
 	} 
 	else 
 	{
-		lmplayer_statusbar_set_time_and_length(LMPLAYER_STATUSBAR(lmplayer->statusbar), 0, 0);
-		lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar), _("Stopped"));
+		if(lmplayer->statusbar)
+		{
+			lmplayer_statusbar_set_time_and_length(LMPLAYER_STATUSBAR(lmplayer->statusbar), 0, 0);
+			lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar), _("Stopped"));
+		}
 		lmplayer_update_time_label(lmplayer, 0, 0);
 
 		g_object_notify(G_OBJECT(lmplayer), "stream-length");
@@ -1319,7 +1331,9 @@ reset_seek_status (LmplayerObject *lmplayer)
 
 	if (lmplayer->seek_lock != FALSE) 
 	{
-		lmplayer_statusbar_set_seeking(LMPLAYER_STATUSBAR(lmplayer->statusbar), FALSE);
+		if(lmplayer->statusbar)
+			lmplayer_statusbar_set_seeking(LMPLAYER_STATUSBAR(lmplayer->statusbar), FALSE);
+
 		lmplayer->seek_lock = FALSE;
 		bacon_video_widget_seek (lmplayer->bvw, 0, NULL);
 		lmplayer_action_stop (lmplayer);
@@ -1336,19 +1350,24 @@ lmplayer_seek_time_rel(LmplayerObject *lmplayer, gint64 time, gboolean relative)
 	if (bacon_video_widget_is_seekable (lmplayer->bvw) == FALSE)
 		return;
 
-	lmplayer_statusbar_set_seeking(LMPLAYER_STATUSBAR(lmplayer->statusbar), TRUE);
+	if(lmplayer->statusbar)
+		lmplayer_statusbar_set_seeking(LMPLAYER_STATUSBAR(lmplayer->statusbar), TRUE);
 
-	if (relative != FALSE) {
+	if (relative != FALSE) 
+	{
 		gint64 oldmsec;
 		oldmsec = bacon_video_widget_get_current_time (lmplayer->bvw);
 		sec = MAX (0, oldmsec + time);
-	} else {
+	} 
+	else 
+	{
 		sec = time;
 	}
 
 	bacon_video_widget_seek_time (lmplayer->bvw, sec, &err);
 
-	lmplayer_statusbar_set_seeking(LMPLAYER_STATUSBAR(lmplayer->statusbar), FALSE);
+	if(lmplayer->statusbar)
+		lmplayer_statusbar_set_seeking(LMPLAYER_STATUSBAR(lmplayer->statusbar), FALSE);
 
 	if (err != NULL)
 	{
@@ -1866,9 +1885,12 @@ update_current_time (BaconVideoWidget *bvw,
 		} 
 		else 
 		{
-			lmplayer_statusbar_set_time_and_length(LMPLAYER_STATUSBAR(lmplayer->statusbar),
-																						(int) (current_time / 1000), 
-																						(int) (stream_length / 1000));
+			if(lmplayer->statusbar)
+			{
+				lmplayer_statusbar_set_time_and_length(LMPLAYER_STATUSBAR(lmplayer->statusbar),
+						(int) (current_time / 1000), 
+						(int) (stream_length / 1000));
+			}
 
 			lmplayer_update_time_label(lmplayer, (int) (current_time / 1000), 
 																					(int) (stream_length / 1000));
@@ -2091,6 +2113,7 @@ lmplayer_setup_statusbar(LmplayerObject *lmplayer)
 	lmplayer->statusbar_box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, 
 																												"player-statusbar-box");
 
+	lmplayer->statusbar = NULL;
 	g_return_if_fail(GTK_IS_WIDGET(lmplayer->statusbar_box));
 
 	lmplayer->statusbar = lmplayer_statusbar_new();
