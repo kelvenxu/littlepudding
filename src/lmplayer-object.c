@@ -30,6 +30,7 @@
 #include "lmplayer-encode.h"
 #include "lmplayer-plugins-engine.h"
 #include "lmplayer-statusbar.h"
+#include "video-utils.h"
 #include <glib/gi18n.h>
 #include <glib.h>
 #include <stdlib.h>
@@ -519,6 +520,26 @@ update_buttons(LmplayerObject *lmplayer)
 }
 
 static void
+lmplayer_update_time_label(LmplayerObject *lmplayer, gint time, gint length)
+{
+	g_return_if_fail(lmplayer);
+
+	if(lmplayer->current_time_label)
+	{
+		gchar *s = lmplayer_time_to_string(time * 1000);
+		gtk_label_set_text(GTK_LABEL(lmplayer->current_time_label), s);
+		g_free(s);
+	}
+
+	if(lmplayer->total_time_label)
+	{
+		gchar *s = lmplayer_time_to_string(length * 1000);
+		gtk_label_set_text(GTK_LABEL(lmplayer->total_time_label), s);
+		g_free(s);
+	}
+}
+
+static void
 play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 {
 	GtkWidget *play;
@@ -931,6 +952,7 @@ update_mrl_label (LmplayerObject *lmplayer, const char *name)
 	{
 		lmplayer_statusbar_set_time_and_length(LMPLAYER_STATUSBAR(lmplayer->statusbar), 0, 0);
 		lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar), _("Stopped"));
+		lmplayer_update_time_label(lmplayer, 0, 0);
 
 		g_object_notify(G_OBJECT(lmplayer), "stream-length");
 
@@ -1519,7 +1541,6 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmplayerRemoteCommand cmd, con
 		lmplayer_action_previous(lmplayer);
 		break;
 	case LMPLAYER_REMOTE_COMMAND_FULLSCREEN:
-		g_print(_("Do nothing!\n"));
 		break;
 	case LMPLAYER_REMOTE_COMMAND_QUIT:
 		lmplayer_action_exit(lmplayer);
@@ -1556,37 +1577,26 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmplayerRemoteCommand cmd, con
 		gtk_window_present(GTK_WINDOW(lmplayer->win));
 		break;
 	case LMPLAYER_REMOTE_COMMAND_TOGGLE_CONTROLS:
-		g_print(_("Do nothing!\n"));
 		break;
 	case LMPLAYER_REMOTE_COMMAND_UP:
-		g_print(_("Do nothing!\n"));
 		break;
 	case LMPLAYER_REMOTE_COMMAND_DOWN:
-		g_print(_("Do nothing!\n"));
 		break;
 	case LMPLAYER_REMOTE_COMMAND_LEFT:
-		g_print(_("Do nothing!\n"));
 		break;
 	case LMPLAYER_REMOTE_COMMAND_RIGHT:
-		g_print(_("Do nothing!\n"));
 		break;
 	case LMPLAYER_REMOTE_COMMAND_SELECT:
-		g_print(_("Do nothing!\n"));
 		break;
 	case LMPLAYER_REMOTE_COMMAND_DVD_MENU:
-		g_print(_("Do nothing!\n"));
 		break;
 	case LMPLAYER_REMOTE_COMMAND_ZOOM_UP:
-		g_print(_("Do nothing!\n"));
 		break;
 	case LMPLAYER_REMOTE_COMMAND_ZOOM_DOWN:
-		g_print(_("Do nothing!\n"));
 		break;
 	case LMPLAYER_REMOTE_COMMAND_EJECT:
-		g_print(_("Do nothing!\n"));
 		break;
 	case LMPLAYER_REMOTE_COMMAND_PLAY_DVD:
-		g_print(_("Do nothing!\n"));
 		break;
 	case LMPLAYER_REMOTE_COMMAND_MUTE:
 		lmplayer_action_volume_relative(lmplayer, -1.0);
@@ -1859,6 +1869,9 @@ update_current_time (BaconVideoWidget *bvw,
 			lmplayer_statusbar_set_time_and_length(LMPLAYER_STATUSBAR(lmplayer->statusbar),
 																						(int) (current_time / 1000), 
 																						(int) (stream_length / 1000));
+
+			lmplayer_update_time_label(lmplayer, (int) (current_time / 1000), 
+																					(int) (stream_length / 1000));
 
 			gtk_range_set_range(GTK_RANGE(lmplayer->seek), 0.0, (gdouble)stream_length);
 			gtk_range_set_value(GTK_RANGE(lmplayer->seek), (gdouble)current_time);

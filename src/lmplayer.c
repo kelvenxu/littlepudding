@@ -599,6 +599,10 @@ main(int argc, char* argv[])
 			"player-plugins-box");
 	lmplayer->extra_widget_box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, 
 			"player-extra-widget-box");
+	lmplayer->current_time_label = (GtkWidget *)gtk_builder_get_object(lmplayer->builder,
+			"player-current-time-label");
+	lmplayer->total_time_label = (GtkWidget *)gtk_builder_get_object(lmplayer->builder,
+			"player-total-time-label");
 	
 	lmplayer_search_view_setup(lmplayer);
 

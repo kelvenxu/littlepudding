@@ -113,6 +113,9 @@ struct _LmplayerObject
 	GtkWidget *statusbar;
 	GtkWidget *statusbar_box;
 
+	GtkWidget *current_time_label;
+	GtkWidget *total_time_label;
+
 	gint64 stream_length;
 
 	gint index;
