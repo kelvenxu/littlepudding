@@ -48,6 +48,7 @@
 #include "lmplayer-search.h"
 #include "lmplayer-config.h"
 #include "lmplayer-prefs.h"
+#include "lmplayer-statusbar.h"
 
 static UniqueResponse lmplayer_message_received_cb(UniqueApp *app,
 			   int                command,
@@ -171,7 +172,7 @@ gboolean
 seek_slider_pressed_cb (GtkWidget *widget, GdkEventButton *event, LmplayerObject *lmplayer)
 {
 	lmplayer->seek_lock = TRUE;
-	//lmplayer_statusbar_set_seeking (LMPLAYER_STATUSBAR(lmplayer->statusbar), TRUE);
+	lmplayer_statusbar_set_seeking(LMPLAYER_STATUSBAR(lmplayer->statusbar), TRUE);
 
 	return FALSE;
 }
@@ -188,7 +189,7 @@ seek_slider_released_cb(GtkWidget *widget, GdkEventButton *event, LmplayerObject
 	if(lmplayer->stream_length && bacon_video_widget_can_direct_seek(lmplayer->bvw))
 		lmplayer_action_seek(lmplayer, (double)val / lmplayer->stream_length); // 需要的是一个比例值
 
-	//lmplayer_statusbar_set_seeking(LMPLAYER_STATUSBAR(lmplayer->statusbar), FALSE);
+	lmplayer_statusbar_set_seeking(LMPLAYER_STATUSBAR(lmplayer->statusbar), FALSE);
 	return FALSE;
 }
 
@@ -616,6 +617,7 @@ main(int argc, char* argv[])
 	lmplayer_setup_file_monitoring(lmplayer);
 	lmplayer_setup_file_filters();
 	lmplayer_setup_toolbar(lmplayer);
+	lmplayer_setup_statusbar(lmplayer);
 
 	lmplayer_options_process_late(lmplayer, &optionstate);
 

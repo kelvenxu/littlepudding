@@ -68,9 +68,10 @@ struct _LmplayerObject
 	GtkWidget *win;
 
 	GtkWidget *view;
-	LmplayerViewType view_type;
 	GtkWidget *view_switch;
 	GtkWidget *order_switch_button;
+
+	LmplayerViewType view_type;
 
 	GtkWidget *about_button;
 
@@ -79,7 +80,6 @@ struct _LmplayerObject
 
 	//LmplayerNotebook *notebook;
 	BaconVideoWidget *bvw;
-	GtkWidget *statusbar;
 
 	GConfClient *gc;
 
@@ -109,6 +109,9 @@ struct _LmplayerObject
 	GtkAdjustment *seekadj;
 	gboolean seek_lock;
 	gboolean seekable;
+
+	GtkWidget *statusbar;
+	GtkWidget *statusbar_box;
 
 	gint64 stream_length;
 
@@ -155,6 +158,7 @@ gboolean lmplayer_action_open_files (LmplayerObject *lmplayer, char **list);
 
 void video_widget_create (LmplayerObject *lmplayer);
 void playlist_widget_setup(LmplayerObject *lmplayer);
+void lmplayer_setup_statusbar(LmplayerObject *lmplayer);
 
 G_END_DECLS
 

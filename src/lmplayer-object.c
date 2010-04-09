@@ -29,6 +29,7 @@
 #include "lmplayer-interface.h"
 #include "lmplayer-encode.h"
 #include "lmplayer-plugins-engine.h"
+#include "lmplayer-statusbar.h"
 #include <glib/gi18n.h>
 #include <glib.h>
 #include <stdlib.h>
@@ -517,19 +518,6 @@ update_buttons(LmplayerObject *lmplayer)
 	}
 }
 
-static void 
-lmplayer_statusbar_set_text(LmplayerObject *lmplayer, gchar *text)
-{
-#if 0
-	SkinStatusBar *sb;
-	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
-
-	sb = (SkinStatusBar*)skin_builder_get_object(lmplayer->builder, "player-statusbar");
-
-	skin_status_bar_set_text(sb, text);
-#endif
-}
-
 static void
 play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 {
@@ -543,15 +531,15 @@ play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 	switch (state)
 	{
 	case STATE_PLAYING:
-		lmplayer_statusbar_set_text(lmplayer, _("Status: Playing"));
+		lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar), _("Status: Playing"));
 		lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_PLAYING);
 		break;
 	case STATE_PAUSED:
-		lmplayer_statusbar_set_text(lmplayer, _("Status: Paused"));
+		lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar), _("Status: Paused"));
 		lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_PAUSED);
 		break;
 	case STATE_STOPPED:
-		lmplayer_statusbar_set_text(lmplayer, _("Status: Stopped"));
+		lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar), _("Status: Stopped"));
 		lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_NONE);
 		break;
 	default:
@@ -941,14 +929,13 @@ update_mrl_label (LmplayerObject *lmplayer, const char *name)
 	} 
 	else 
 	{
-		//lmplayer_statusbar_set_time_and_length(LMPLAYER_STATUSBAR
-		//		(lmplayer->statusbar), 0, 0);
-		lmplayer_statusbar_set_text(lmplayer, _("Stopped"));
+		lmplayer_statusbar_set_time_and_length(LMPLAYER_STATUSBAR(lmplayer->statusbar), 0, 0);
+		lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar), _("Stopped"));
 
 		g_object_notify(G_OBJECT(lmplayer), "stream-length");
 
 		/* Update the mrl label */
-		//totem_fullscreen_set_title (totem->fs, NULL);
+		//lmplayer_fullscreen_set_title (lmplayer->fs, NULL);
 
 		/* Title */
 		gtk_window_set_title(GTK_WINDOW(lmplayer->win), _("Little Pudding Music Player"));
@@ -1310,8 +1297,7 @@ reset_seek_status (LmplayerObject *lmplayer)
 
 	if (lmplayer->seek_lock != FALSE) 
 	{
-		//lmplayer_statusbar_set_seeking (LMPLAYER_STATUSBAR (lmplayer->statusbar), FALSE);
-		//lmplayer_time_label_set_seeking (TOTEM_TIME_LABEL (totem->fs->time_label), FALSE);
+		lmplayer_statusbar_set_seeking(LMPLAYER_STATUSBAR(lmplayer->statusbar), FALSE);
 		lmplayer->seek_lock = FALSE;
 		bacon_video_widget_seek (lmplayer->bvw, 0, NULL);
 		lmplayer_action_stop (lmplayer);
@@ -1328,8 +1314,7 @@ lmplayer_seek_time_rel(LmplayerObject *lmplayer, gint64 time, gboolean relative)
 	if (bacon_video_widget_is_seekable (lmplayer->bvw) == FALSE)
 		return;
 
-	//lmplayer_statusbar_set_seeking (TOTEM_STATUSBAR (totem->statusbar), TRUE);
-	//lmplayer_time_label_set_seeking (TOTEM_TIME_LABEL (totem->fs->time_label), TRUE);
+	lmplayer_statusbar_set_seeking(LMPLAYER_STATUSBAR(lmplayer->statusbar), TRUE);
 
 	if (relative != FALSE) {
 		gint64 oldmsec;
@@ -1341,8 +1326,7 @@ lmplayer_seek_time_rel(LmplayerObject *lmplayer, gint64 time, gboolean relative)
 
 	bacon_video_widget_seek_time (lmplayer->bvw, sec, &err);
 
-	//lmplayer_statusbar_set_seeking (TOTEM_STATUSBAR (totem->statusbar), FALSE);
-	//lmplayer_time_label_set_seeking (TOTEM_TIME_LABEL (totem->fs->time_label), FALSE);
+	lmplayer_statusbar_set_seeking(LMPLAYER_STATUSBAR(lmplayer->statusbar), FALSE);
 
 	if (err != NULL)
 	{
@@ -1872,10 +1856,9 @@ update_current_time (BaconVideoWidget *bvw,
 		} 
 		else 
 		{
-			//lmplayer_statusbar_set_time_and_length
-			//	(LMPLAYER_STATUSBAR(lmplayer->statusbar),
-			//	(int) (current_time / 1000),
-			//	(int) (stream_length / 1000));
+			lmplayer_statusbar_set_time_and_length(LMPLAYER_STATUSBAR(lmplayer->statusbar),
+																						(int) (current_time / 1000), 
+																						(int) (stream_length / 1000));
 
 			gtk_range_set_range(GTK_RANGE(lmplayer->seek), 0.0, (gdouble)stream_length);
 			gtk_range_set_value(GTK_RANGE(lmplayer->seek), (gdouble)current_time);
@@ -2085,5 +2068,20 @@ lmplayer_remove_extra_widget(LmplayerObject *lmplayer, GtkWidget *widget)
 	g_return_if_fail(GTK_IS_CONTAINER(lmplayer->extra_widget_box));
 
 	gtk_container_remove(GTK_CONTAINER(lmplayer->extra_widget_box), widget);
+}
+
+void
+lmplayer_setup_statusbar(LmplayerObject *lmplayer)
+{
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+
+	lmplayer->statusbar_box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, 
+																												"player-statusbar-box");
+
+	g_return_if_fail(GTK_IS_WIDGET(lmplayer->statusbar_box));
+
+	lmplayer->statusbar = lmplayer_statusbar_new();
+
+	gtk_container_add(GTK_CONTAINER(lmplayer->statusbar_box), lmplayer->statusbar);
 }
 
