@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lmplayer 0.9.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-03-19 11:57+0800\n"
+"POT-Creation-Date: 2010-04-09 16:08+0800\n"
 "PO-Revision-Date: 2010-03-11 16:29+8\n"
 "Last-Translator: kelvenxu <kelvenxu@gmail.com>\n"
 "Language-Team: kelvenxu kelvenxu@gmail.com\n"
@@ -41,86 +41,78 @@ msgid "gtk-ok"
 msgstr ""
 
 #: ../data/lmplayer-default.ui.h:1
+msgid "   "
+msgstr ""
+
+#: ../data/lmplayer-default.ui.h:2 ../data/lmplayer-classic.ui.h:2
+msgid "--:--"
+msgstr ""
+
+#: ../data/lmplayer-default.ui.h:3
 msgid "About"
 msgstr "关于"
 
-#: ../data/lmplayer-default.ui.h:2
-msgid "About lmplayer"
-msgstr "关于小布丁播放器"
-
-#: ../data/lmplayer-default.ui.h:3
-msgid "Add media file"
-msgstr "添加媒体文件"
-
-#: ../data/lmplayer-default.ui.h:4 ../src/lmplayer-options.c:40
-msgid "Next"
-msgstr "下一首"
-
-#: ../data/lmplayer-default.ui.h:5
-msgid "Play / pause"
-msgstr "播放/暂停"
-
-#: ../data/lmplayer-default.ui.h:6
-msgid "Playing order switch"
-msgstr "切换播放顺序"
-
 #. translators: Playlist is the default saved playlist filename,
 #. * without the suffix
-#: ../data/lmplayer-default.ui.h:7 ../src/lmplayer-playlist.c:1020
+#: ../data/lmplayer-default.ui.h:4 ../src/lmplayer-playlist.c:1020
 msgid "Playlist"
 msgstr "播放列表"
 
-#: ../data/lmplayer-default.ui.h:8
-msgid "Pop preferencess dialog"
-msgstr "打开首选项对话框"
-
-#: ../data/lmplayer-default.ui.h:9
-msgid "Previous "
-msgstr "上一首"
-
-#: ../data/lmplayer-default.ui.h:10
-msgid "Remove file"
-msgstr "移除文件"
-
-#: ../data/lmplayer-default.ui.h:11
-msgid "Save current playlist to disk"
-msgstr "保存当前播放列表到磁盘"
-
-#: ../data/lmplayer-default.ui.h:12
+#: ../data/lmplayer-default.ui.h:5
 msgid "Search "
 msgstr "搜索"
 
-#: ../data/lmplayer-default.ui.h:13
-msgid "Switch to playlist view"
-msgstr "切换到播放列表视图"
-
-#: ../data/lmplayer-default.ui.h:14
-msgid "Switch to search view"
-msgstr "切换到搜索视图"
-
-#: ../data/lmplayer-default.ui.h:15
+#: ../data/lmplayer-default.ui.h:6
 msgid "Visual Effect"
 msgstr "视觉效果"
 
 #: ../data/lmplayer-classic.ui.h:1
+msgid "  "
+msgstr "  "
+
+#: ../data/lmplayer-classic.ui.h:3
 msgid "Search"
 msgstr "搜索"
 
-#: ../data/lmplayer-classic.ui.h:2
-msgid "label"
-msgstr ""
-
-#: ../data/lmplayer-classic.ui.h:3
+#: ../data/lmplayer-classic.ui.h:4
 msgid "page 1"
 msgstr ""
 
-#: ../data/lmplayer-classic.ui.h:4
+#: ../data/lmplayer-classic.ui.h:5
 msgid "page 2"
 msgstr ""
 
-#: ../data/lmplayer-classic.ui.h:5
+#: ../data/lmplayer-classic.ui.h:6
 msgid "page 3"
 msgstr ""
+
+#: ../data/lmplayer-library-prefs.ui.h:1
+msgid "<b>Index</b>"
+msgstr "<b>索引</b>"
+
+#: ../data/lmplayer-library-prefs.ui.h:2
+msgid "<b>Music library</b>"
+msgstr "<b>音乐库</b>"
+
+#: ../data/lmplayer-library-prefs.ui.h:3
+msgid ""
+"After index the music library, you can use searching function.\n"
+"This process maybe takes some time."
+msgstr ""
+"索引音乐库之后，你可以使用索引功能。\n"
+"这个过程可能要花费一些时间。"
+
+#: ../data/lmplayer-library-prefs.ui.h:5
+msgid "Index now!"
+msgstr "现在索引！"
+
+#: ../data/lmplayer-library-prefs.ui.h:6
+msgid "Music files are placed in:"
+msgstr "音乐文件的位置在："
+
+#: ../data/lmplayer-library-prefs.ui.h:7
+msgid "Select folder"
+msgstr "选择目录"
 
 #: ../data/lmplayer.desktop.in.h:1 ../data/lmplayer.desktop.in.in.h:1
 msgid "Little Pudding Player"
@@ -129,6 +121,60 @@ msgstr "小布丁音乐播放器"
 #: ../data/lmplayer.desktop.in.h:2 ../data/lmplayer.desktop.in.in.h:2
 msgid "Play songs"
 msgstr "播放音乐"
+
+#: ../data/lmplayer.schemas.in.h:1
+msgid "Database of Media library."
+msgstr "媒体库的数据库"
+
+#: ../data/lmplayer.schemas.in.h:2
+msgid "Default location for the \"Open...\" dialogs"
+msgstr "\"打开...\"对话框的默认位置"
+
+#: ../data/lmplayer.schemas.in.h:3
+msgid ""
+"Default location for the \"Open...\" dialogs, default is the current "
+"directory"
+msgstr "\"打开...\"的默认位置，默认时当前目录"
+
+#: ../data/lmplayer.schemas.in.h:4
+msgid "Lmplayer ui file"
+msgstr "小布丁播放器UI文件"
+
+#: ../data/lmplayer.schemas.in.h:5
+msgid "Media library path."
+msgstr "媒体库目录"
+
+#: ../data/lmplayer.schemas.in.h:6
+msgid "Monitor Media library."
+msgstr "监视媒体库。"
+
+#: ../data/lmplayer.schemas.in.h:7
+msgid "Play order"
+msgstr "播放顺序"
+
+#: ../data/lmplayer.schemas.in.h:8
+msgid "Play order: \"0\" for sequence, \"1\" for repeat, \"2\" for repeat one."
+msgstr "播放顺充：\"0\"是顺序，\"1\"是循环，\"2\"是循环一首。"
+
+#: ../data/lmplayer.schemas.in.h:9
+msgid "Sound volume"
+msgstr "音量"
+
+#: ../data/lmplayer.schemas.in.h:10
+msgid "Sound volume, in percent, between 0 and 100"
+msgstr "音量，当前是0到100"
+
+#: ../data/lmplayer.schemas.in.h:11
+msgid ""
+"Whether to remember the last playing audio/video file when pausing or "
+"closing them."
+msgstr "是否记住暂停或关闭时播放的音频或视频文件。"
+
+#: ../data/lmplayer.schemas.in.h:12
+msgid ""
+"Whether to remember the position of played audio/video files when pausing or "
+"closing them."
+msgstr ""
 
 #: ../src/backend/bacon-video-widget-gst-0.10.c:2474
 msgid ""
@@ -485,7 +531,7 @@ msgstr ""
 #: ../src/lmplayer-interface.c:115 ../src/lmplayer-interface.c:123
 #, c-format
 msgid "Could not launch URL \"%s\": %s"
-msgstr ""
+msgstr "不能打开链节\"%s\": %s"
 
 #: ../src/lmplayer-interface.c:115
 msgid "Default browser not configured"
@@ -541,19 +587,19 @@ msgstr ""
 msgid "Movie Player using %s"
 msgstr "电影播放器使用%s"
 
-#: ../src/lmplayer-menu.c:337 ../src/lmplayer.c:1951
+#: ../src/lmplayer-menu.c:337 ../src/lmplayer.c:334
 msgid "Copyright © 2007-2010 Kelven Xu"
 msgstr ""
 
-#: ../src/lmplayer-menu.c:342 ../src/lmplayer.c:1956
+#: ../src/lmplayer-menu.c:342 ../src/lmplayer.c:339
 msgid "translator-credits"
 msgstr ""
 
-#: ../src/lmplayer-menu.c:346 ../src/lmplayer.c:1960
+#: ../src/lmplayer-menu.c:346 ../src/lmplayer.c:343
 msgid "Lmplayer Website"
 msgstr "小布丁音乐播放器网站"
 
-#: ../src/lmplayer-menu.c:695
+#: ../src/lmplayer-menu.c:611
 #, c-format
 msgid "Look up skins error: %s\n"
 msgstr ""
@@ -581,6 +627,10 @@ msgstr "播放"
 #: ../src/lmplayer-options.c:39
 msgid "Pause"
 msgstr "暂停"
+
+#: ../src/lmplayer-options.c:40
+msgid "Next"
+msgstr "下一首"
 
 #: ../src/lmplayer-options.c:41
 msgid "Previous"
@@ -674,9 +724,7 @@ msgstr "播放列表错误"
 msgid "0:00 / 0:00"
 msgstr ""
 
-#. lmplayer_statusbar_set_time_and_length(LMPLAYER_STATUSBAR
-#. (lmplayer->statusbar), 0, 0);
-#: ../src/lmplayer-statusbar.c:102 ../src/lmplayer.c:958
+#: ../src/lmplayer-statusbar.c:102
 msgid "Stopped"
 msgstr "已停止"
 
@@ -689,7 +737,7 @@ msgstr "%s(流)"
 #: ../src/lmplayer-statusbar.c:126
 #, c-format
 msgid "%s / %s"
-msgstr ""
+msgstr "%s / %s"
 
 #. Seeking to Time / Total Length
 #: ../src/lmplayer-statusbar.c:129
@@ -697,282 +745,102 @@ msgstr ""
 msgid "Seek to %s / %s"
 msgstr "搜寻到%s/%s"
 
-#: ../src/lmplayer-statusbar.c:201
+#: ../src/lmplayer-statusbar.c:202
 msgid "Buffering"
 msgstr "缓冲中"
 
 #. eg: 75 %
-#: ../src/lmplayer-statusbar.c:212
+#: ../src/lmplayer-statusbar.c:213
 #, c-format
 msgid "%d %%"
-msgstr ""
+msgstr "%d %%"
 
 #. eg: Paused, 0:32 / 1:05
-#: ../src/lmplayer-statusbar.c:282
+#: ../src/lmplayer-statusbar.c:283
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
 
 #. eg: Buffering, 75 %
-#: ../src/lmplayer-statusbar.c:287
+#: ../src/lmplayer-statusbar.c:288
 #, c-format
 msgid "%s, %d %%"
 msgstr "%s, %d %%"
 
-#: ../src/lmplayer-uri.c:387
+#: ../src/lmplayer-uri.c:417
 msgid "All files"
 msgstr "全部文件"
 
-#: ../src/lmplayer-uri.c:392
+#: ../src/lmplayer-uri.c:422
 msgid "Supported files"
 msgstr "支持的文件"
 
-#: ../src/lmplayer-uri.c:404
+#: ../src/lmplayer-uri.c:434
 msgid "Audio files"
 msgstr "音频文件"
 
-#: ../src/lmplayer-uri.c:412
+#: ../src/lmplayer-uri.c:442
 msgid "Video files"
 msgstr "视频文件"
 
-#: ../src/lmplayer-uri.c:422
+#: ../src/lmplayer-uri.c:452
 msgid "Subtitle files"
 msgstr ""
 
-#: ../src/lmplayer-uri.c:488
+#: ../src/lmplayer-uri.c:518
 msgid "Select text subtitle"
 msgstr ""
 
-#: ../src/lmplayer-uri.c:538
+#: ../src/lmplayer-uri.c:568
 msgid "Select Movies or Playlists"
 msgstr ""
 
-#: ../src/lmplayer.c:148
-#, c-format
-msgid ""
-"Lmplayer could not play this media (%s) although a plugin is present to "
-"handle it."
-msgstr ""
-
-#: ../src/lmplayer.c:149
-msgid ""
-"You might want to check that a disc is present in the drive and that it is "
-"correctly configured."
-msgstr ""
-
-#: ../src/lmplayer.c:156
-msgid "More information about media plugins"
-msgstr ""
-
-#: ../src/lmplayer.c:157
-msgid ""
-"Please install the necessary plugins and restart Lmplayer to be able to play "
-"this media."
-msgstr ""
-
-#: ../src/lmplayer.c:159
-#, c-format
-msgid ""
-"Lmplayer cannot play this type of media (%s) because it does not have the "
-"appropriate plugins to be able to read from the disc."
-msgstr ""
-
-#: ../src/lmplayer.c:161
-#, c-format
-msgid ""
-"Lmplayer cannot play this type of media (%s) because you do not have the "
-"appropriate plugins to handle it."
-msgstr ""
-
-#: ../src/lmplayer.c:165
-msgid ""
-"Lmplayer cannot play TV, because no TV adapters are present or they are not "
-"supported."
-msgstr ""
-
-#: ../src/lmplayer.c:166
-msgid "Please insert a supported TV adapter."
-msgstr ""
-
-#: ../src/lmplayer.c:176
-msgid "More information about watching TV"
-msgstr ""
-
-#: ../src/lmplayer.c:177
-msgid "Lmplayer is missing a channels listing to be able to tune the receiver."
-msgstr ""
-
-#: ../src/lmplayer.c:178
-msgid ""
-"Please follow the instructions provided in the link to create a channels "
-"listing."
-msgstr ""
-
-#: ../src/lmplayer.c:181
-#, c-format
-msgid ""
-"Lmplayer cannot play this type of media (%s) because the TV device is busy."
-msgstr ""
-
-#: ../src/lmplayer.c:182
-msgid "Please try again later."
-msgstr ""
-
-#: ../src/lmplayer.c:187
-#, c-format
-msgid ""
-"Lmplayer cannot play this type of media (%s) because it is not supported."
-msgstr ""
-
-#: ../src/lmplayer.c:188
-msgid "Please insert another disc to play back."
-msgstr ""
-
-#: ../src/lmplayer.c:222
-msgid "Totem was not able to play this disc."
-msgstr ""
-
-#: ../src/lmplayer.c:223 ../src/lmplayer.c:2200
-msgid "No reason."
-msgstr ""
-
-#: ../src/lmplayer.c:237
-msgid "Lmplayer does not support playback of Audio CDs"
-msgstr ""
-
-#: ../src/lmplayer.c:238
-msgid "Please consider using a music player or a CD extractor to play this CD"
-msgstr ""
-
-#: ../src/lmplayer.c:326
-#, c-format
-msgid "Title: %s"
-msgstr "标题: %s"
-
-#: ../src/lmplayer.c:338
-#, c-format
-msgid "Artist: %s"
-msgstr "艺术家: %s"
-
-#: ../src/lmplayer.c:349
-#, c-format
-msgid "Album: %s"
-msgstr ""
-
-#: ../src/lmplayer.c:357
-#, c-format
-msgid "Length: %02d:%02d"
-msgstr ""
-
-#: ../src/lmplayer.c:427
-msgid "Status: Playing"
-msgstr "状态: 播放"
-
-#: ../src/lmplayer.c:432
-msgid "Status: Paused"
-msgstr "状态: 暂停"
-
-#: ../src/lmplayer.c:437
-msgid "Status: Stopped"
-msgstr "状态: 停止"
-
-#: ../src/lmplayer.c:481
-#, c-format
-msgid "LmplayerObject could not play '%s'."
-msgstr ""
-
-#: ../src/lmplayer.c:521
-#, c-format
-msgid "Player could not play '%s'."
-msgstr "播放器不能播放'%s'."
-
-#: ../src/lmplayer.c:737
-#, c-format
-msgid "Not found lyric file: %s\n"
-msgstr ""
-
-#: ../src/lmplayer.c:927
-#, c-format
-msgid "Totem could not play '%s'."
-msgstr ""
-
-#. Update the mrl label
-#. totem_fullscreen_set_title (totem->fs, NULL);
-#. Title
-#: ../src/lmplayer.c:966 ../src/lmplayer.c:2552
-msgid "Little Pudding Music Player"
-msgstr "小布丁音乐播放器"
-
-#: ../src/lmplayer.c:1071
-#, c-format
-msgid "Lmplayer could not play '%s'."
-msgstr ""
-
-#: ../src/lmplayer.c:1079
-msgid "No error message"
-msgstr ""
-
-#: ../src/lmplayer.c:1227
-msgid "Select a new skin package"
-msgstr ""
-
-#: ../src/lmplayer.c:1235
-msgid "Lmplayer Skin Package (*.zip)"
-msgstr ""
-
-#: ../src/lmplayer.c:1908
-msgid "Normal"
-msgstr ""
-
-#: ../src/lmplayer.c:1909
-msgid "Repeat"
-msgstr "循环"
-
-#: ../src/lmplayer.c:1910
-msgid "Repeat one"
-msgstr "循环一首"
-
 #. This lists the back-end type and version, such as
 #. * Movie Player using GStreamer 0.10.1
-#: ../src/lmplayer.c:1947
+#: ../src/lmplayer.c:330
 #, c-format
 msgid "Music Player using %s"
 msgstr "音乐播放器使用%s"
 
-#: ../src/lmplayer.c:2087 ../src/lmplayer.c:2091
-msgid "An error occurred"
-msgstr "发生了一个错误"
-
-#: ../src/lmplayer.c:2199
-msgid "Lmplayer could not startup."
-msgstr ""
-
-#: ../src/lmplayer.c:2414 ../src/lmplayer.c:2451 ../src/lmplayer.c:2479
-#: ../src/lmplayer.c:2482 ../src/lmplayer.c:2485 ../src/lmplayer.c:2488
-#: ../src/lmplayer.c:2491 ../src/lmplayer.c:2494 ../src/lmplayer.c:2497
-#: ../src/lmplayer.c:2500 ../src/lmplayer.c:2503 ../src/lmplayer.c:2506
-#, c-format
-msgid "Do nothing!\n"
-msgstr ""
-
-#: ../src/lmplayer.c:2538
+#: ../src/lmplayer.c:520
 msgid "[FILES] - Play songs"
 msgstr "[文件] - 播放音乐"
 
-#: ../src/lmplayer.c:2546
+#: ../src/lmplayer.c:528
 #, c-format
 msgid ""
 "%s\n"
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr "运行'%s --help'去查看完整的命令行选择列表.\n"
 
-#: ../src/lmplayer.c:2558
-msgid "Lmplayer could not initialize the configuration engine."
-msgstr ""
+#: ../src/lmplayer.c:534
+msgid "Little Pudding Music Player"
+msgstr "小布丁音乐播放器"
 
-#: ../src/lmplayer.c:2559
+#: ../src/lmplayer.c:540
+msgid "Lmplayer could not initialize the configuration engine."
+msgstr "小布丁播放器不能初始化配置引擎。"
+
+#: ../src/lmplayer.c:541
 msgid "Make sure that GNOME is properly installed."
-msgstr ""
+msgstr "请确认GNOME已正确被安装。"
+
+#: ../src/lmplayer-prefs.c:42 ../src/lmplayer-prefs.c:54
+#: ../src/lmplayer-search.c:123
+msgid "Music"
+msgstr "音乐"
+
+#: ../src/lmplayer-prefs.c:72
+msgid "Plugin"
+msgstr "插件"
+
+#: ../src/lmplayer-prefs.c:182
+msgid "UI"
+msgstr "界面"
+
+#: ../src/lmplayer-prefs.c:220
+msgid "Preferences"
+msgstr "首选项"
 
 #: ../lyric-downloader/lyric_downloader.c:260
 #, c-format
@@ -1008,6 +876,57 @@ msgstr ""
 #, c-format
 msgid "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
+
+#~ msgid "About lmplayer"
+#~ msgstr "关于小布丁播放器"
+
+#~ msgid "Add media file"
+#~ msgstr "添加媒体文件"
+
+#~ msgid "Play / pause"
+#~ msgstr "播放/暂停"
+
+#~ msgid "Previous "
+#~ msgstr "上一首"
+
+#~ msgid "Remove file"
+#~ msgstr "移除文件"
+
+#~ msgid "Save current playlist to disk"
+#~ msgstr "保存当前播放列表到磁盘"
+
+#~ msgid "Switch to playlist view"
+#~ msgstr "切换到播放列表视图"
+
+#~ msgid "Switch to search view"
+#~ msgstr "切换到搜索视图"
+
+#~ msgid "Title: %s"
+#~ msgstr "标题: %s"
+
+#~ msgid "Artist: %s"
+#~ msgstr "艺术家: %s"
+
+#~ msgid "Status: Playing"
+#~ msgstr "状态: 播放"
+
+#~ msgid "Status: Paused"
+#~ msgstr "状态: 暂停"
+
+#~ msgid "Status: Stopped"
+#~ msgstr "状态: 停止"
+
+#~ msgid "Player could not play '%s'."
+#~ msgstr "播放器不能播放'%s'."
+
+#~ msgid "Repeat"
+#~ msgstr "循环"
+
+#~ msgid "Repeat one"
+#~ msgstr "循环一首"
+
+#~ msgid "An error occurred"
+#~ msgstr "发生了一个错误"
 
 #~ msgid "Locations"
 #~ msgstr "位置"
@@ -1081,9 +1000,6 @@ msgstr ""
 
 #~ msgid "Lyrics stored in a separate directory"
 #~ msgstr "歌词保存于单独的目录中"
-
-#~ msgid "Media Libaray Path"
-#~ msgstr "媒体库目录"
 
 #~ msgid "Save to or load lyric from:"
 #~ msgstr "歌词目录设置"

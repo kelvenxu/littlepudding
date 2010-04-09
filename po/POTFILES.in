@@ -4,6 +4,10 @@
 [type: gettext/glade]data/lmplayer-default.ui
 [type: gettext/glade]data/lmplayer-classic.ui
 [type: gettext/glade]data/lmplayer-library-prefs.ui
+[type: gettext/glade]data/lmplayer-ui-switch-prefs.ui
+[type: gettext/glade]data/plugins.ui
+plugins/rereading/rereading.ui
+plugins/lyric/lyric.lmplayer-plugin.in
 
 data/lmplayer.desktop.in
 data/lmplayer.desktop.in.in
@@ -23,9 +27,13 @@ src/lmplayer-uri.c
 src/lmplayer.c
 src/lmplayer-prefs.c
 src/lmplayer-search.c
-
+src/lmplayer-object.c
 
 lyric-downloader/lyric_downloader.c
 lyric-downloader/main.c
 
+liblmplayer-plugin/lmplayer-plugins-engine.c
+
+plugins/lyric/lmplayer-lyric.c
+plugins/rereading/lmplayer-rereading.c
 
