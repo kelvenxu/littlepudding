@@ -16,14 +16,6 @@ library_path_set_cb(GtkFileChooserButton *file_chooser, LmplayerObject *lmplayer
 }
 
 static void
-monitor_library_toggled_cb(GtkToggleButton *button, LmplayerObject *lmplayer)
-{
-	gconf_client_set_bool(lmplayer->gc, GCONF_PREFIX"/monitor_library", 
-			gtk_toggle_button_get_active(button),
-			NULL);
-}
-
-static void
 index_library_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 {
 	gchar *path = gconf_client_get_string(lmplayer->gc, GCONF_PREFIX"/library_path", NULL);
@@ -66,12 +58,6 @@ setup_media_library_page(LmplayerObject *lmplayer, GtkWidget *notebook)
 
 	g_signal_connect(file_chooser, "file-set", G_CALLBACK(library_path_set_cb), lmplayer);
 
-	GtkWidget *monitor_library = (GtkWidget*)gtk_builder_get_object(builder, "monitor-library-check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(monitor_library), 
-			gconf_client_get_bool(lmplayer->gc, GCONF_PREFIX"/monitor_library", NULL));
-
-	g_signal_connect(monitor_library, "toggled", G_CALLBACK(monitor_library_toggled_cb), lmplayer);
-
 	GtkWidget *index_button = (GtkWidget*)gtk_builder_get_object(builder, "library-index-button");
 	g_signal_connect(index_button, "clicked", G_CALLBACK(index_library_clicked_cb), lmplayer);
 
@@ -83,12 +69,9 @@ setup_plugin_manager_page(LmplayerObject *lmplayer, GtkWidget *notebook)
 {
 	GtkWidget *manager = lmplayer_plugin_manager_new();
 
-	//gtk_container_add(GTK_CONTAINER(GTK_DIALOG(lmplayer->plugins_manager_dialog)->vbox), manager);
 	GtkWidget *label = gtk_label_new(_("Plugin"));
 
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), manager, label);
-
-	//gtk_widget_show_all(GTK_WIDGET(manager));
 }
 
 enum 
