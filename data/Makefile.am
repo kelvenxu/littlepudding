@@ -19,22 +19,22 @@ stuff_DATA=\
 	lyricselectdlg.ui\
 	lmplayer-library-prefs.ui\
 	lmplayer-ui-switch-prefs.ui\
-	plugins.ui\
+	plugins.ui
+
+uidir=$(pkgdatadir)/ui
+ui_DATA = \
+	lmplayer-default.ui \
+	lmplayer-classic.ui \
+	playlist-view.png\
+	playlist-view.svg\
+	search-view.png\
+	search-view.svg \
 	order.png\
 	order.svg\
 	repeat-one.png\
 	repeat-one.svg\
 	repeat.png\
-	repeat.svg\
-	plugins.png
-
-uidir=$(pkgdatadir)/ui
-ui_DATA = lmplayer-default.ui \
-					lmplayer-classic.ui \
-					playlist-view.png\
-					playlist-view.svg\
-					search-view.png\
-					search-view.svg 
+	repeat.svg
 
 desktopdir=$(datadir)/applications
 desktop_in_files=lmplayer.desktop.in.in

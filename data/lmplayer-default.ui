@@ -30,7 +30,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHBox" id="search-box-box">
+              <object class="GtkHBox" id="player-search-entry-box">
                 <property name="visible">True</property>
                 <child>
                   <placeholder/>
@@ -183,7 +183,7 @@
                 <property name="visible">True</property>
                 <property name="show_tabs">False</property>
                 <child>
-                  <object class="GtkScrolledWindow" id="player-playlistbox">
+                  <object class="GtkScrolledWindow" id="player-playlist-box">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="hscrollbar_policy">automatic</property>
@@ -203,7 +203,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkHBox" id="player-visualbox">
+                  <object class="GtkHBox" id="player-visual-box">
                     <property name="visible">True</property>
                     <child>
                       <placeholder/>

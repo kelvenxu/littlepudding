@@ -272,19 +272,19 @@ order_switch_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 			lmplayer_playlist_set_repeat(lmplayer->playlist, FALSE);
 			lmplayer->repeat = FALSE;
 			lmplayer->repeat_one = FALSE;
-			gtk_image_set_from_file(GTK_IMAGE(image), DATADIR"/lmplayer/order.png");
+			gtk_image_set_from_file(GTK_IMAGE(image), DATADIR"/lmplayer/ui/order.png");
 			break;
 		case LMPLAYER_ORDER_REPEAT:
 			lmplayer_playlist_set_repeat(lmplayer->playlist, TRUE);
 			lmplayer->repeat = TRUE;
 			lmplayer->repeat_one = FALSE;
-			gtk_image_set_from_file(GTK_IMAGE(image), DATADIR"/lmplayer/repeat.png");
+			gtk_image_set_from_file(GTK_IMAGE(image), DATADIR"/lmplayer/ui/repeat.png");
 			break;
 		case LMPLAYER_ORDER_REPEAT_ONE:
 			lmplayer_playlist_set_repeat(lmplayer->playlist, FALSE);
 			lmplayer->repeat_one = TRUE;
 			lmplayer->repeat = FALSE;
-			gtk_image_set_from_file(GTK_IMAGE(image), DATADIR"/lmplayer/repeat-one.png");
+			gtk_image_set_from_file(GTK_IMAGE(image), DATADIR"/lmplayer/ui/repeat-one.png");
 			break;
 	}
 }

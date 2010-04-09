@@ -85,7 +85,7 @@ lmplayer_search_view_setup(LmplayerObject *lmplayer)
 
 	gtk_widget_set_size_request(lmplayer->search_box, 256, -1);
 
-	lmplayer->search_box_box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "search-box-box");
+	lmplayer->search_box_box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-search-entry-box");
 	gtk_box_pack_start(GTK_BOX(lmplayer->search_box_box), lmplayer->search_box, TRUE, TRUE, 0);
 
 	GtkWidget *scrolled_win = gtk_scrolled_window_new(NULL, NULL);

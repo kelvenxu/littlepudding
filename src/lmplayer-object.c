@@ -1969,7 +1969,7 @@ video_widget_create (LmplayerObject *lmplayer)
 			G_CALLBACK (on_error_event),
 			lmplayer);
 
-	box = (GtkWidget*)gtk_builder_get_object(lmplayer->builder, "player-visualbox");
+	box = (GtkWidget*)gtk_builder_get_object(lmplayer->builder, "player-visual-box");
 	gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(lmplayer->bvw));
 
 	bvw = &(lmplayer->bvw);
@@ -2062,7 +2062,7 @@ playlist_widget_setup(LmplayerObject *lmplayer)
 	if(lmplayer->playlist == NULL)
 		lmplayer_action_exit(lmplayer);
 	
-	box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-playlistbox");
+	box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-playlist-box");
 	gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(lmplayer->playlist));
 
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->playlist));
