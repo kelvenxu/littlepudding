@@ -59,7 +59,9 @@ typedef struct
 
 	gchar *title;
 	gchar *artist;
+	gchar *mrl;
 
+	gboolean start_playing;
 	gboolean activated;
 
 	/* plugin object members */
@@ -100,9 +102,11 @@ lmplayer_lyric_plugin_init(LmplayerLyricPlugin *plugin)
 
 	plugin->title = NULL;
 	plugin->artist = NULL;
+	plugin->mrl = NULL;
 	plugin->lyric_filename = NULL;
 
 	plugin->has_lyric = FALSE;
+	plugin->start_playing = FALSE;
 	plugin->activated = FALSE;
 }
 
@@ -210,7 +214,7 @@ load_lyric(LmplayerLyricPlugin *self, gchar *mrl)
 		self->title = lmplayer_get_current_title(self->lmplayer);
 		self->artist = lmplayer_get_current_artist(self->lmplayer);
 
-		if(self->artist && self->title && self->lyric_filename)
+		if(self->title && self->artist && self->lyric_filename)
 		{
 			lmplayer_lyric_downloader_download(self->downloader, 
 																			self->title, 
@@ -223,14 +227,27 @@ load_lyric(LmplayerLyricPlugin *self, gchar *mrl)
 static void
 start_playing_cb(LmplayerObject *lmplayer, gchar *mrl, LmplayerLyricPlugin *self)
 {
-	load_lyric(self, mrl);
+	self->start_playing = TRUE;
+	self->mrl = g_strdup(mrl); // FIXME: need free
+}
+
+static void
+metadata_update_cb(LmplayerObject *lmplayer, 
+									const gchar *title, 
+									const gchar *artist, 
+									const gchar *album, 
+									LmplayerLyricPlugin *self)
+{
+	if(self && self->start_playing)
+	{
+		self->start_playing = FALSE;
+		load_lyric(self, self->mrl);
+	}
 }
 
 static void
 lyric_downloader_finished_cb(LmplayerLyricDownloader *downloader, LmplayerLyricPlugin *self)
 {
-	// add file to lyric widget ? which file ?
-	
 	load_local_lyric(self);
 }
 
@@ -311,6 +328,7 @@ impl_activate (LmplayerPlugin *plugin, LmplayerObject *lmplayer, GError **error)
 	g_timeout_add_seconds(1, (GSourceFunc)timer_cb, self);
 
 	g_signal_connect(G_OBJECT(lmplayer), "start-playing", G_CALLBACK(start_playing_cb), self);
+	g_signal_connect(G_OBJECT(lmplayer), "metadata-updated", G_CALLBACK(metadata_update_cb), self);
 
 	return TRUE;
 }
