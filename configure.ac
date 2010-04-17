@@ -261,6 +261,15 @@ EXTRA_GNOME_LIBS="$EXTRA_GNOME_LIBS $EXTRA_BACKEND_LIBS"
 AC_SUBST(EXTRA_GNOME_CFLAGS)
 AC_SUBST(EXTRA_GNOME_LIBS)
 
+totem_plparser_version_less_2_30=yes
+PKG_CHECK_MODULES(TOTEM_PLPARSER, totem-plparser >= 2.30.0, 
+									totem_pl_parser_version_less_2_30=no,
+									totem_pl_parser_version_less_2_30=yes,
+									)
+if test x$totem_pl_parser_version_less_2_30 = xyes; then
+	AC_DEFINE(TOTEM_PL_PARSER_VERSION_LESS_2_30, 1, [TotemPlParser version < 2.30])
+fi
+
 dnl *************************
 dnl X11 related functionality
 dnl *************************

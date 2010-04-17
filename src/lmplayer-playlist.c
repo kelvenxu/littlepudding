@@ -315,6 +315,13 @@ lmplayer_playlist_update_save_button (LmplayerPlaylist *playlist)
 {
 }
 
+void
+lmplayer_playlist_save_current_playlist (LmplayerPlaylist *playlist, const char *output)
+{
+	lmplayer_playlist_save_current_playlist_ext (playlist, output, TOTEM_PL_PARSER_PLS);
+}
+
+#if TOTEM_PL_PARSER_VERSION_LESS_2_30
 static void
 lmplayer_playlist_save_get_iter_func (GtkTreeModel *model,
 		GtkTreeIter *iter, char **uri, char **title,
@@ -325,12 +332,7 @@ lmplayer_playlist_save_get_iter_func (GtkTreeModel *model,
 			FILENAME_COL, title,
 			TITLE_CUSTOM_COL, custom_title,
 			-1);
-}
 
-void
-lmplayer_playlist_save_current_playlist (LmplayerPlaylist *playlist, const char *output)
-{
-	lmplayer_playlist_save_current_playlist_ext (playlist, output, TOTEM_PL_PARSER_PLS);
 }
 
 void
@@ -351,6 +353,68 @@ lmplayer_playlist_save_current_playlist_ext (LmplayerPlaylist *playlist, const c
 		g_error_free (error);
 	}
 }
+
+#else
+static gboolean
+lmplayer_playlist_save_iter_foreach (GtkTreeModel *model,
+				  GtkTreePath  *path,
+				  GtkTreeIter  *iter,
+				  gpointer      user_data)
+{
+	TotemPlPlaylist *playlist = user_data;
+	TotemPlPlaylistIter pl_iter;
+	gchar *uri, *title;
+	gboolean custom_title;
+
+	gtk_tree_model_get (model, iter,
+			    URI_COL, &uri,
+			    FILENAME_COL, &title,
+			    TITLE_CUSTOM_COL, &custom_title,
+			    -1);
+
+	totem_pl_playlist_append (playlist, &pl_iter);
+	totem_pl_playlist_set (playlist, &pl_iter,
+			       TOTEM_PL_PARSER_FIELD_URI, uri,
+			       TOTEM_PL_PARSER_FIELD_TITLE, (custom_title) ? title : NULL,
+			       NULL);
+
+	g_free (uri);
+	g_free (title);
+
+	return FALSE;
+}
+
+void
+lmplayer_playlist_save_current_playlist_ext(LmplayerPlaylist *playlist, const char *output, TotemPlParserType type)
+{
+	TotemPlPlaylist *pl_playlist;
+	GError *error = NULL;
+	GFile *output_file;
+	gboolean retval;
+
+	pl_playlist = totem_pl_playlist_new ();
+	output_file = g_file_new_for_commandline_arg (output);
+
+	gtk_tree_model_foreach (playlist->priv->model,
+				lmplayer_playlist_save_iter_foreach,
+				pl_playlist);
+
+	retval = totem_pl_parser_save (playlist->priv->parser,
+				       pl_playlist,
+				       output_file,
+				       NULL, type, &error);
+
+	if (retval == FALSE)
+	{
+		lmplayer_playlist_error (_("Could not save the playlist"),
+				error->message, playlist);
+		g_error_free (error);
+	}
+
+	g_object_unref (pl_playlist);
+	g_object_unref (output_file);
+}
+#endif
 
 static void
 gtk_tree_selection_has_selected_foreach (GtkTreeModel *model,
