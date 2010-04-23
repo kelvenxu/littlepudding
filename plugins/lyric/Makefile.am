@@ -22,7 +22,11 @@ common_defines = \
 
 liblyric_la_SOURCES = lmplayer-lyric.c
 liblyric_la_LDFLAGS = $(modules_flags)
-liblyric_la_LIBADD = $(lyric_LIBS) 
+liblyric_la_LIBADD = $(lyric_LIBS) $(EXTRA_GNOME_LIBS) \
+												 $(top_builddir)/src/liblmplayer-main.la \
+												 $(top_builddir)/src/backend/libbaconvideowidget.la \
+												 $(top_builddir)/liblmplayer-plugin/liblmplayermodule.la \
+												 $(top_builddir)/bindings/python/lmplayer-python.la
 liblyric_la_CPPFLAGS = $(common_defines)
 
 liblyric_la_CFLAGS = \

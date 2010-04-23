@@ -23,8 +23,6 @@
 #ifndef _LMPLAYER_OPTIONS_H_
 #define _LMPLAYER_OPTIONS_H_
 
-#include "bacon-message-connection.h"
-#include "lmplayer-remote-command.h"
 #include "lmplayer.h"
 #include <unique/uniqueapp.h>
 

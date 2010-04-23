@@ -22,7 +22,11 @@ common_defines = \
 
 librereading_la_SOURCES = lmplayer-rereading.c
 librereading_la_LDFLAGS = $(modules_flags)
-librereading_la_LIBADD = $(rereading_LIBS) 
+librereading_la_LIBADD = $(rereading_LIBS) $(EXTRA_GNOME_LIBS)\
+												 $(top_builddir)/src/liblmplayer-main.la \
+												 $(top_builddir)/src/backend/libbaconvideowidget.la \
+												 $(top_builddir)/liblmplayer-plugin/liblmplayermodule.la \
+												 $(top_builddir)/bindings/python/lmplayer-python.la
 librereading_la_CPPFLAGS = $(common_defines)
 
 librereading_la_CFLAGS = \

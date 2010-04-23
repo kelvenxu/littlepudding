@@ -585,9 +585,6 @@ bindings/Makefile
 bindings/python/Makefile
 tests/Makefile
 po/Makefile.in
-docs/Makefile
-docs/reference/Makefile
-docs/reference/version.xml
 ])
 
 AC_MSG_NOTICE([Lmplayer was configured with the following options:])

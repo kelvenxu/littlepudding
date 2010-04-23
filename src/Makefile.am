@@ -17,11 +17,6 @@ common_defines = \
 
 modules_flags = -export_dynamic -avoid-version -module -no-undefined
 
-EGGDIR=$(srcdir)/../../libegg/libegg/recent-files/
-BACONDIR=$(srcdir)/../../libbacon/src
-regenerate-built-sources:
-	EGGFILES="$(BACON_MESSAGE_CONNECTION)" EGGDIR="$(BACONDIR)" $(srcdir)/update-from-egg.sh || true
-
 # Lmplayer
 
 LMPLAYERMARSHALFILES = 						\
@@ -68,10 +63,6 @@ liblmplayer_main_la_SOURCES =	\
 	lmplayer-utils.h \
 	lmplayer-uri.c \
 	lmplayer-uri.h\
-	lmplayer-skin.c \
-	lmplayer-skin.h\
-	lmplayer-magnetic.c \
-	lmplayer-magnetic.h\
 	lmplayer-search.c \
 	lmplayer-search.h\
 	lmplayer-config.c \

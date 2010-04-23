@@ -307,7 +307,6 @@ void shuffle_action_callback(GtkToggleAction *action, LmplayerObject *lmplayer)
 
 void skins_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
-	lmplayer_action_change_skin(lmplayer);
 }
 
 void preferences_action_callback(GtkAction *action, LmplayerObject *lmplayer)
