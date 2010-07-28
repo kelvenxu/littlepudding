@@ -1,7 +1,7 @@
 /*
- * status_icon.c
+ * status-icon.c
  *
- * This file is part of status_icon plugin.
+ * This file is part of status-icon plugin.
  *
  * Copyright (C) 2010 - kelvenxu <kelvenxu@gmail.com>.
  *
