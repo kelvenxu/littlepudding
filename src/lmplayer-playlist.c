@@ -83,6 +83,7 @@ typedef struct {
 
 struct LmplayerPlaylistPrivate
 {
+	GtkTreeView *tree_view;
 	GtkTreeModel *model;
 	GtkTreePath *current;
 	GtkTreeSelection *selection;
@@ -171,7 +172,7 @@ static void init_treeview (GtkWidget *treeview, LmplayerPlaylist *playlist);
 
 #define lmplayer_playlist_unset_playing(x) lmplayer_playlist_set_playing(x, LMPLAYER_PLAYLIST_STATUS_NONE)
 
-G_DEFINE_TYPE (LmplayerPlaylist, lmplayer_playlist, GTK_TYPE_TREE_VIEW)
+G_DEFINE_TYPE (LmplayerPlaylist, lmplayer_playlist, GTK_TYPE_SCROLLED_WINDOW)
 
 /* Helper functions */
 static gboolean
@@ -470,7 +471,7 @@ drop_cb (GtkWidget        *widget,
 	lmplayer_playlist_set_waiting_cursor (playlist);
 
 	playlist->priv->tree_path = gtk_tree_path_new ();
-	gtk_tree_view_get_dest_row_at_pos (GTK_TREE_VIEW (playlist),
+	gtk_tree_view_get_dest_row_at_pos (GTK_TREE_VIEW (playlist->priv->tree_view),
 					   x, y,
 					   &playlist->priv->tree_path,
 					   &playlist->priv->drop_pos);
@@ -618,7 +619,7 @@ playlist_show_popup_menu (LmplayerPlaylist *playlist, GdkEventButton *event)
 		button = event->button;
 		time = event->time;
 
-		if (gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (playlist),
+		if (gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (playlist->priv->tree_view),
 				 event->x, event->y, &path, NULL, NULL, NULL)) {
 			if (!gtk_tree_selection_path_is_selected (playlist->priv->selection, path)) {
 				gtk_tree_selection_unselect_all (playlist->priv->selection);
@@ -675,8 +676,7 @@ lmplayer_playlist_set_reorderable (LmplayerPlaylist *playlist, gboolean set)
 {
 	guint num_items, i;
 
-	gtk_tree_view_set_reorderable
-		(GTK_TREE_VIEW (playlist), set);
+	gtk_tree_view_set_reorderable (GTK_TREE_VIEW (playlist->priv->tree_view), set);
 
 	if (set != FALSE)
 		return;
@@ -1132,12 +1132,12 @@ lmplayer_playlist_move_files (LmplayerPlaylist *playlist, gboolean direction_up)
 	int pos;
 
 	selection = gtk_tree_view_get_selection
-		(GTK_TREE_VIEW (playlist));
+		(GTK_TREE_VIEW (playlist->priv->tree_view));
 	if (selection == NULL)
 		return;
 
 	model = gtk_tree_view_get_model
-		(GTK_TREE_VIEW (playlist));
+		(GTK_TREE_VIEW (playlist->priv->tree_view));
 	store = GTK_LIST_STORE (model);
 	pos = -2;
 	refs = NULL;
@@ -1434,7 +1434,7 @@ playlist_scroll_cb (GtkWidget *widget, GdkEventScroll *event, LmplayerPlaylist *
 {
 	GtkAdjustment *adj;
 
-	adj = gtk_tree_view_get_vadjustment(GTK_TREE_VIEW(playlist));
+	adj = gtk_tree_view_get_vadjustment(GTK_TREE_VIEW(playlist->priv->tree_view));
 
 	if(event->direction == GDK_SCROLL_UP)
 	{
@@ -1730,6 +1730,12 @@ static void
 lmplayer_playlist_init (LmplayerPlaylist *playlist)
 {
 	playlist->priv = G_TYPE_INSTANCE_GET_PRIVATE (playlist, LMPLAYER_TYPE_PLAYLIST, LmplayerPlaylistPrivate);
+
+	playlist->priv->tree_view = gtk_tree_view_new();
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(playlist->priv->tree_view), TRUE);
+	gtk_container_add(GTK_CONTAINER(playlist), playlist->priv->tree_view);
+	gtk_widget_show(playlist->priv->tree_view);
+
 	playlist->priv->parser = totem_pl_parser_new ();
 
 	totem_pl_parser_add_ignored_scheme (playlist->priv->parser, "dvd:");
@@ -1744,15 +1750,15 @@ lmplayer_playlist_init (LmplayerPlaylist *playlist)
 			G_CALLBACK (lmplayer_playlist_entry_parsed),
 			playlist);
 
-	gtk_widget_add_events (GTK_WIDGET (playlist), GDK_KEY_PRESS_MASK);
-	g_signal_connect (G_OBJECT (playlist), "key_press_event",
+	gtk_widget_add_events (GTK_WIDGET (playlist->priv->tree_view), GDK_KEY_PRESS_MASK);
+	g_signal_connect (G_OBJECT (playlist->priv->tree_view), "key_press_event",
 			G_CALLBACK (lmplayer_playlist_key_press), playlist);
 
 
-	init_treeview(GTK_WIDGET(playlist), playlist);
+	init_treeview(GTK_WIDGET(playlist->priv->tree_view), playlist);
 
 	playlist->priv->model = create_model();
-	gtk_tree_view_set_model(GTK_TREE_VIEW(playlist), playlist->priv->model);
+	gtk_tree_view_set_model(GTK_TREE_VIEW(playlist->priv->tree_view), playlist->priv->model);
 
 	/* The configuration */
 	init_config (playlist);
@@ -1761,9 +1767,14 @@ lmplayer_playlist_init (LmplayerPlaylist *playlist)
 GtkWidget*
 lmplayer_playlist_new (void)
 {
-	LmplayerPlaylist *playlist;
+	LmplayerPlaylist *playlist; 
 
-	playlist = LMPLAYER_PLAYLIST (g_object_new (LMPLAYER_TYPE_PLAYLIST, NULL));
+	playlist = LMPLAYER_PLAYLIST (g_object_new (LMPLAYER_TYPE_PLAYLIST, 
+				"hadjustment", NULL,
+				"vadjustment", NULL,
+				"hscrollbar-policy", GTK_POLICY_AUTOMATIC,
+				"vscrollbar-policy", GTK_POLICY_AUTOMATIC,
+				NULL));
 
 	return GTK_WIDGET (playlist);
 }
@@ -1945,7 +1956,7 @@ lmplayer_playlist_clear_with_compare (LmplayerPlaylist *playlist,
 		GtkTreeSelection *selection;
 
 		selection = gtk_tree_view_get_selection
-			(GTK_TREE_VIEW (playlist));
+			(GTK_TREE_VIEW (playlist->priv->tree_view));
 		if (selection == NULL)
 			return;
 
@@ -2065,7 +2076,7 @@ lmplayer_playlist_clear_with_compare (LmplayerPlaylist *playlist,
 				NULL);
 	}
 	lmplayer_playlist_update_save_button (playlist);
-	gtk_tree_view_columns_autosize (GTK_TREE_VIEW (playlist));
+	gtk_tree_view_columns_autosize (GTK_TREE_VIEW (playlist->priv->tree_view));
 
 	playlist->priv->current_to_be_removed = FALSE;
 }
@@ -2339,7 +2350,7 @@ lmplayer_playlist_set_playing (LmplayerPlaylist *playlist, LmplayerPlaylistStatu
 		return TRUE;
 
 	path = gtk_tree_model_get_path (GTK_TREE_MODEL (store), &iter);
-	gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (playlist),
+	gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (playlist->priv->tree_view),
 				      path, NULL,
 				      TRUE, 0.5, 0);
 	gtk_tree_path_free (path);

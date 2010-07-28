@@ -56,12 +56,14 @@ typedef void (*LmplayerPlaylistForeachFunc) (LmplayerPlaylist *playlist,
 					  gpointer       user_data);
 
 struct LmplayerPlaylist {
-	GtkTreeView parent;
+	GtkScrolledWindow parent;
+	//GtkTreeView parent;
 	LmplayerPlaylistPrivate *priv;
 };
 
 struct LmplayerPlaylistClass {
-	GtkTreeViewClass parent_class;
+	//GtkTreeViewClass parent_class;
+	GtkScrolledWindowClass parent_class;
 
 	void (*changed) (LmplayerPlaylist *playlist);
 	void (*item_activated) (LmplayerPlaylist *playlist);

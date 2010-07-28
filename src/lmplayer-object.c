@@ -2165,7 +2165,7 @@ lmplayer_create_playlist_widget(LmplayerObject *lmplayer, const char *filename)
 
 	LmplayerPlaylist *playlist = LMPLAYER_PLAYLIST(lmplayer_playlist_new());
 	gtk_widget_show_all(GTK_WIDGET(playlist));
-	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(playlist), TRUE);
+	//gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(playlist), TRUE);
 
 	gchar *uri = g_filename_to_uri(filename, NULL, NULL);
 	if(uri != NULL)
