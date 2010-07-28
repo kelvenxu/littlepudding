@@ -34,6 +34,7 @@
 #include "bacon-video-widget.h"
 #include "lmplayer-playlist.h"
 #include "lmplayer-open-location.h"
+#include "lmplayer-notebook.h"
 #include "lmplayer.h"
 
 G_BEGIN_DECLS
@@ -78,12 +79,14 @@ struct _LmplayerObject
 	gboolean repeat;
 	gboolean repeat_one;
 
-	//LmplayerNotebook *notebook;
 	BaconVideoWidget *bvw;
 
 	GConfClient *gc;
 
-	LmplayerPlaylist *playlist;
+	LmplayerPlaylist *playing_playlist; // playing playlist
+	LmplayerPlaylist *current_playlist;
+	LmplayerNotebook *playlist_notebook;
+
 	GtkWidget *playlist_view_button;
 
 	GtkWidget *search_box_box;
@@ -161,6 +164,7 @@ gboolean lmplayer_action_open_files (LmplayerObject *lmplayer, char **list);
 
 void video_widget_create (LmplayerObject *lmplayer);
 void playlist_widget_setup(LmplayerObject *lmplayer);
+GtkWidget *lmplayer_create_playlist_widget(LmplayerObject *lmplayer, const char *filename);
 void lmplayer_setup_statusbar(LmplayerObject *lmplayer);
 
 G_END_DECLS

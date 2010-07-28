@@ -1,7 +1,7 @@
 AC_PREREQ(2.52)
 
 m4_define(lmplayer_version_major, 0)
-m4_define(lmplayer_version_minor, 12)
+m4_define(lmplayer_version_minor, 14)
 m4_define(lmplayer_version_micro, 0)
 
 AC_INIT([lmplayer],
@@ -100,25 +100,6 @@ if test "x$with_hal" != "xno"; then
 fi
 AM_CONDITIONAL(HAVE_HAL, test x"$with_hal" = xyes)
 
-dnl Check for packages for building liblmplayer-plparser.la
-dnl PKG_CHECK_MODULES(LMPLAYER_PLPARSER, [glib-2.0 >= $GLIB_REQS gtk+-2.0 libxml-2.0 camel-1.2 gio-2.0])
-
-dnl PKG_CHECK_MODULES([LMPLAYER_PLPARSER_MINI], [gio-2.0])
-
-
-dnl AC_ARG_ENABLE(xine,
-dnl 	AC_HELP_STRING([--enable-xine], [use xine instead of GStreamer for the backend]),
-dnl 	[case "${enableval}" in
-dnl 	yes) ENABLE_XINE=yes ;;
-dnl         no)  ENABLE_XINE=no ;;
-dnl 	*) AC_MSG_ERROR([
-dnl              ***** Bad value ${enableval} for --enable-xine
-dnl              ***** Please use one of the following:
-dnl              *****   --enable-xine=yes
-dnl 	     *****   --enable-xine=no
-dnl            ]) ;;
-dnl 	esac],
-dnl 	[ENABLE_XINE=auto]) dnl Default value
 
 ENABLE_XINE=no
 HAVE_GSTREAMER=no
@@ -556,35 +537,36 @@ AC_SUBST([AM_LDFLAGS])
 
 
 AC_OUTPUT([
-Makefile
-src/backend/Makefile
-src/Makefile
-liblmplayer-plugin/Makefile
-lyric-downloader/Makefile
-data/Makefile
-data/lmplayer.desktop.in
-data/icons/Makefile
-data/icons/hicolor/Makefile
-data/icons/hicolor/16x16/Makefile
-data/icons/hicolor/16x16/apps/Makefile
-data/icons/hicolor/22x22/Makefile
-data/icons/hicolor/22x22/apps/Makefile
-data/icons/hicolor/24x24/Makefile
-data/icons/hicolor/24x24/apps/Makefile
-data/icons/hicolor/32x32/Makefile
-data/icons/hicolor/32x32/apps/Makefile
-data/icons/hicolor/48x48/Makefile
-data/icons/hicolor/48x48/apps/Makefile
-data/icons/hicolor/scalable/Makefile
-data/icons/hicolor/scalable/apps/Makefile
-plugins/Makefile
-plugins/lmplayer/Makefile
-plugins/rereading/Makefile
-plugins/lyric/Makefile
-bindings/Makefile
-bindings/python/Makefile
-tests/Makefile
-po/Makefile.in
+	Makefile
+	src/backend/Makefile
+	src/Makefile
+	liblmplayer-plugin/Makefile
+	lyric-downloader/Makefile
+	data/Makefile
+	data/lmplayer.desktop.in
+	data/icons/Makefile
+	data/icons/hicolor/Makefile
+	data/icons/hicolor/16x16/Makefile
+	data/icons/hicolor/16x16/apps/Makefile
+	data/icons/hicolor/22x22/Makefile
+	data/icons/hicolor/22x22/apps/Makefile
+	data/icons/hicolor/24x24/Makefile
+	data/icons/hicolor/24x24/apps/Makefile
+	data/icons/hicolor/32x32/Makefile
+	data/icons/hicolor/32x32/apps/Makefile
+	data/icons/hicolor/48x48/Makefile
+	data/icons/hicolor/48x48/apps/Makefile
+	data/icons/hicolor/scalable/Makefile
+	data/icons/hicolor/scalable/apps/Makefile
+	plugins/Makefile
+	plugins/lmplayer/Makefile
+	plugins/rereading/Makefile
+	plugins/lyric/Makefile
+	plugins/status-icon/Makefile
+	bindings/Makefile
+	bindings/python/Makefile
+	tests/Makefile
+	po/Makefile.in
 ])
 
 AC_MSG_NOTICE([Lmplayer was configured with the following options:])

@@ -40,7 +40,7 @@ search_view_row_activated_cb(GtkTreeView *treeview, GtkTreePath *path, GtkTreeVi
 		gtk_tree_model_get(model, &iter, 1, &filename, -1);
 		gchar *uri = g_filename_to_uri(filename, NULL, NULL);
 		g_free(filename);
-		lmplayer_playlist_add_mrl(lmplayer->playlist, uri, NULL);
+		lmplayer_playlist_add_mrl(lmplayer->playing_playlist, uri, NULL);
 		g_print("select uri %s\n", uri);
 		g_free(uri);
 	}

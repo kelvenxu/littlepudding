@@ -247,7 +247,7 @@ lmplayer_action_on_unmount (GVolumeMonitor *volume_monitor,
 			 GMount *mount,
 			 LmplayerObject *lmplayer)
 {
-	lmplayer_playlist_clear_with_g_mount (lmplayer->playlist, mount);
+	lmplayer_playlist_clear_with_g_mount (lmplayer->playing_playlist, mount);
 }
 
 void

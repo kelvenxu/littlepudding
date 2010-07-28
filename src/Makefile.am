@@ -47,6 +47,8 @@ liblmplayer_main_la_SOURCES =	\
 	lmplayer-menu.h  \
 	lmplayer-notebook.c \
 	lmplayer-notebook.h  \
+	lmplayer-tab.c \
+	lmplayer-tab.h \
 	lmplayer-statusbar.c \
 	lmplayer-statusbar.h  \
 	lmplayer-dvb-setup.c \

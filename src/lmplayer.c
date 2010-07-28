@@ -157,15 +157,87 @@ lmplayer_action_load_default_playlist(LmplayerObject *lmplayer)
 	uri = g_filename_to_uri(lmplayer->pls, NULL, NULL);
 	if(uri != NULL)
 	{
-		lmplayer_playlist_add_mrl(lmplayer->playlist, uri, NULL);
+		lmplayer_playlist_add_mrl(lmplayer->playing_playlist, uri, NULL);
 		g_free(uri);
 		uri = NULL;
 	}
 }
 
-void
-lmplayer_action_change_skin(LmplayerObject *lmplayer)
+
+#if 0
+static gboolean
+show_notebook_menu(LmplayerObject *lmplayer, GdkEventButton *event)
 {
+	static GtkWidget *menu = NULL;
+
+	if(menu == NULL)
+	{
+		menu = gtk_menu_new();
+		GtkWidget *item = gtk_menu_item_new_with_label(_("Rename"));
+		gtk_widget_show(item);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		g_signal_connect_swapped(item, "activate", G_CALLBACK(notebook_tab_rename_cb), lmplayer);
+
+		item = gtk_menu_item_new_with_label(_("Close"));
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		gtk_widget_show(item);
+		g_signal_connect_swapped(item, "activate", G_CALLBACK(notebook_tab_close_cb), lmplayer);
+	}
+
+	gtk_menu_popup(GTK_MENU(menu),  NULL, NULL, NULL, NULL, event->button, event->time);
+
+	return TRUE;
+}
+#endif
+
+static void 
+notebook_switch_page_cb(GtkNotebook *nb, GtkNotebookPage *page, gint page_num, LmplayerObject *lmplayer)
+{
+	lmplayer->current_playlist = (LmplayerPlaylist *)gtk_notebook_get_nth_page(nb, page_num);
+}
+
+static void
+lmplayer_action_load_playlists(LmplayerObject *lmplayer)
+{
+	lmplayer->playlist_notebook = lmplayer_notebook_new();
+	g_signal_connect(lmplayer->playlist_notebook, "switch-page", G_CALLBACK(notebook_switch_page_cb), lmplayer);
+
+	GtkWidget *box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-playlist-box");
+	gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(lmplayer->playlist_notebook));
+
+	gchar *root = g_build_filename(g_getenv("HOME"), ".lmplayer", NULL);
+	GDir *dir = g_dir_open(root, 0, NULL);
+
+	if(dir)
+	{
+		const char *filename = g_dir_read_name(dir);
+		while(filename)
+		{
+			if(g_str_has_suffix(filename, ".pls"))
+			{
+				char *fullname = g_build_filename(root, filename, NULL);
+
+				GtkWidget *pls = lmplayer_create_playlist_widget(lmplayer, fullname);
+				char *label_name = g_path_get_basename(fullname);
+				label_name[strlen(label_name) - 4] = '\0'; //delete suffix '.pls'
+				lmplayer_notebook_append_page(lmplayer->playlist_notebook, pls, label_name);
+
+				g_free(label_name);
+				g_free(fullname);
+			}
+			filename = g_dir_read_name(dir);
+		}
+	}
+
+	g_dir_close(dir);
+	g_free(root);
+
+	gtk_widget_show_all(lmplayer->playlist_notebook);
+
+	//set current playlist and playing playlist
+	int idx = gtk_notebook_get_current_page(lmplayer->playlist_notebook);
+	lmplayer->playing_playlist = gtk_notebook_get_nth_page(lmplayer->playlist_notebook, idx);
+	lmplayer->current_playlist = lmplayer->playing_playlist;
 }
 
 gboolean
@@ -269,19 +341,19 @@ order_switch_button_clicked_cb(GtkButton *button, LmplayerObject *lmplayer)
 	switch(click_counter % LMPLAYER_ORDER_NUMBER)
 	{
 		case LMPLAYER_ORDER_NORMAL:
-			lmplayer_playlist_set_repeat(lmplayer->playlist, FALSE);
+			lmplayer_playlist_set_repeat(lmplayer->playing_playlist, FALSE);
 			lmplayer->repeat = FALSE;
 			lmplayer->repeat_one = FALSE;
 			gtk_image_set_from_file(GTK_IMAGE(image), DATADIR"/lmplayer/ui/order.png");
 			break;
 		case LMPLAYER_ORDER_REPEAT:
-			lmplayer_playlist_set_repeat(lmplayer->playlist, TRUE);
+			lmplayer_playlist_set_repeat(lmplayer->playing_playlist, TRUE);
 			lmplayer->repeat = TRUE;
 			lmplayer->repeat_one = FALSE;
 			gtk_image_set_from_file(GTK_IMAGE(image), DATADIR"/lmplayer/ui/repeat.png");
 			break;
 		case LMPLAYER_ORDER_REPEAT_ONE:
-			lmplayer_playlist_set_repeat(lmplayer->playlist, FALSE);
+			lmplayer_playlist_set_repeat(lmplayer->playing_playlist, FALSE);
 			lmplayer->repeat_one = TRUE;
 			lmplayer->repeat = FALSE;
 			gtk_image_set_from_file(GTK_IMAGE(image), DATADIR"/lmplayer/ui/repeat-one.png");
@@ -616,8 +688,9 @@ main(int argc, char* argv[])
 	lmplayer_callback_connect(lmplayer);
 
 	lmplayer_ui_manager_setup(lmplayer);
-	playlist_widget_setup(lmplayer);
 	video_widget_create(lmplayer); 
+
+	//lmplayer_action_load_playlists(lmplayer);
 	
 	lmplayer->state = STATE_STOPPED;
 	lmplayer->seek_lock = FALSE;
@@ -626,6 +699,7 @@ main(int argc, char* argv[])
 	lmplayer_setup_file_filters();
 	lmplayer_setup_toolbar(lmplayer);
 	lmplayer_setup_statusbar(lmplayer);
+
 
 	lmplayer_options_process_late(lmplayer, &optionstate);
 
@@ -643,19 +717,10 @@ main(int argc, char* argv[])
 
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->win));
 
-	if(hasfiles)
-	{
-		if(lmplayer->pls == NULL)
-			lmplayer->pls = lmplayer_build_default_playlist_filename();
-	}
-	else
-	{
-		lmplayer_action_load_default_playlist(lmplayer);
-	}
-
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(lmplayer->view), LMPLAYER_VIEW_TYPE_PLAYLIST);
-
 	lmplayer_search_init(lmplayer);
+
+	lmplayer_action_load_playlists(lmplayer);
+	lmplayer_action_stop(lmplayer);
 
 	if(lmplayer->uapp != NULL) 
 	{

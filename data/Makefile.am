@@ -10,30 +10,32 @@ other_data=\
 		   mime-functions.sh
 
 stuff_DATA=\
-	lmplayer.cfg.example\
-	lmplayer.png\
-	lmplayer-16x16.png\
-	lmplayer-24x24.png\
-	lmplayer-32x32.png\
-	uri.ui\
-	lyricselectdlg.ui\
-	lmplayer-library-prefs.ui\
-	lmplayer-ui-switch-prefs.ui\
+	lmplayer.cfg.example \
+	lmplayer.png \
+	lmplayer-16x16.png \
+	lmplayer-24x24.png \
+	lmplayer-32x32.png \
+	uri.ui \
+	lyricselectdlg.ui \
+	lmplayer-library-prefs.ui \
+	lmplayer-ui-switch-prefs.ui \
+	lmplayer-mini-control.ui \
 	plugins.ui
 
 uidir=$(pkgdatadir)/ui
 ui_DATA = \
 	lmplayer-default.ui \
 	lmplayer-classic.ui \
-	playlist-view.png\
-	playlist-view.svg\
-	search-view.png\
+	lmplayer-foobar.ui \
+	playlist-view.png \
+	playlist-view.svg \
+	search-view.png \
 	search-view.svg \
-	order.png\
-	order.svg\
-	repeat-one.png\
-	repeat-one.svg\
-	repeat.png\
+	order.png \
+	order.svg \
+	repeat-one.png \
+	repeat-one.svg \
+	repeat.png \
 	repeat.svg
 
 desktopdir=$(datadir)/applications

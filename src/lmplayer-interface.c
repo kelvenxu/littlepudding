@@ -167,22 +167,26 @@ lmplayer_interface_load (const char *name, gboolean fatal, GtkWindow *parent, gp
 	char *filename;
 
 	filename = lmplayer_interface_get_full_path (name);
-	if (filename == NULL) {
+	if (filename == NULL) 
+	{
 		char *msg;
 
-		msg = g_strdup_printf (_("Couldn't load the '%s' interface. %s"), name, _("The file does not exist."));
+		msg = g_strdup_printf(_("Couldn't load the '%s' interface. %s"), name, _("The file does not exist."));
 		if (fatal == FALSE)
-			lmplayer_interface_error (msg, _("Make sure that Lmplayer is properly installed."), parent);
+		{
+			lmplayer_interface_error(msg, _("Make sure that Lmplayer is properly installed."), parent);
+		}
 		else
-			lmplayer_interface_error_blocking (msg, _("Make sure that Lmplayer is properly installed."), parent);
+		{
+			lmplayer_interface_error_blocking(msg, _("Make sure that Lmplayer is properly installed."), parent);
+		}
 
 		g_free (msg);
 		return NULL;
 	}
 
-	builder = lmplayer_interface_load_with_full_path (filename, fatal, parent,
-						       user_data);
-	g_free (filename);
+	builder = lmplayer_interface_load_with_full_path(filename, fatal, parent, user_data);
+	g_free(filename);
 
 	return builder;
 }
@@ -241,22 +245,20 @@ lmplayer_interface_get_full_path (const char *name)
 #ifdef LMPLAYER_RUN_IN_SOURCE_TREE
 	/* Try the GtkBuilder file in the source tree first */
 	filename = g_build_filename ("..", "data", name, NULL);
-	if (g_file_test (filename, G_FILE_TEST_EXISTS) == FALSE)
+	if(g_file_test(filename, G_FILE_TEST_EXISTS) == FALSE)
 	{
-		g_free (filename);
+		g_free(filename);
 		/* Try the local file */
-		filename = g_build_filename (DATADIR,
-				"lmplayer", name, NULL);
+		filename = g_build_filename(DATADIR, "lmplayer", name, NULL);
 
-		if (g_file_test (filename, G_FILE_TEST_EXISTS) == FALSE)
+		if(g_file_test(filename, G_FILE_TEST_EXISTS) == FALSE)
 		{
 			g_free (filename);
 			return NULL;
 		}
 	}
 #else
-	filename = g_build_filename (DATADIR,
-	                                "lmplayer", name, NULL);
+	filename = g_build_filename(DATADIR, "lmplayer", name, NULL);
 #endif
 
 	return filename;

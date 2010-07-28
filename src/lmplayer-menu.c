@@ -32,6 +32,7 @@
 #include "lmplayer.h"
 #include "lmplayer-interface.h"
 #include "lmplayer-debug.h"
+#include "lmplayer-tab.h"
 
 void play_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void pause_action_callback(GtkAction *action, LmplayerObject *lmplayer);
@@ -74,6 +75,9 @@ void shuffle_action_callback(GtkToggleAction *action, LmplayerObject *lmplayer);
 void skins_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void preferences_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 void about_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+
+void new_playlist_action_callback(GtkAction *action, LmplayerObject *lmplayer);
+void rename_playlist_action_callback(GtkAction *action, LmplayerObject *lmplayer);
 
 void play_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
@@ -260,7 +264,8 @@ void eq_close_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 
 void add_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
-	lmplayer_playlist_add_files(lmplayer->playlist);
+	//lmplayer_playlist_add_files(lmplayer->playing_playlist);
+	lmplayer_playlist_add_files(lmplayer->current_playlist);
 }
 
 void add_direction_action_callback(GtkAction *action, LmplayerObject *lmplayer)
@@ -269,40 +274,91 @@ void add_direction_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 
 void remove_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
-	lmplayer_playlist_remove_files(lmplayer->playlist);
+	//lmplayer_playlist_remove_files(lmplayer->playing_playlist);
+	lmplayer_playlist_remove_files(lmplayer->current_playlist);
 }
 
 void remove_all_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
-	lmplayer_playlist_clear(lmplayer->playlist);
+	lmplayer_playlist_clear(lmplayer->playing_playlist);
 	lmplayer_action_stop(lmplayer);
 }
 
 void up_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
-	lmplayer_playlist_up_files(lmplayer->playlist);
+	lmplayer_playlist_up_files(lmplayer->playing_playlist);
 }
 
 void down_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
-	lmplayer_playlist_down_files(lmplayer->playlist);
+	//lmplayer_playlist_down_files(lmplayer->playing_playlist);
+	lmplayer_playlist_down_files(lmplayer->current_playlist);
 }
 
 void save_action_callback(GtkAction *action, LmplayerObject *lmplayer)
 {
-	lmplayer_playlist_save_files(lmplayer->playlist);
+	//lmplayer_playlist_save_files(lmplayer->playing_playlist);
+	lmplayer_playlist_save_files(lmplayer->current_playlist);
+}
+
+void new_playlist_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+	GtkWidget *playlist = lmplayer_create_playlist_widget(lmplayer, NULL);
+	if(playlist)
+		lmplayer_notebook_append_page(lmplayer->playlist_notebook, playlist, _("Noname"));
+}
+
+void rename_playlist_action_callback(GtkAction *action, LmplayerObject *lmplayer)
+{
+	GtkWidget *tab = gtk_notebook_get_tab_label(GTK_NOTEBOOK(lmplayer->playlist_notebook), GTK_WIDGET(lmplayer->current_playlist));
+	if(tab == NULL)
+		return;
+
+	GtkWidget *dialog = gtk_dialog_new_with_buttons(_("Rename"), 
+			GTK_WINDOW(lmplayer->win), 
+			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_STOCK_OK, 
+			GTK_RESPONSE_ACCEPT,
+			GTK_STOCK_CANCEL,
+			GTK_RESPONSE_REJECT, 
+			NULL); 
+
+	GtkWidget *hbox = gtk_hbox_new(FALSE, 4);
+	GtkWidget *label = gtk_label_new(_("New name"));
+	GtkWidget *entry = gtk_entry_new();
+
+	gtk_entry_set_text(GTK_ENTRY(entry), lmplayer_tab_get_name(LMPLAYER_TAB(tab)));
+	gtk_editable_select_region(GTK_EDITABLE(entry), 0, -1);
+
+	gtk_widget_show(hbox);
+	gtk_widget_show(label);
+	gtk_widget_show(entry);
+
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, FALSE, 0);
+
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, FALSE, FALSE, 0);
+
+	gint response = gtk_dialog_run(GTK_DIALOG(dialog));
+	if(response == GTK_RESPONSE_ACCEPT)
+	{
+		const char *new_name = gtk_entry_get_text(GTK_ENTRY(entry));
+		lmplayer_tab_set_name(LMPLAYER_TAB(tab), new_name);
+	}
+
+	gtk_widget_destroy(dialog);
 }
 
 void repeat_action_callback(GtkToggleAction *action, LmplayerObject *lmplayer)
 {
-	lmplayer_playlist_set_repeat(lmplayer->playlist,
-			gtk_toggle_action_get_active(action));
+	//lmplayer_playlist_set_repeat(lmplayer->playing_playlist, gtk_toggle_action_get_active(action));
+	lmplayer_playlist_set_repeat(lmplayer->current_playlist, gtk_toggle_action_get_active(action));
 }
 
 void shuffle_action_callback(GtkToggleAction *action, LmplayerObject *lmplayer)
 {
-	lmplayer_playlist_set_shuffle(lmplayer->playlist,
-			gtk_toggle_action_get_active(action));
+	//lmplayer_playlist_set_shuffle(lmplayer->playing_playlist, gtk_toggle_action_get_active(action));
+	lmplayer_playlist_set_shuffle(lmplayer->current_playlist, gtk_toggle_action_get_active(action));
 }
 
 void skins_action_callback(GtkAction *action, LmplayerObject *lmplayer)
@@ -450,6 +506,12 @@ void lmplayer_ui_manager_setup (LmplayerObject *lmplayer)
 	button = (GtkButton *)gtk_builder_get_object(builder, "player-save");
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(save_action_callback), lmplayer);
 
+	button = (GtkButton *)gtk_builder_get_object(builder, "player-new-playlist");
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(new_playlist_action_callback), lmplayer);
+
+	button = (GtkButton *)gtk_builder_get_object(builder, "player-rename-playlist");
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(rename_playlist_action_callback), lmplayer);
+
 	gtk_window_add_accel_group(GTK_WINDOW(lmplayer->win), accel_group);
 }
 
@@ -592,6 +654,7 @@ static const gchar *ui_info =
 "  </popup>"
 "</ui>";
 
+#if 0
 static GtkWidget *
 create_skins_submenu()
 {
@@ -651,6 +714,7 @@ create_skins_submenu()
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 	return menu;
 }
+#endif
 
 void
 lmplayer_setup_toolbar(LmplayerObject *lmplayer)

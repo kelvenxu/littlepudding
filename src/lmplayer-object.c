@@ -30,6 +30,8 @@
 #include "lmplayer-encode.h"
 #include "lmplayer-plugins-engine.h"
 #include "lmplayer-statusbar.h"
+#include "lmplayer-tab.h"
+#include "lmplayer-notebook.h"
 #include "video-utils.h"
 #include <glib/gi18n.h>
 #include <glib.h>
@@ -111,19 +113,13 @@ lmplayer_object_init (LmplayerObject *self)
 }
 
 static void
-lmplayer_object_set_property (GObject *object,
-			   guint property_id,
-			   const GValue *value,
-			   GParamSpec *pspec)
+lmplayer_object_set_property(GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
 	G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
 }
 
 static void
-lmplayer_object_get_property (GObject *object,
-			   guint property_id,
-			   GValue *value,
-			   GParamSpec *pspec)
+lmplayer_object_get_property(GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
 	LmplayerObject *lmplayer;
 
@@ -369,7 +365,7 @@ lmplayer_get_current_mrl(LmplayerObject *lmplayer)
 	char *mrl; 
 	char *subtitle;
 
-	mrl = lmplayer_playlist_get_current_mrl(lmplayer->playlist, &subtitle);
+	mrl = lmplayer_playlist_get_current_mrl(lmplayer->playing_playlist, &subtitle);
 
 	return mrl;
 }
@@ -555,21 +551,21 @@ play_pause_set_label(LmplayerObject *lmplayer, LmplayerStates state)
 		{
 			if(lmplayer->statusbar)
 				lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar), _("Status: Playing"));
-			lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_PLAYING);
+			lmplayer_playlist_set_playing(lmplayer->playing_playlist, LMPLAYER_PLAYLIST_STATUS_PLAYING);
 			break;
 		}
 	case STATE_PAUSED:
 		{
 			if(lmplayer->statusbar)
 				lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar), _("Status: Paused"));
-			lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_PAUSED);
+			lmplayer_playlist_set_playing(lmplayer->playing_playlist, LMPLAYER_PLAYLIST_STATUS_PAUSED);
 			break;
 		}
 	case STATE_STOPPED:
 		{
 			if(lmplayer->statusbar)
 				lmplayer_statusbar_set_text(LMPLAYER_STATUSBAR(lmplayer->statusbar), _("Status: Stopped"));
-			lmplayer_playlist_set_playing(lmplayer->playlist, LMPLAYER_PLAYLIST_STATUS_NONE);
+			lmplayer_playlist_set_playing(lmplayer->playing_playlist, LMPLAYER_PLAYLIST_STATUS_NONE);
 			break;
 		}
 	default:
@@ -633,8 +629,8 @@ static void
 lmplayer_action_direction (LmplayerObject *lmplayer, LmplayerPlaylistDirection dir)
 {
 	if (lmplayer_playing_dvd (lmplayer->mrl) == FALSE &&
-		lmplayer_playlist_has_direction (lmplayer->playlist, dir) == FALSE
-		&& lmplayer_playlist_get_repeat (lmplayer->playlist) == FALSE)
+		lmplayer_playlist_has_direction (lmplayer->playing_playlist, dir) == FALSE
+		&& lmplayer_playlist_get_repeat (lmplayer->playing_playlist) == FALSE)
 		return;
 
 	if (lmplayer_playing_dvd (lmplayer->mrl) != FALSE)
@@ -652,8 +648,8 @@ lmplayer_action_direction (LmplayerObject *lmplayer, LmplayerPlaylistDirection d
 	{
 		char *mrl, *subtitle;
 
-		lmplayer_playlist_set_direction (lmplayer->playlist, dir);
-		mrl = lmplayer_playlist_get_current_mrl (lmplayer->playlist, &subtitle);
+		lmplayer_playlist_set_direction (lmplayer->playing_playlist, dir);
+		mrl = lmplayer_playlist_get_current_mrl (lmplayer->playing_playlist, &subtitle);
 		lmplayer_action_set_mrl_and_play (lmplayer, mrl, subtitle);
 
 		g_free (subtitle);
@@ -776,7 +772,7 @@ lmplayer_action_load_media_device (LmplayerObject *lmplayer, const char *device)
 
 	switch (type) {
 		case MEDIA_TYPE_ERROR:
-			lmplayer_action_error (_("Totem was not able to play this disc."),
+			lmplayer_action_error (_("Lmplayer was not able to play this disc."),
 					    error ? error->message : _("No reason."),
 					    lmplayer);
 			retval = FALSE;
@@ -822,14 +818,25 @@ lmplayer_action_volume_relative (LmplayerObject *lmplayer, double off_pct)
 static void
 playlist_changed_cb (GtkWidget *playlist, LmplayerObject *lmplayer)
 {
-	char *mrl, *subtitle;
+	char *mrl; 
+	char *subtitle;
 
-	mrl = lmplayer_playlist_get_current_mrl(lmplayer->playlist, &subtitle);
+	g_print("%s %s\n", __FILE__, __func__);
+	//if(lmplayer->current_playlist != lmplayer->playing_playlist)
+	//	return;
+
+	if((GtkWidget *)(lmplayer->playing_playlist) != playlist)
+	{
+		lmplayer_action_stop(lmplayer);
+		lmplayer->playing_playlist = playlist;
+	}
+
+	mrl = lmplayer_playlist_get_current_mrl(lmplayer->playing_playlist, &subtitle);
 
 	if (mrl == NULL)
 		return;
 
-	if (lmplayer_playlist_get_playing (lmplayer->playlist) == LMPLAYER_PLAYLIST_STATUS_NONE)
+	if (lmplayer_playlist_get_playing (lmplayer->playing_playlist) == LMPLAYER_PLAYLIST_STATUS_NONE)
 		lmplayer_action_set_mrl_and_play (lmplayer, mrl, subtitle);
 
 	g_free (mrl);
@@ -881,10 +888,10 @@ lmplayer_action_open_files_list(LmplayerObject *lmplayer, GSList *list)
 				 * if we should be doing something with the 
 				 * changed playlist ... */
 				g_signal_handlers_disconnect_by_func
-					(G_OBJECT (lmplayer->playlist),
+					(G_OBJECT (lmplayer->playing_playlist),
 					 playlist_changed_cb, lmplayer);
 
-				changed = lmplayer_playlist_clear (lmplayer->playlist);
+				changed = lmplayer_playlist_clear (lmplayer->playing_playlist);
 				bacon_video_widget_close (lmplayer->bvw);
 				lmplayer_file_closed (lmplayer);
 				cleared = TRUE;
@@ -897,7 +904,7 @@ lmplayer_action_open_files_list(LmplayerObject *lmplayer, GSList *list)
 			} 
 			else if (g_str_has_prefix (filename, "dvb:/") != FALSE) 
 			{
-				lmplayer_playlist_add_mrl (lmplayer->playlist, data, NULL);
+				lmplayer_playlist_add_mrl (lmplayer->playing_playlist, data, NULL);
 				changed = TRUE;
 			} 
 			else if (g_str_equal (filename, "dvb:") != FALSE) 
@@ -905,7 +912,7 @@ lmplayer_action_open_files_list(LmplayerObject *lmplayer, GSList *list)
 				lmplayer_action_load_media (lmplayer, MEDIA_TYPE_DVB, "0");
 				changed = TRUE;
 			} 
-			else if (lmplayer_playlist_add_mrl (lmplayer->playlist, filename, NULL) != FALSE) 
+			else if (lmplayer_playlist_add_mrl (lmplayer->playing_playlist, filename, NULL) != FALSE) 
 			{
 				//lmplayer_action_add_recent (lmplayer, filename);
 				changed = TRUE;
@@ -920,7 +927,7 @@ lmplayer_action_open_files_list(LmplayerObject *lmplayer, GSList *list)
 	/* ... and reconnect because we're nice people */
 	if (cleared != FALSE)
 	{
-		g_signal_connect (G_OBJECT (lmplayer->playlist),
+		g_signal_connect (G_OBJECT (lmplayer->playing_playlist),
 				"changed", G_CALLBACK (playlist_changed_cb),
 				lmplayer);
 	}
@@ -1094,7 +1101,7 @@ lmplayer_open_location_response_cb (GtkDialog *dialog, gint response, LmplayerOb
 		filenames[1] = NULL;
 		lmplayer_action_open_files (lmplayer, (char **) filenames);
 
-		mrl = lmplayer_playlist_get_current_mrl (lmplayer->playlist, &subtitle);
+		mrl = lmplayer_playlist_get_current_mrl (lmplayer->playing_playlist, &subtitle);
 		lmplayer_action_set_mrl_and_play (lmplayer, mrl, subtitle);
 		g_free (mrl);
 		g_free (subtitle);
@@ -1153,7 +1160,7 @@ lmplayer_action_open_dialog (LmplayerObject *lmplayer, const char *path, gboolea
 	if (play != FALSE) {
 		char *mrl, *subtitle;
 
-		mrl = lmplayer_playlist_get_current_mrl (lmplayer->playlist, &subtitle);
+		mrl = lmplayer_playlist_get_current_mrl (lmplayer->playing_playlist, &subtitle);
 		lmplayer_action_set_mrl_and_play (lmplayer, mrl, subtitle);
 		g_free (mrl);
 		g_free (subtitle);
@@ -1187,7 +1194,7 @@ lmplayer_action_play_media (LmplayerObject *lmplayer, TotemDiscMediaType type, c
 
 	if (lmplayer_action_load_media (lmplayer, type, device) != FALSE) 
 	{
-		mrl = lmplayer_playlist_get_current_mrl (lmplayer->playlist, NULL);
+		mrl = lmplayer_playlist_get_current_mrl (lmplayer->playing_playlist, NULL);
 		lmplayer_action_set_mrl_and_play (lmplayer, mrl, NULL);
 		g_free (mrl);
 	}
@@ -1216,12 +1223,15 @@ lmplayer_action_stop (LmplayerObject *lmplayer)
 void
 lmplayer_action_play_pause (LmplayerObject *lmplayer)
 {
+	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
+	g_return_if_fail(LMPLAYER_IS_PLAYLIST(lmplayer->playing_playlist));
+
 	if (lmplayer->mrl == NULL)
 	{
 		char *mrl, *subtitle;
 
 		/* Try to pull an mrl from the playlist */
-		mrl = lmplayer_playlist_get_current_mrl (lmplayer->playlist, &subtitle);
+		mrl = lmplayer_playlist_get_current_mrl (lmplayer->playing_playlist, &subtitle);
 		if (mrl == NULL) 
 		{
 			play_pause_set_label (lmplayer, STATE_STOPPED);
@@ -1272,27 +1282,68 @@ lmplayer_action_wait_force_exit (gpointer user_data)
 	exit (1);
 }
 
+static void
+lmplayer_save_playlists(LmplayerObject *lmplayer)
+{
+	// delete old playlists
+	gchar *root = g_build_filename(getenv("HOME"), ".lmplayer", NULL);
+	char cmd[256];
+	sprintf(cmd, "rm -f %s/*.pls", root); // FIXME:
+	int ret = system(cmd);
+
+	// save new playlists
+	int pages = gtk_notebook_get_n_pages(GTK_NOTEBOOK(lmplayer->playlist_notebook));
+
+	int i;
+	for(i = 0; i < pages; ++i)
+	{
+		GtkWidget *playlist = gtk_notebook_get_nth_page(GTK_NOTEBOOK(lmplayer->playlist_notebook), i);
+		GtkWidget *tab = gtk_notebook_get_tab_label(GTK_NOTEBOOK(lmplayer->playlist_notebook), playlist);
+		const char *name = lmplayer_tab_get_name(LMPLAYER_TAB(tab));
+
+		gchar *filename;
+		if(g_str_has_suffix(name, ".pls"))
+		{
+			filename = g_build_filename(root, name, NULL);
+		}
+		else
+		{
+			gchar *name_pls = g_strdup_printf("%s.pls", name);
+			filename = g_build_filename(root, name_pls, NULL);
+			g_free(name_pls);
+		}
+
+		lmplayer_playlist_save_current_playlist(playlist, filename);
+		g_free(filename);
+	}
+
+	g_free(root);
+}
+
 void
 lmplayer_action_exit(LmplayerObject *lmplayer)
 {
 	/* Exit forcefully if we can't do the shutdown in 10 seconds */
-	g_thread_create ((GThreadFunc) lmplayer_action_wait_force_exit,
-			 NULL, FALSE, NULL);
+	g_thread_create((GThreadFunc)lmplayer_action_wait_force_exit, NULL, FALSE, NULL);
 	
-	if (gtk_main_level () > 0)
+	if(gtk_main_level() > 0)
 	{
-		gtk_main_quit ();
+		gtk_main_quit();
 	}
 
-	if (lmplayer == NULL)
-		exit (0);
+	if(lmplayer == NULL)
+		exit(0);
 
-	if(lmplayer->playlist && lmplayer->pls)
+	lmplayer_save_playlists(lmplayer);
+
+#if 0
+	if(lmplayer->playing_playlist && lmplayer->pls)
 	{
-		lmplayer_playlist_save_current_playlist(lmplayer->playlist, lmplayer->pls);
+		lmplayer_playlist_save_current_playlist(lmplayer->playing_playlist, lmplayer->pls);
 		g_free(lmplayer->pls);
 		lmplayer->pls = NULL;
 	}
+#endif
 
 	if(lmplayer->bvw) 
 	{
@@ -1316,7 +1367,7 @@ lmplayer_action_exit(LmplayerObject *lmplayer)
 	if(lmplayer->gc)
 		g_object_unref(G_OBJECT(lmplayer->gc));
 
-	if(gtk_main_level () > 0)
+	if(gtk_main_level() > 0)
 		gtk_main_quit();
 
 	g_object_unref(lmplayer);
@@ -1374,7 +1425,7 @@ lmplayer_seek_time_rel(LmplayerObject *lmplayer, gint64 time, gboolean relative)
 		char *msg, *disp;
 
 		disp = lmplayer_uri_escape_for_display (lmplayer->mrl);
-		msg = g_strdup_printf(_("Totem could not play '%s'."), disp);
+		msg = g_strdup_printf(_("Lmplayer could not play '%s'."), disp);
 		g_free (disp);
 
 		lmplayer_action_stop (lmplayer);
@@ -1511,10 +1562,10 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmplayerRemoteCommand cmd, con
 	case LMPLAYER_REMOTE_COMMAND_STOP:
 		{
 			char *mrl, *subtitle;
-			lmplayer_playlist_set_at_start(lmplayer->playlist);
+			lmplayer_playlist_set_at_start(lmplayer->playing_playlist);
 			update_buttons(lmplayer);
 			lmplayer_action_stop(lmplayer);
-			mrl = lmplayer_playlist_get_current_mrl(lmplayer->playlist, &subtitle);
+			mrl = lmplayer_playlist_get_current_mrl(lmplayer->playing_playlist, &subtitle);
 			if(mrl != NULL)
 			{
 				lmplayer_action_set_mrl_with_warning(lmplayer, mrl, subtitle, FALSE);
@@ -1566,10 +1617,10 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmplayerRemoteCommand cmd, con
 		break;
 	case LMPLAYER_REMOTE_COMMAND_ENQUEUE:
 		g_assert(url != NULL);
-		lmplayer_playlist_add_mrl_with_cursor(lmplayer->playlist, url, NULL);
+		lmplayer_playlist_add_mrl_with_cursor(lmplayer->playing_playlist, url, NULL);
 		break;
 	case LMPLAYER_REMOTE_COMMAND_REPLACE:
-		lmplayer_playlist_clear(lmplayer->playlist);
+		lmplayer_playlist_clear(lmplayer->playing_playlist);
 		if(url == NULL)
 		{
 			bacon_video_widget_close(lmplayer->bvw);
@@ -1590,7 +1641,7 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmplayerRemoteCommand cmd, con
 			lmplayer_action_load_media(lmplayer, MEDIA_TYPE_DVB, "0");
 		}
 		else
-			lmplayer_playlist_add_mrl_with_cursor(lmplayer->playlist, url, NULL);
+			lmplayer_playlist_add_mrl_with_cursor(lmplayer->playing_playlist, url, NULL);
 		break;
 	case LMPLAYER_REMOTE_COMMAND_SHOW:
 		gtk_window_present(GTK_WINDOW(lmplayer->win));
@@ -1689,6 +1740,7 @@ update_volume_slider(LmplayerObject *lmplayer)
 static void
 playlist_active_name_changed_cb (LmplayerPlaylist *playlist, LmplayerObject *lmplayer)
 {
+	g_print("%s %s\n", __FILE__, __func__);
 	char *name;
 	gboolean cur;
 
@@ -1790,14 +1842,14 @@ on_eos_event (GtkWidget *widget, LmplayerObject *lmplayer)
 		return FALSE;
 	}
 
-	if(lmplayer_playlist_has_next_mrl(lmplayer->playlist) == FALSE
-			&& lmplayer_playlist_get_repeat(lmplayer->playlist) == FALSE)
+	if(lmplayer_playlist_has_next_mrl(lmplayer->playing_playlist) == FALSE
+			&& lmplayer_playlist_get_repeat(lmplayer->playing_playlist) == FALSE)
 	{
 		char *mrl, *subtitle;
 
-		lmplayer_playlist_set_at_start(lmplayer->playlist);
+		lmplayer_playlist_set_at_start(lmplayer->playing_playlist);
 		lmplayer_action_stop (lmplayer);
-		mrl = lmplayer_playlist_get_current_mrl(lmplayer->playlist, &subtitle);
+		mrl = lmplayer_playlist_get_current_mrl(lmplayer->playing_playlist, &subtitle);
 		lmplayer_action_set_mrl_with_warning(lmplayer, mrl, subtitle, FALSE);
 		bacon_video_widget_pause(lmplayer->bvw);
 		g_free(mrl);
@@ -1837,13 +1889,13 @@ on_got_metadata_event (BaconVideoWidget *bvw, LmplayerObject *lmplayer)
 
 	if (name != NULL) {
 		lmplayer_playlist_set_title
-			(LMPLAYER_PLAYLIST(lmplayer->playlist), name, FALSE);
+			(LMPLAYER_PLAYLIST(lmplayer->playing_playlist), name, FALSE);
 		g_free (name);
 	}
 	
-	lmplayer_playlist_set_stream_length(LMPLAYER_PLAYLIST(lmplayer->playlist), lmplayer->stream_length);
+	lmplayer_playlist_set_stream_length(LMPLAYER_PLAYLIST(lmplayer->playing_playlist), lmplayer->stream_length);
 	lmplayer_info_update(lmplayer);
-	playlist_active_name_changed_cb (LMPLAYER_PLAYLIST (lmplayer->playlist), lmplayer);
+	playlist_active_name_changed_cb (LMPLAYER_PLAYLIST (lmplayer->playing_playlist), lmplayer);
 }
 
 static void
@@ -1995,47 +2047,73 @@ video_widget_create (LmplayerObject *lmplayer)
 static void
 playlist_item_activated_cb (GtkWidget *playlist, LmplayerObject *lmplayer)
 {
-	lmplayer_action_seek(lmplayer, 0);
+	char *mrl; 
+	char *subtitle;
+
+	g_print("%s %s\n", __FILE__, __func__);
+
+	if((GtkWidget *)(lmplayer->playing_playlist) != playlist)
+	{
+		lmplayer_action_stop(lmplayer);
+		lmplayer->playing_playlist = playlist;
+	}
+
+	mrl = lmplayer_playlist_get_current_mrl(lmplayer->playing_playlist, &subtitle);
+
+	if (mrl == NULL)
+		return;
+
+	if (lmplayer_playlist_get_playing (lmplayer->playing_playlist) == LMPLAYER_PLAYLIST_STATUS_NONE)
+		lmplayer_action_set_mrl_and_play (lmplayer, mrl, subtitle);
+
+	g_free (mrl);
+	g_free (subtitle);
 }
 
 static void
 playlist_current_removed_cb (GtkWidget *playlist, LmplayerObject *lmplayer)
 {
-	char *mrl, *subtitle;
+	char *mrl; 
+	char *subtitle;
 
-	/* Set play button status */
-	play_pause_set_label(lmplayer, STATE_STOPPED);
-	mrl = lmplayer_playlist_get_current_mrl(lmplayer->playlist, &subtitle);
-
-	if (mrl == NULL) 
+	if(lmplayer->current_playlist == lmplayer->playing_playlist)
 	{
+		/* Set play button status */
+		play_pause_set_label(lmplayer, STATE_STOPPED);
+		mrl = lmplayer_playlist_get_current_mrl(lmplayer->playing_playlist, &subtitle);
+
+		if (mrl == NULL) 
+		{
+			g_free (subtitle);
+			subtitle = NULL;
+			lmplayer_playlist_set_at_start(lmplayer->playing_playlist);
+			update_buttons(lmplayer);
+			mrl = lmplayer_playlist_get_current_mrl(lmplayer->playing_playlist, &subtitle);
+		} 
+		else 
+		{
+			update_buttons(lmplayer);
+		}
+
+		lmplayer_action_set_mrl_and_play(lmplayer, mrl, subtitle);
+		g_free (mrl);
 		g_free (subtitle);
-		subtitle = NULL;
-		lmplayer_playlist_set_at_start(lmplayer->playlist);
-		update_buttons(lmplayer);
-		mrl = lmplayer_playlist_get_current_mrl(lmplayer->playlist, &subtitle);
-	} 
-	else 
-	{
-		update_buttons(lmplayer);
 	}
-
-	lmplayer_action_set_mrl_and_play(lmplayer, mrl, subtitle);
-	g_free (mrl);
-	g_free (subtitle);
 }
 
 static void
 playlist_subtitle_changed_cb (GtkWidget *playlist, LmplayerObject *lmplayer)
 {
 	char *mrl, *subtitle;
+	if(lmplayer->current_playlist == lmplayer->playing_playlist)
+	{
+		lmplayer_action_stop (lmplayer);
+		mrl = lmplayer_playlist_get_current_mrl (lmplayer->playing_playlist, &subtitle);
+		lmplayer_action_set_mrl_and_play (lmplayer, mrl, subtitle);
 
-	lmplayer_action_stop (lmplayer);
-	mrl = lmplayer_playlist_get_current_mrl (lmplayer->playlist, &subtitle);
-	lmplayer_action_set_mrl_and_play (lmplayer, mrl, subtitle);
-
-	g_free (mrl);
-	g_free (subtitle);
+		g_free (mrl);
+		g_free (subtitle);
+	}
 }
 
 static void
@@ -2048,6 +2126,7 @@ playlist_shuffle_toggled_cb (LmplayerPlaylist *playlist, gboolean shuffle, Lmpla
 {
 }
 
+#if 0
 void 
 playlist_widget_setup(LmplayerObject *lmplayer)
 {
@@ -2057,32 +2136,53 @@ playlist_widget_setup(LmplayerObject *lmplayer)
 	g_return_if_fail(LMPLAYER_IS_OBJECT(lmplayer));
 
 	playlist = LMPLAYER_PLAYLIST(lmplayer_playlist_new());
-	lmplayer->playlist = playlist;
+	lmplayer->playing_playlist = playlist;
 
-	if(lmplayer->playlist == NULL)
+	if(lmplayer->playing_playlist == NULL)
 		lmplayer_action_exit(lmplayer);
 	
 	box = (GtkWidget *)gtk_builder_get_object(lmplayer->builder, "player-playlist-box");
-	gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(lmplayer->playlist));
+	gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(lmplayer->playing_playlist));
 
-	gtk_widget_show_all(GTK_WIDGET(lmplayer->playlist));
+	gtk_widget_show_all(GTK_WIDGET(lmplayer->playing_playlist));
 	gtk_widget_show(box);
 
-	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(lmplayer->playlist), TRUE);
-	g_signal_connect (G_OBJECT (playlist), "active-name-changed",
-			G_CALLBACK (playlist_active_name_changed_cb), lmplayer);
-	g_signal_connect (G_OBJECT (playlist), "item-activated",
-			G_CALLBACK (playlist_item_activated_cb), lmplayer);
-	g_signal_connect (G_OBJECT (playlist), "changed",
-			G_CALLBACK (playlist_changed_cb), lmplayer);
-	g_signal_connect (G_OBJECT (playlist), "current-removed",
-			G_CALLBACK (playlist_current_removed_cb), lmplayer);
-	g_signal_connect (G_OBJECT (playlist), "repeat-toggled",
-			G_CALLBACK (playlist_repeat_toggled_cb), lmplayer);
-	g_signal_connect (G_OBJECT (playlist), "shuffle-toggled",
-			G_CALLBACK (playlist_shuffle_toggled_cb), lmplayer);
-	g_signal_connect (G_OBJECT (playlist), "subtitle-changed",
-			G_CALLBACK (playlist_subtitle_changed_cb), lmplayer);
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(lmplayer->playing_playlist), TRUE);
+	g_signal_connect(G_OBJECT(playlist), "active-name-changed", G_CALLBACK(playlist_active_name_changed_cb), lmplayer);
+	g_signal_connect(G_OBJECT(playlist), "item-activated", G_CALLBACK(playlist_item_activated_cb), lmplayer);
+	g_signal_connect(G_OBJECT(playlist), "changed", G_CALLBACK(playlist_changed_cb), lmplayer);
+	g_signal_connect(G_OBJECT(playlist), "current-removed", G_CALLBACK(playlist_current_removed_cb), lmplayer);
+	g_signal_connect(G_OBJECT(playlist), "repeat-toggled", G_CALLBACK(playlist_repeat_toggled_cb), lmplayer); 
+	g_signal_connect(G_OBJECT(playlist), "shuffle-toggled", G_CALLBACK(playlist_shuffle_toggled_cb), lmplayer);
+	g_signal_connect(G_OBJECT(playlist), "subtitle-changed", G_CALLBACK(playlist_subtitle_changed_cb), lmplayer);
+}
+#endif
+
+GtkWidget *
+lmplayer_create_playlist_widget(LmplayerObject *lmplayer, const char *filename)
+{
+	g_return_val_if_fail(LMPLAYER_IS_OBJECT(lmplayer), NULL);
+
+	LmplayerPlaylist *playlist = LMPLAYER_PLAYLIST(lmplayer_playlist_new());
+	gtk_widget_show_all(GTK_WIDGET(playlist));
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(playlist), TRUE);
+
+	gchar *uri = g_filename_to_uri(filename, NULL, NULL);
+	if(uri != NULL)
+	{
+		lmplayer_playlist_add_mrl(playlist, uri, NULL);
+		g_free(uri);
+	}
+
+	g_signal_connect(G_OBJECT(playlist), "active-name-changed", G_CALLBACK(playlist_active_name_changed_cb), lmplayer);
+	g_signal_connect(G_OBJECT(playlist), "item-activated", G_CALLBACK(playlist_item_activated_cb), lmplayer);
+	g_signal_connect(G_OBJECT(playlist), "changed", G_CALLBACK(playlist_changed_cb), lmplayer);
+	g_signal_connect(G_OBJECT(playlist), "current-removed", G_CALLBACK(playlist_current_removed_cb), lmplayer);
+	g_signal_connect(G_OBJECT(playlist), "repeat-toggled", G_CALLBACK(playlist_repeat_toggled_cb), lmplayer); 
+	g_signal_connect(G_OBJECT(playlist), "shuffle-toggled", G_CALLBACK(playlist_shuffle_toggled_cb), lmplayer);
+	g_signal_connect(G_OBJECT(playlist), "subtitle-changed", G_CALLBACK(playlist_subtitle_changed_cb), lmplayer);
+
+	return (GtkWidget *)playlist;
 }
 
 void

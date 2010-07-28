@@ -1,0 +1,9 @@
+[Lmplayer Plugin]
+	Module=status-icon
+	IAge=1
+	Builtin=true
+	Name=Status Icon
+	Description=Status icon plugin for lmplayer.
+	Authors=kelvenxu
+	Copyright=Copyright © 2010
+	Website=http://www.lmplayer.com/

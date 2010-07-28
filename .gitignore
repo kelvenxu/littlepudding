@@ -63,3 +63,4 @@ src/lmplayerobject-marshal.h
 src/lmplayerplaylist-marshal.c
 src/lmplayerplaylist-marshal.h
 tests/mytest
+*.lmplayer-plugin

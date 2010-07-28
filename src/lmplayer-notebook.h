@@ -32,6 +32,7 @@
  *  Copyright (C) 2002 Christophe Fergeau
  *  Copyright (C) 2003 Marco Pesenti Gritti
  *  Copyright (C) 2003, 2004 Christian Persch
+ *  Copyright (C) 2010, Kelvenxu
  *
  */
  
@@ -43,9 +44,6 @@
 
 G_BEGIN_DECLS
 
-/*
- * Type checking and casting macros
- */
 #define LMPLAYER_TYPE_NOTEBOOK		(lmplayer_notebook_get_type ())
 #define LMPLAYER_NOTEBOOK(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), LMPLAYER_TYPE_NOTEBOOK, LmplayerNotebook))
 #define LMPLAYER_NOTEBOOK_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), LMPLAYER_TYPE_NOTEBOOK, LmplayerNotebookClass))
@@ -53,12 +51,8 @@ G_BEGIN_DECLS
 #define LMPLAYER_IS_NOTEBOOK_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), LMPLAYER_TYPE_NOTEBOOK))
 #define LMPLAYER_NOTEBOOK_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), LMPLAYER_TYPE_NOTEBOOK, LmplayerNotebookClass))
 
-/* Private structure type */
 typedef struct _LmplayerNotebookPrivate	LmplayerNotebookPrivate;
 
-/*
- * Main object structure
- */
 typedef struct _LmplayerNotebook		LmplayerNotebook;
  
 struct _LmplayerNotebook
@@ -69,9 +63,6 @@ struct _LmplayerNotebook
 	LmplayerNotebookPrivate *priv;
 };
 
-/*
- * Class definition
- */
 typedef struct _LmplayerNotebookClass	LmplayerNotebookClass;
 
 struct _LmplayerNotebookClass
@@ -86,30 +77,14 @@ struct _LmplayerNotebookClass
 	void (* tab_close_request) (LmplayerNotebook *notebook, GtkWidget *tab);
 };
 
-/*
- * Public methods
- */
 GType lmplayer_notebook_get_type (void) G_GNUC_CONST;
 
 GtkWidget *lmplayer_notebook_new (void);
 
-void lmplayer_notebook_add_tab (LmplayerNotebook *nb, GtkWidget *tab, gint position, gboolean jump_to);
+void lmplayer_notebook_append_page(LmplayerNotebook *nb, GtkWidget *page, const char *label);
 
-void lmplayer_notebook_remove_tab (LmplayerNotebook *nb, GtkWidget *tab);
-
-void lmplayer_notebook_remove_all_tabs (LmplayerNotebook *nb);
-
-void lmplayer_notebook_reorder_tab (LmplayerNotebook *src, GtkWidget *tab, gint dest_position);
+void lmplayer_notebook_remove_page(LmplayerNotebook *nb, GtkWidget *page);
 			    			 
-void lmplayer_notebook_move_tab	(LmplayerNotebook *src, LmplayerNotebook *dest, GtkWidget *tab, gint dest_position);
-
-/* FIXME: do we really need this function ? */
-void lmplayer_notebook_set_always_show_tabs	(LmplayerNotebook *nb, gboolean show_tabs);
-
-void lmplayer_notebook_set_close_buttons_sensitive (LmplayerNotebook *nb, gboolean sensitive);
-
-gboolean lmplayer_notebook_get_close_buttons_sensitive (LmplayerNotebook *nb);
-
 void lmplayer_notebook_set_tab_drag_and_drop_enabled (LmplayerNotebook *nb, gboolean enable);
 
 gboolean lmplayer_notebook_get_tab_drag_and_drop_enabled (LmplayerNotebook *nb);
