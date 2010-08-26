@@ -199,6 +199,9 @@ notebook_switch_page_cb(GtkNotebook *nb, GtkNotebookPage *page, gint page_num, L
 static void
 lmplayer_action_load_playlists(LmplayerObject *lmplayer)
 {
+	gboolean find_playlist = FALSE;
+	GtkWidget *default_playlist = NULL;
+
 	lmplayer->playlist_notebook = lmplayer_notebook_new();
 	g_signal_connect(lmplayer->playlist_notebook, "switch-page", G_CALLBACK(notebook_switch_page_cb), lmplayer);
 
@@ -222,6 +225,9 @@ lmplayer_action_load_playlists(LmplayerObject *lmplayer)
 				label_name[strlen(label_name) - 4] = '\0'; //delete suffix '.pls'
 				lmplayer_notebook_append_page(lmplayer->playlist_notebook, pls, label_name);
 
+				if(strcmp(label_name, "Default") == 0)
+					default_playlist = pls;
+
 				g_free(label_name);
 				g_free(fullname);
 			}
@@ -234,9 +240,16 @@ lmplayer_action_load_playlists(LmplayerObject *lmplayer)
 
 	gtk_widget_show_all(lmplayer->playlist_notebook);
 
+	if(!default_playlist)
+	{
+		default_playlist = lmplayer_create_playlist_widget(lmplayer, NULL);
+		lmplayer_notebook_append_page(lmplayer->playlist_notebook, default_playlist, "Default");
+	}
+
 	//set current playlist and playing playlist
-	int idx = gtk_notebook_get_current_page(lmplayer->playlist_notebook);
-	lmplayer->playing_playlist = gtk_notebook_get_nth_page(lmplayer->playlist_notebook, idx);
+	//int idx = gtk_notebook_get_current_page(lmplayer->playlist_notebook);
+	//lmplayer->playing_playlist = gtk_notebook_get_nth_page(lmplayer->playlist_notebook, idx);
+	lmplayer->playing_playlist = default_playlist;
 	lmplayer->current_playlist = lmplayer->playing_playlist;
 }
 
@@ -705,6 +718,7 @@ main(int argc, char* argv[])
 
 	lmplayer_object_plugins_init(lmplayer);
 
+#if 0
 	if(optionstate.filenames != NULL && lmplayer_action_open_files(lmplayer, optionstate.filenames))
 	{
 		hasfiles = TRUE;
@@ -714,6 +728,7 @@ main(int argc, char* argv[])
 	{
 		lmplayer_action_set_mrl(lmplayer, NULL, NULL);
 	}
+#endif
 
 	gtk_widget_show_all(GTK_WIDGET(lmplayer->win));
 
@@ -726,6 +741,16 @@ main(int argc, char* argv[])
 	{
 		g_signal_connect(lmplayer->uapp, "message-received",
 				  G_CALLBACK(lmplayer_message_received_cb), lmplayer);
+	}
+
+	if(optionstate.filenames != NULL && lmplayer_action_open_files(lmplayer, optionstate.filenames))
+	{
+		hasfiles = TRUE;
+		lmplayer_action_play_pause(lmplayer);
+	}
+	else
+	{
+		lmplayer_action_set_mrl(lmplayer, NULL, NULL);
 	}
 
 	gtk_main();

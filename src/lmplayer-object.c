@@ -851,7 +851,8 @@ lmplayer_action_open_files_list(LmplayerObject *lmplayer, GSList *list)
 	gboolean cleared;
 
 	changed = FALSE;
-	cleared = FALSE;
+	//cleared = FALSE;
+	cleared = TRUE;
 
 	if (list == NULL)
 		return changed;
