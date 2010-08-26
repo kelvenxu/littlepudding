@@ -1621,7 +1621,7 @@ lmplayer_action_remote (LmplayerObject *lmplayer, LmplayerRemoteCommand cmd, con
 		lmplayer_playlist_add_mrl_with_cursor(lmplayer->playing_playlist, url, NULL);
 		break;
 	case LMPLAYER_REMOTE_COMMAND_REPLACE:
-		lmplayer_playlist_clear(lmplayer->playing_playlist);
+		//lmplayer_playlist_clear(lmplayer->playing_playlist);
 		if(url == NULL)
 		{
 			bacon_video_widget_close(lmplayer->bvw);
